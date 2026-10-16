@@ -61,17 +61,18 @@ const defaultUser: UserState = {
   password: 'trader123',
   whatsapp: '081234567890',
   accountType: 'STANDARD',
-  tier: 'FREE',
+  tier: 'PRO', // Aktif PRO
   role: 'USER',
   isAuthenticated: false,
-  telegramLinked: false,
+  telegramLinked: true,
   dailyCalculatorCount: 0,
   disciplineScore: 0,
   winRate: 0,
   totalTrades: 0,
   strictModeEnabled: true,
-  isChecklistPassed: false,
-  subscriptionStatus: 'NONE',
+  isChecklistPassed: true,
+  subscriptionStatus: 'ACTIVE',
+  proExpiryDate: '16 Nov 2026',
 };
 
 const initialUsers: UserState[] = [
@@ -118,6 +119,20 @@ const initialUsers: UserState[] = [
 ];
 
 const initialRequests: SubscriptionRequest[] = [
+  {
+    id: 'sub-req-100',
+    userId: 'usr-trader-01',
+    userName: 'Budi Santoso (Trader)',
+    userEmail: 'trader@realistisfx.com',
+    userPhone: '081234567890',
+    planName: '1 Bulan PRO',
+    amount: 50000,
+    paymentMethod: 'QRIS',
+    proofScreenshot: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
+    status: 'APPROVED',
+    createdAt: '16 Okt 2026, 18.39 WIB',
+    notes: 'Disetujui Admin - Status PRO Aktif',
+  },
   {
     id: 'sub-req-101',
     userId: 'usr-trader-03',
@@ -198,6 +213,46 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         // ignore
       }
     }
+
+    // Multi-Device Server Sync: fetch latest users and approved tiers from server API
+    fetch('/api/users/sync')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && Array.isArray(data.users)) {
+          setAllUsers(data.users);
+          try {
+            localStorage.setItem('realistisfx_all_users', JSON.stringify(data.users));
+          } catch {}
+
+          // Also update current active user session if exists
+          const currentSaved = localStorage.getItem('realistisfx_user');
+          if (currentSaved) {
+            try {
+              const parsedUser: UserState = JSON.parse(currentSaved);
+              const remote = data.users.find(
+                (u: UserState) => u.email.toLowerCase() === parsedUser.email.toLowerCase()
+              );
+              if (remote && (remote.tier !== parsedUser.tier || remote.subscriptionStatus !== parsedUser.subscriptionStatus)) {
+                const updatedCurrent: UserState = {
+                  ...parsedUser,
+                  tier: remote.tier,
+                  subscriptionStatus: remote.subscriptionStatus,
+                  proExpiryDate: remote.proExpiryDate,
+                };
+                setUser(updatedCurrent);
+                localStorage.setItem('realistisfx_user', JSON.stringify(updatedCurrent));
+              }
+            } catch {}
+          }
+        }
+        if (data && Array.isArray(data.requests)) {
+          setSubscriptionRequests(data.requests);
+          try {
+            localStorage.setItem('realistisfx_sub_requests', JSON.stringify(data.requests));
+          } catch {}
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // Dynamic add trading journal entry
@@ -336,11 +391,12 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       return true;
     }
 
-    // Check pre-registered trader account
+    // Check pre-registered trader account (Budi Santoso)
     if (normalizedEmail === 'trader@realistisfx.com') {
       if (password !== 'trader123') {
         return false;
       }
+      const existing = allUsers.find((u) => u.email.toLowerCase() === normalizedEmail);
       const traderUser: UserState = {
         id: 'usr-trader-01',
         name: 'Budi Santoso (Trader)',
@@ -348,17 +404,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         password: 'trader123',
         whatsapp: '081234567890',
         accountType: 'STANDARD',
-        tier: 'FREE',
+        tier: existing?.tier || 'PRO', // Preserves PRO status across logins
         role: 'USER',
         isAuthenticated: true,
-        telegramLinked: false,
-        dailyCalculatorCount: 0,
-        disciplineScore: 0,
-        winRate: 0,
-        totalTrades: 0,
+        telegramLinked: true,
+        dailyCalculatorCount: existing?.dailyCalculatorCount ?? 0,
+        disciplineScore: existing?.disciplineScore ?? 0,
+        winRate: existing?.winRate ?? 0,
+        totalTrades: existing?.totalTrades ?? 0,
         strictModeEnabled: true,
-        isChecklistPassed: false,
-        subscriptionStatus: 'NONE',
+        isChecklistPassed: true,
+        subscriptionStatus: existing?.subscriptionStatus || 'ACTIVE',
+        proExpiryDate: existing?.proExpiryDate || '16 Nov 2026',
       };
       saveUser(traderUser);
       return true;
@@ -541,6 +598,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     setAllUsers(updatedAllUsers);
     localStorage.setItem('realistisfx_all_users', JSON.stringify(updatedAllUsers));
 
+    // Multi-Device Server Sync: notify server
+    fetch('/api/users/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'APPROVE_SUBSCRIPTION', requestId }),
+    }).catch(() => {});
+
     // If current logged in user is the one approved, update user state
     if (user.id === req.userId || user.email === req.userEmail) {
       saveUser({
@@ -577,12 +641,20 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           ...u,
           tier: newTier,
           subscriptionStatus: newTier === 'PRO' ? ('ACTIVE' as const) : ('NONE' as const),
+          proExpiryDate: newTier === 'PRO' ? '16 Nov 2026' : undefined,
         };
       }
       return u;
     });
     setAllUsers(updatedAll);
     localStorage.setItem('realistisfx_all_users', JSON.stringify(updatedAll));
+
+    // Multi-Device Server Sync: notify server
+    fetch('/api/users/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'UPDATE_USER_TIER', userId, newTier }),
+    }).catch(() => {});
 
     if (user.id === userId) {
       saveUser({
