@@ -1,0 +1,200 @@
+// Prisma schema for RealistisFx Edukasi SaaS
+// Platform Trading Tools & Edukasi Freemium Indonesia
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Tier {
+  FREE
+  PRO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PENDING
+  EXPIRED
+  CANCELLED
+}
+
+enum SubscriptionPlan {
+  MONTHLY_PRO
+  ANNUAL_PRO
+}
+
+enum AccountType {
+  STANDARD
+  CENT
+}
+
+enum TradeDirection {
+  BUY
+  SELL
+}
+
+enum TradeStatus {
+  OPEN
+  WIN
+  LOSS
+  BE // Break Even
+}
+
+enum TradingEmotion {
+  CALM_CONFIDENT   // 🧘 Tenang & Percaya Diri
+  ANXIOUS_GREEDY    // 😬 Cemas & Serakah
+  FOMO              // ⚡ FOMO Takut Ketinggalan
+  REVENGE_TRADING   // 😡 Revenge Trading / Emosi
+  DISCIPLINED       // 🎯 Disiplin Ikut Rencana
+}
+
+model User {
+  id                    String            @id @default(cuid())
+  name                  String?
+  email                 String            @unique
+  password              String?
+  avatar                String?
+  role                  Role              @default(USER)
+  tier                  Tier              @default(FREE)
+  
+  // Telegram Bot Assistant Integration
+  telegramChatId        String?           @unique
+  telegramUsername      String?
+  telegramLinked        Boolean           @default(false)
+  
+  // Free Tier Daily Usage Limitation (Lot Calculator max 3x/day)
+  dailyCalculatorCount  Int               @default(0)
+  lastCalculatorReset   DateTime          @default(now())
+  
+  // AI Discipline Score (0 - 100) & Feedback
+  disciplineScore       Int               @default(85)
+  disciplineFeedback    String?           @default("Pertahankan rasio RR minimal 1:2 dan patuhi SOP trading harian.")
+  
+  // Relations
+  subscriptions         Subscription[]
+  journalEntries        JournalEntry[]
+  checklistLogs         AntiFomoLog[]
+  academyProgress       AcademyProgress[]
+
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  @@index([email])
+}
+
+model Subscription {
+  id               String             @id @default(cuid())
+  userId           String
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  plan             SubscriptionPlan   @default(MONTHLY_PRO)
+  amount           Int                @default(50000) // Rp 50.000 / bulan
+  status           SubscriptionStatus @default(PENDING)
+  paymentMethod    String?            // QRIS, BCA_VA, GO_PAY, SHOPEEPAY
+  paymentReference String?
+  proofScreenshot  String?            // URL or base64 data of payment screenshot
+  whatsappNumber   String?
+  adminNotes       String?
+  
+  startDate        DateTime           @default(now())
+  endDate          DateTime
+  
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@index([userId])
+}
+
+model JournalEntry {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  pair            String         // XAUUSD, EURUSD, GBPUSD, etc.
+  direction       TradeDirection // BUY, SELL
+  accountType     AccountType    @default(STANDARD) // STANDARD, CENT (IDRC)
+  
+  entryPrice      Float
+  exitPrice       Float?
+  stopLoss        Float
+  takeProfit      Float?
+  lotSize         Float
+  
+  pnl             Float          @default(0.0) // PnL in USD or Cent
+  pips            Float?         @default(0.0)
+  status          TradeStatus    @default(OPEN)
+  
+  // Psychological & Discipline metrics
+  emotion         TradingEmotion @default(CALM_CONFIDENT)
+  adheredToPlan   Boolean        @default(true) // Whether user followed Anti-FOMO SOP
+  notes           String?
+  screenshotUrl   String?
+  
+  createdAt       DateTime       @default(now())
+  closedAt        DateTime?
+  updatedAt       DateTime       @updatedAt
+
+  @@index([userId])
+  @@index([pair])
+  @@index([createdAt])
+}
+
+model AntiFomoLog {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  pair            String
+  trendAligned    Boolean        @default(false)
+  supportResistanceConfirmed Boolean @default(false)
+  riskRewardValid Boolean        @default(false) // Minimal RR 1:2
+  highImpactNewsChecked Boolean  @default(false)
+  emotionControlled Boolean      @default(false)
+  allPassed       Boolean        @default(false)
+  
+  createdAt       DateTime       @default(now())
+
+  @@index([userId])
+}
+
+model AcademyProgress {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  moduleId        String         // e.g. "mod-1-money-management", "mod-2-lot-sizing"
+  moduleLevel     Int            // 1 = Free, 2-5 = Pro
+  isCompleted     Boolean        @default(false)
+  completedAt     DateTime?
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@unique([userId, moduleId])
+  @@index([userId])
+}
+
+model DailyWatchlist {
+  id              String         @id @default(cuid())
+  pair            String         // e.g. XAUUSD, EURUSD, GBPUSD
+  bias            String         // Bullish, Bearish, Sideways
+  supportLevel    Float
+  resistanceLevel Float
+  buyZone         String         // e.g. "2340.50 - 2345.00"
+  sellZone        String         // e.g. "2380.00 - 2385.00"
+  analysis        String
+  isProOnly       Boolean        @default(false) // Free: 1 random pair, Pro: all pairs
+  date            DateTime       @default(now())
+
+  @@index([pair])
+  @@index([date])
+}
