@@ -20,7 +20,8 @@ import {
   Zap,
   X,
   Shield,
-  Clock
+  Clock,
+  Globe
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
@@ -31,6 +32,13 @@ const navigationItems = [
     icon: LayoutDashboard,
     badge: 'Live',
     badgeColor: 'blue',
+  },
+  {
+    name: 'Landing Page Website',
+    href: '/landing',
+    icon: Globe,
+    badge: 'Info',
+    badgeColor: 'green',
   },
   {
     name: 'Risk & Lot Calculator',

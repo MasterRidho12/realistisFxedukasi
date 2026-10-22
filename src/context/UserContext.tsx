@@ -63,7 +63,7 @@ const defaultUser: UserState = {
   accountType: 'STANDARD',
   tier: 'PRO', // Aktif PRO
   role: 'USER',
-  isAuthenticated: true,
+  isAuthenticated: false,
   telegramLinked: true,
   dailyCalculatorCount: 0,
   disciplineScore: 88,

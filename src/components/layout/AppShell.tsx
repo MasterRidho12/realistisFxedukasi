@@ -7,7 +7,7 @@ import { ShieldAlert, ArrowLeft } from 'lucide-react';
 import { UserProvider, useUser } from '@/context/UserContext';
 import Sidebar from '@/components/layout/Sidebar';
 import Navbar from '@/components/layout/Navbar';
-import AuthScreen from '@/components/auth/AuthScreen';
+import LandingPage from '@/components/landing/LandingPage';
 import QrisPaymentModal from '@/components/subscription/QrisPaymentModal';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminAuthScreen from '@/components/admin/AdminAuthScreen';
@@ -15,6 +15,11 @@ import AdminAuthScreen from '@/components/admin/AdminAuthScreen';
 function ShellContent({ children }: { children: React.ReactNode }) {
   const { user, logout } = useUser();
   const pathname = usePathname();
+
+  // Standalone Landing Page Route
+  if (pathname === '/landing') {
+    return <LandingPage />;
+  }
 
   // If user is accessing /admin route, use dedicated Admin Portal with strict role verification
   if (pathname.startsWith('/admin')) {
@@ -66,9 +71,9 @@ function ShellContent({ children }: { children: React.ReactNode }) {
     return <AdminLayout>{children}</AdminLayout>;
   }
 
-  // If trader is not authenticated, require registration/login first
+  // If visitor is not authenticated, show Landing Page first (with on-page login & registration)
   if (!user.isAuthenticated) {
-    return <AuthScreen />;
+    return <LandingPage />;
   }
 
   // Regular Trader Layout
