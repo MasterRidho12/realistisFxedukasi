@@ -65,11 +65,6 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
     }
   };
 
-  const handleQuickDemoLogin = () => {
-    login('trader@realistisfx.com', 'trader123');
-    setShowAuthModal(false);
-  };
-
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
@@ -81,7 +76,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
       }
       const success = login(authEmail.trim().toLowerCase(), authPassword);
       if (!success) {
-        setAuthError('Email atau kata sandi tidak valid. Coba Masuk Cepat Demo Trader.');
+        setAuthError('Email atau kata sandi tidak valid. Silakan periksa kembali.');
         return;
       }
       setShowAuthModal(false);
@@ -447,11 +442,11 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
 
               <button
                 type="button"
-                onClick={handleQuickDemoLogin}
+                onClick={() => openAuth('login')}
                 className="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-300 shadow-xs hover:border-slate-400 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
-                <span>Masuk Cepat Demo Trader (1-Klik)</span>
+                <LogIn className="w-4 h-4 text-slate-600" />
+                <span>Sudah Punya Akun? Masuk</span>
               </button>
             </div>
 
@@ -929,10 +924,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             </button>
             <button
               type="button"
-              onClick={handleQuickDemoLogin}
+              onClick={() => openAuth('login')}
               className="w-full sm:w-auto px-5 py-3 rounded-xl bg-emerald-800/60 hover:bg-emerald-800 text-white font-bold text-xs border border-emerald-400/30 transition-all cursor-pointer"
             >
-              Masuk Cepat Demo Trader
+              Masuk ke Dashboard
             </button>
           </div>
         </div>
@@ -1151,19 +1146,6 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 {authMode === 'login' ? 'Masuk ke Dashboard' : 'Daftar Akun Gratis'}
               </button>
             </form>
-
-            {/* Quick Demo Login Option */}
-            <div className="pt-4 mt-4 border-t border-slate-100 text-center space-y-2">
-              <span className="text-[11px] text-slate-400">Atau coba langsung tanpa daftar:</span>
-              <button
-                type="button"
-                onClick={handleQuickDemoLogin}
-                className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all"
-              >
-                <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
-                <span>Masuk Cepat Demo Trader (1-Klik)</span>
-              </button>
-            </div>
           </div>
         </div>
       )}

@@ -112,25 +112,6 @@ export default function AuthScreen() {
 
         {/* Auth Card Clean White */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl relative">
-          {/* Quick Demo Login Option */}
-          <div className="mb-5 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3">
-            <div>
-              <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#00A651] animate-pulse" />
-                Coba Akun Trader Demo
-              </div>
-              <div className="text-[10px] text-slate-600">Masuk 1-klik dengan akun PRO aktif</div>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                login('trader@realistisfx.com', 'trader123');
-              }}
-              className="px-3 py-1.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-[11px] shadow-sm shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer whitespace-nowrap"
-            >
-              1-Klik Masuk →
-            </button>
-          </div>
 
           {/* Tabs: Register / Login */}
           <div className="flex rounded-xl bg-slate-100 p-1 mb-6 border border-slate-200">
