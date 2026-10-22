@@ -113,39 +113,39 @@ export default function Sidebar() {
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 flex flex-col border-r border-slate-200 bg-white shadow-sm transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-72 max-w-[85vw] flex flex-col border-r border-slate-200 bg-white shadow-xl transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Header / Brand */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 bg-white">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden border border-emerald-500/40 shadow-sm group-hover:scale-105 group-hover:border-[#00A651] transition-all bg-[#0a1f18] shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-200 bg-white">
+          <Link href="/" className="flex items-center gap-2.5 group min-w-0">
+            <div className="relative flex items-center justify-center w-9 h-9 rounded-xl overflow-hidden border border-emerald-500/40 shadow-sm group-hover:scale-105 group-hover:border-[#00A651] transition-all bg-[#0a1f18] shrink-0">
               <img
                 alt="REALISTIS FX Logo"
-                width={40}
-                height={40}
+                width={36}
+                height={36}
                 className="w-full h-full object-cover"
                 src="/images/logo.png"
               />
             </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-black text-lg tracking-tight text-slate-900 group-hover:text-[#00A651] transition-colors">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 group-hover:text-[#00A651] transition-colors">
                   REALISTIS<span className="text-[#00A651]"> FX</span>
                 </span>
-                <span className="text-[10px] font-bold tracking-widest px-1.5 py-0.5 rounded bg-emerald-50 text-[#00A651] border border-emerald-200 uppercase">
+                <span className="text-[9px] font-bold tracking-widest px-1.5 py-0.5 rounded bg-emerald-50 text-[#00A651] border border-emerald-200 uppercase">
                   Edukasi
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 font-medium">SOP &amp; Anti Margin Call</p>
+              <p className="text-[10px] text-slate-500 font-medium truncate">SOP &amp; Anti Margin Call</p>
             </div>
           </Link>
 
           {/* Close button for mobile */}
           <button
             onClick={() => setIsSidebarOpen(false)}
-            className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 lg:hidden"
+            className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 lg:hidden cursor-pointer shrink-0"
             aria-label="Tutup Menu"
           >
             <X className="w-5 h-5" />

@@ -172,11 +172,11 @@ export default function DashboardOverviewPage() {
   return (
     <div className="space-y-8 pb-12">
       {/* Top Welcome / Commitment Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-200/90 p-6 md:p-8 shadow-xs border-l-4 border-l-[#00A651]">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+      <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-200/90 p-4 sm:p-6 md:p-8 shadow-xs border-l-4 border-l-[#00A651]">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 relative z-10">
           <div className="space-y-2 max-w-3xl">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-50 text-[#00A651] border border-emerald-200">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-emerald-50 text-[#00A651] border border-emerald-200">
                 SOP Realistis FX
               </span>
               <span className="text-xs text-slate-500 font-medium">
@@ -184,12 +184,12 @@ export default function DashboardOverviewPage() {
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">
               Selamat Datang, {user.name}!{' '}
               <span className="text-[#00A651]">Lindungi Modal, Disiplin Trading.</span>
             </h1>
 
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Trading realistis bukan tentang cepat kaya semalam, melainkan menjaga{' '}
               <strong className="text-slate-900 font-semibold">Risk Management</strong>, konsistensi
               lot, dan menjauh dari jebakan emosi FOMO. Gunakan alat di bawah untuk memvalidasi
@@ -197,10 +197,10 @@ export default function DashboardOverviewPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0 flex-wrap">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 shrink-0">
             <Link
               href="/calculator"
-              className="px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
             >
               <Calculator className="w-4 h-4" />
               <span>Hitung Lot Aman Sekarang</span>
@@ -209,7 +209,7 @@ export default function DashboardOverviewPage() {
             {!isPro && (
               <button
                 onClick={openPaymentModal}
-                className="px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs border border-slate-300 transition-all flex items-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs border border-slate-300 transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Crown className="w-4 h-4 text-amber-500" />
                 <span>Upgrade PRO (Rp50k/bln)</span>
@@ -488,7 +488,7 @@ export default function DashboardOverviewPage() {
                   </div>
                 </div>
               ) : (
-                <div className="p-3 rounded-xl bg-white border border-amber-300 flex items-center justify-between gap-3 shadow-xs">
+                <div className="p-3 rounded-xl bg-white border border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
                   <div className="flex items-center gap-2">
                     <Lock className="w-4 h-4 text-amber-600 shrink-0" />
                     <p className="text-xs text-slate-700">
@@ -497,7 +497,7 @@ export default function DashboardOverviewPage() {
                   </div>
                   <button
                     onClick={openPaymentModal}
-                    className="px-3 py-1.5 rounded-lg bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shrink-0 cursor-pointer shadow-xs"
+                    className="w-full sm:w-auto px-3 py-1.5 rounded-lg bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shrink-0 cursor-pointer shadow-xs text-center"
                   >
                     Buka PRO via QRIS
                   </button>
@@ -738,8 +738,8 @@ export default function DashboardOverviewPage() {
             </div>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto -mx-2 sm:mx-0">
+            <table className="min-w-[650px] w-full text-left text-xs">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500">
                   <th className="pb-3 font-semibold">Tanggal</th>

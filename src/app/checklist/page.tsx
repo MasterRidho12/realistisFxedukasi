@@ -164,10 +164,10 @@ export default function ChecklistPage() {
       </div>
 
       {/* Progress Indicator */}
-      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="space-y-1">
           <span className="text-xs text-slate-500">Status Validasi SOP Anda:</span>
-          <div className="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <div className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2 flex-wrap">
             <span>{completedCount} dari 6 Aturan Terverifikasi</span>
             {isFullyPassed && (
               <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200">
@@ -177,7 +177,7 @@ export default function ChecklistPage() {
           </div>
         </div>
 
-        <div className="w-48 bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
+        <div className="w-full sm:w-48 bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
           <div
             className={`h-full transition-all duration-300 rounded-full ${
               isFullyPassed ? 'bg-[#00A651]' : 'bg-emerald-400'

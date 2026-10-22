@@ -540,8 +540,8 @@ export default function JournalPage() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto -mx-2 sm:mx-0">
+            <table className="min-w-[850px] w-full text-left text-xs">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-600 bg-slate-50 font-mono font-semibold">
                   <th className="p-3.5 font-semibold">Tanggal</th>
