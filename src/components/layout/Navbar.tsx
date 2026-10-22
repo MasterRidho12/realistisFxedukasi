@@ -6,10 +6,7 @@ import {
   Menu,
   Crown,
   Globe,
-  TrendingUp,
-  TrendingDown,
   LogOut,
-  Radio,
   CreditCard,
   ExternalLink,
   MessageCircle,
@@ -22,8 +19,6 @@ export default function Navbar() {
     setIsSidebarOpen,
     logout,
     openPaymentModal,
-    marketPrice,
-    priceTickDirection,
   } = useUser();
   const isPro = user.tier === 'PRO';
   const isPending = user.subscriptionStatus === 'PENDING';
@@ -87,52 +82,6 @@ export default function Navbar() {
           <span className="font-mono text-slate-700 text-[11px] font-semibold">{currentTime || '00:00:00 WIB'}</span>
         </div>
 
-        {/* Real-Time Live XAU/USD Spot Ticker */}
-        <div
-          className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl border text-xs transition-all duration-300 shrink-0 ${
-            priceTickDirection === 'up'
-              ? 'bg-emerald-50 border-emerald-300 shadow-xs'
-              : priceTickDirection === 'down'
-              ? 'bg-rose-50 border-rose-300 shadow-xs'
-              : 'bg-slate-50 border-slate-200'
-          }`}
-          title="Harga Real-Time XAU/USD Live Feed"
-        >
-          <div className="flex items-center gap-1">
-            <Radio className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#00A651] animate-pulse" />
-            <span className="font-bold text-amber-700 text-[11px] sm:text-xs">XAU:</span>
-          </div>
-
-          <span
-            className={`font-mono font-extrabold text-[11px] sm:text-xs transition-colors duration-200 ${
-              priceTickDirection === 'up'
-                ? 'text-[#00A651] font-black'
-                : priceTickDirection === 'down'
-                ? 'text-rose-600 font-black'
-                : 'text-slate-900'
-            }`}
-          >
-            {(marketPrice?.price ?? 4176.50).toLocaleString('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </span>
-
-          <span
-            className={`hidden sm:inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded ${
-              (marketPrice?.change24h ?? 0.82) >= 0
-                ? 'bg-emerald-100 text-[#00A651]'
-                : 'bg-rose-100 text-rose-700'
-            }`}
-          >
-            {(marketPrice?.change24h ?? 0.82) >= 0 ? (
-              <TrendingUp className="w-2.5 h-2.5" />
-            ) : (
-              <TrendingDown className="w-2.5 h-2.5" />
-            )}
-            +{(marketPrice?.change24h ?? 0.82)}%
-          </span>
-        </div>
       </div>
 
       {/* Right: Quick Action Buttons & Status */}
