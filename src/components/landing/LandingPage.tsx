@@ -1060,103 +1060,66 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                             </div>
                           </div>
 
-                          {/* Sinyal Eksekusi 2 Arah: Gated by VIP Subscription */}
-                          {user.tier === 'PRO' ? (
-                            <div className="space-y-2.5 bg-emerald-50/70 p-3.5 rounded-2xl border border-emerald-300">
-                              <div className="flex items-center justify-between text-xs">
-                                <span className="font-extrabold text-emerald-950 flex items-center gap-1.5">
-                                  <Crown className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                                  <span>Sinyal VIP Terbuka (Status: Member PRO)</span>
-                                </span>
-                                <Link
-                                  href="/news-radar"
-                                  className="text-[11px] font-extrabold text-[#00A651] hover:underline flex items-center gap-1"
-                                >
-                                  <span>Buka di News Radar</span>
-                                  <ArrowUpRight className="w-3 h-3" />
-                                </Link>
+                          {/* Sinyal Eksekusi 2 Arah: 100% DISENSOR DI LANDING PAGE */}
+                          <div className="space-y-3 bg-gradient-to-br from-amber-50/80 via-white to-emerald-50/60 p-4 rounded-2xl border border-amber-200 shadow-xs">
+                            <div className="flex items-center justify-between">
+                              <span className="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-amber-900 bg-amber-100/90 px-2.5 py-1 rounded-xl border border-amber-200">
+                                <Lock className="w-3.5 h-3.5 text-amber-700" />
+                                Level Sinyal Disensor
+                              </span>
+                              <span className="text-[10px] font-extrabold text-[#00A651] bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200">
+                                Khusus Member VIP
+                              </span>
+                            </div>
+
+                            {/* Censored Visual Signal Box with Sensor Overlay */}
+                            <div className="relative overflow-hidden rounded-xl bg-slate-900 text-white p-3.5 border border-slate-800 shadow-inner">
+                              <div className="filter blur-[3px] select-none opacity-30 space-y-2 text-xs font-mono">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-emerald-400 font-bold">BUY BREAKOUT: $4,0██.██ - $4,0██.██</span>
+                                  <span className="text-rose-400">SL: $4,0██.██</span>
+                                  <span className="text-emerald-400">TP: $4,0██.██</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-rose-400 font-bold">SELL BREAKDOWN: $4,0██.██ - $4,0██.██</span>
+                                  <span className="text-rose-400">SL: $4,0██.██</span>
+                                  <span className="text-emerald-400">TP: $4,0██.██</span>
+                                </div>
                               </div>
 
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                                <div className="p-2.5 rounded-xl bg-white border border-emerald-200 space-y-1">
-                                  <div className="flex items-center justify-between font-extrabold text-emerald-700 text-[11px]">
-                                    <span>BUY BREAKOUT</span>
-                                    <span>+120 Pips</span>
-                                  </div>
-                                  <div className="text-[11px] font-mono text-slate-700">
-                                    Entry: <strong>{liveCalculatedLevels.buy.entryArea}</strong>
-                                  </div>
-                                  <div className="text-[10px] font-mono text-rose-600">
-                                    SL: {liveCalculatedLevels.buy.stopLoss} (40 pips)
-                                  </div>
-                                  <div className="text-[10px] font-mono text-[#00A651]">
-                                    TP1: {liveCalculatedLevels.buy.takeProfit1} | TP2: {liveCalculatedLevels.buy.takeProfit2}
-                                  </div>
+                              <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-[2px] p-2 text-center">
+                                <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold text-xs shadow-xs">
+                                  <Lock className="w-3.5 h-3.5 text-amber-400" />
+                                  <span>[DISENSOR] Sinyal Hanya Terbuka untuk Member VIP</span>
                                 </div>
-
-                                <div className="p-2.5 rounded-xl bg-white border border-rose-200 space-y-1">
-                                  <div className="flex items-center justify-between font-extrabold text-rose-700 text-[11px]">
-                                    <span>SELL BREAKDOWN</span>
-                                    <span>-120 Pips</span>
-                                  </div>
-                                  <div className="text-[11px] font-mono text-slate-700">
-                                    Entry: <strong>{liveCalculatedLevels.sell.entryArea}</strong>
-                                  </div>
-                                  <div className="text-[10px] font-mono text-rose-600">
-                                    SL: {liveCalculatedLevels.sell.stopLoss} (40 pips)
-                                  </div>
-                                  <div className="text-[10px] font-mono text-[#00A651]">
-                                    TP1: {liveCalculatedLevels.sell.takeProfit1} | TP2: {liveCalculatedLevels.sell.takeProfit2}
-                                  </div>
-                                </div>
+                                <span className="text-[10px] text-slate-400 mt-1">
+                                  Level harga Buy/Sell, SL, &amp; TP otomatis disensor di Landing Page
+                                </span>
                               </div>
                             </div>
-                          ) : (
-                            /* Non-VIP / Public Landing Page: STRICTLY LOCKED */
-                            <div className="space-y-3 bg-gradient-to-br from-amber-50/80 via-white to-emerald-50/60 p-4 rounded-2xl border border-amber-200">
-                              <div className="flex items-center justify-between">
-                                <span className="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-amber-900 bg-amber-100 px-2.5 py-1 rounded-xl border border-amber-200">
-                                  <Lock className="w-3.5 h-3.5 text-amber-700" />
-                                  Sinyal Eksekusi Terkunci
-                                </span>
-                                <span className="text-[10px] font-extrabold text-[#00A651] bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200">
-                                  Khusus Member VIP
-                                </span>
-                              </div>
 
-                              {/* Blurred Mock Preview with Lock Overlay */}
-                              <div className="relative overflow-hidden rounded-xl bg-slate-100/70 p-3 border border-slate-200">
-                                <div className="filter blur-[5px] select-none opacity-30 pointer-events-none space-y-1.5 text-xs font-mono">
-                                  <div className="flex justify-between">
-                                    <span className="font-bold text-emerald-700">BUY BREAKOUT: $4,032.00 (+120 Pips)</span>
-                                    <span className="text-rose-600">SL: $4,024.00</span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span className="font-bold text-rose-700">SELL BREAKDOWN: $4,020.00 (-120 Pips)</span>
-                                    <span className="text-[#00A651]">TP: $3,996.00</span>
-                                  </div>
-                                </div>
-                                <div className="absolute inset-0 flex items-center justify-center bg-white/75 backdrop-blur-[1px]">
-                                  <span className="text-xs font-black text-slate-800 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-950 shadow-xs">
-                                    <Lock className="w-3.5 h-3.5 text-amber-600" />
-                                    Sinyal hanya dapat dilihat setelah berlangganan
-                                  </span>
-                                </div>
-                              </div>
+                            <p className="text-[11px] text-slate-600 leading-relaxed font-normal">
+                              Level Entry presisi, Stop Loss proteksi, dan target TP1/TP2 otomatis disensor untuk umum. Sinyal hanya dapat dilihat setelah berlangganan VIP di Member Area &amp; Channel Telegram VIP.
+                            </p>
 
-                              <p className="text-[11px] text-slate-600 leading-relaxed font-normal">
-                                Level Entry presisi 2 arah (Buy/Sell Breakout), Stop Loss proteksi ketat, dan target TP1/TP2 otomatis hanya dapat dilihat oleh member VIP yang sudah berlangganan.
-                              </p>
-
+                            {user.tier === 'PRO' && user.isAuthenticated ? (
+                              <Link
+                                href="/news-radar"
+                                className="w-full py-2.5 px-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-[#00A651]/20 transition-all text-center"
+                              >
+                                <Crown className="w-3.5 h-3.5 text-amber-300" />
+                                <span>Buka Sinyal Lengkap di News Radar (Member VIP) →</span>
+                              </Link>
+                            ) : (
                               <a
                                 href="#pricing"
                                 className="w-full py-2.5 px-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-[#00A651]/20 transition-all text-center cursor-pointer"
                               >
                                 <Crown className="w-3.5 h-3.5 text-amber-300" />
-                                <span>Berlangganan VIP untuk Melihat Sinyal (Rp 500.000/bln)</span>
+                                <span>Berlangganan VIP untuk Buka Sensor (Rp 500.000/bln)</span>
                               </a>
-                            </div>
-                          )}
+                            )}
+                          </div>
 
                           {/* Impact Explanation */}
                           <p className="text-xs text-slate-600 leading-relaxed font-normal">

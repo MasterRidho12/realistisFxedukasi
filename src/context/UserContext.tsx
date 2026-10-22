@@ -61,18 +61,18 @@ const defaultUser: UserState = {
   password: 'trader123',
   whatsapp: '081234567890',
   accountType: 'STANDARD',
-  tier: 'PRO', // Aktif PRO
+  tier: 'FREE', // Tamu / Pengunjung default FREE
   role: 'USER',
   isAuthenticated: false,
-  telegramLinked: true,
+  telegramLinked: false,
   dailyCalculatorCount: 0,
   disciplineScore: 88,
   winRate: 78.4,
   totalTrades: 24,
   strictModeEnabled: true,
-  isChecklistPassed: true,
-  subscriptionStatus: 'ACTIVE',
-  proExpiryDate: '16 Nov 2026',
+  isChecklistPassed: false,
+  subscriptionStatus: 'NONE',
+  proExpiryDate: '',
 };
 
 const initialUsers: UserState[] = [
