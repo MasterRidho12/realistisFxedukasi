@@ -26,26 +26,26 @@ function ShellContent({ children }: { children: React.ReactNode }) {
     // STRICT ROLE PROTECTION: Only users with role === 'ADMIN' are allowed into the Admin Panel!
     if (user.role !== 'ADMIN') {
       return (
-        <div className="min-h-screen bg-[#070A12] text-slate-100 flex items-center justify-center p-4">
-          <div className="glass-panel p-8 sm:p-10 rounded-3xl max-w-md w-full text-center border border-rose-500/40 space-y-5 shadow-2xl bg-[#0B0F19]/95">
-            <div className="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center mx-auto shadow-lg shadow-rose-500/20">
+        <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex items-center justify-center p-4">
+          <div className="p-8 sm:p-10 rounded-3xl max-w-md w-full text-center border border-slate-200 space-y-5 shadow-xl bg-white">
+            <div className="w-16 h-16 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto shadow-xs">
               <ShieldAlert className="w-8 h-8" />
             </div>
             <div>
-              <span className="text-[10px] font-black tracking-widest text-rose-400 uppercase bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
+              <span className="text-[10px] font-black tracking-widest text-rose-700 uppercase bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
                 Akses Ilegal Dicegah
               </span>
-              <h2 className="text-xl font-extrabold text-white mt-2">
+              <h2 className="text-xl font-extrabold text-slate-900 mt-2">
                 403 — Akses Ditolak
               </h2>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Akun Anda saat ini terdeteksi sebagai <span className="text-amber-400 font-bold">Akun Trader ({user.name})</span>. Halaman Dashboard Admin diproteksi ketat dan hanya dapat dibuka oleh Administrator Resmi RealistisFx.
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Akun Anda saat ini terdeteksi sebagai <span className="text-amber-800 font-bold">Akun Trader ({user.name})</span>. Halaman Dashboard Admin diproteksi ketat dan hanya dapat dibuka oleh Administrator Resmi RealistisFx.
             </p>
             <div className="pt-2 flex flex-col gap-2.5">
               <Link
                 href="/"
-                className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-500/25 transition-all cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Kembali ke Halaman Web Trader</span>
@@ -53,7 +53,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={logout}
-                className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-semibold text-xs border border-white/10 transition-all cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 transition-all cursor-pointer"
               >
                 <span>Logout dari Akun Trader</span>
               </button>
@@ -73,7 +73,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
 
   // Regular Trader Layout
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-slate-100 flex">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex">
       {/* Fixed Left Navigation Sidebar for Traders */}
       <Sidebar />
 

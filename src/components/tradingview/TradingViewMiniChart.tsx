@@ -43,7 +43,7 @@ export default function TradingViewMiniChart({
       height: height,
       locale: 'id',
       dateRange: '1D',
-      colorTheme: 'dark',
+      colorTheme: 'light',
       isTransparent: true,
       autosize: false,
       largeChartUrl: '',
@@ -61,7 +61,7 @@ export default function TradingViewMiniChart({
   }, [tvSymbol, height]);
 
   return (
-    <div className={`tradingview-widget-container rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 ${className}`} ref={containerRef}>
+    <div className={`tradingview-widget-container rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-xs ${className}`} ref={containerRef}>
       <div className="tradingview-widget-container__widget"></div>
     </div>
   );

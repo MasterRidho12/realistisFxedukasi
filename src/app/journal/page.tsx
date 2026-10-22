@@ -48,37 +48,37 @@ const DEFAULT_QUOTES: Record<string, PairQuote> = {
   XAUUSD: {
     symbol: 'XAUUSD',
     name: 'Gold vs US Dollar',
-    price: 2684.50,
-    bid: 2684.35,
-    ask: 2684.65,
-    change24h: 0.84,
+    price: 4176.50,
+    bid: 4176.35,
+    ask: 4176.65,
+    change24h: 0.15,
     digits: 2,
   },
   EURUSD: {
     symbol: 'EURUSD',
     name: 'Euro / US Dollar',
-    price: 1.0872,
-    bid: 1.0871,
-    ask: 1.0873,
-    change24h: -0.12,
+    price: 1.1250,
+    bid: 1.1249,
+    ask: 1.1251,
+    change24h: 0.25,
     digits: 4,
   },
   GBPUSD: {
     symbol: 'GBPUSD',
     name: 'British Pound / US Dollar',
-    price: 1.2985,
-    bid: 1.2984,
-    ask: 1.2987,
-    change24h: 0.25,
+    price: 1.3340,
+    bid: 1.3339,
+    ask: 1.3341,
+    change24h: 0.48,
     digits: 4,
   },
   USDJPY: {
     symbol: 'USDJPY',
     name: 'US Dollar / Yen',
-    price: 152.45,
-    bid: 152.43,
-    ask: 152.47,
-    change24h: 0.42,
+    price: 157.95,
+    bid: 157.94,
+    ask: 157.96,
+    change24h: -0.02,
     digits: 2,
   },
 };
@@ -101,10 +101,10 @@ export default function JournalPage() {
   const [pair, setPair] = useState<string>('XAUUSD');
   const [direction, setDirection] = useState<'BUY' | 'SELL'>('BUY');
   const [lot, setLot] = useState<number>(0.05);
-  const [entryPrice, setEntryPrice] = useState<number>(2680.00);
-  const [stopLoss, setStopLoss] = useState<number>(2670.00);
-  const [takeProfit, setTakeProfit] = useState<number>(2700.00);
-  const [exitPrice, setExitPrice] = useState<number>(2670.00);
+  const [entryPrice, setEntryPrice] = useState<number>(4176.00);
+  const [stopLoss, setStopLoss] = useState<number>(4166.00);
+  const [takeProfit, setTakeProfit] = useState<number>(4196.00);
+  const [exitPrice, setExitPrice] = useState<number>(4166.00);
   const [exitStatus, setExitStatus] = useState<JournalExitStatus>('HIT_SL');
   const [pnl, setPnl] = useState<number>(-50.00);
   const [emotion, setEmotion] = useState<JournalRecord['emotion']>('DISCIPLINED');
@@ -169,7 +169,7 @@ export default function JournalPage() {
   const handlePairChange = (newPair: string) => {
     setPair(newPair);
     const quote = quotes[newPair] || DEFAULT_QUOTES[newPair];
-    const live = quote ? quote.price : 2684.50;
+    const live = quote ? quote.price : 4176.50;
 
     if (newPair === 'XAUUSD') {
       setLot(0.05);
@@ -318,11 +318,11 @@ export default function JournalPage() {
   };
 
   const emotionLabels = {
-    DISCIPLINED: { label: '🎯 Disiplin Ikut SOP', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-    CALM_CONFIDENT: { label: '🧘 Tenang & Percaya Diri', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
-    FOMO: { label: '⚡ FOMO Takut Tertinggal', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-    ANXIOUS_GREEDY: { label: '😬 Cemas / Serakah', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' },
-    REVENGE_TRADING: { label: '😡 Balas Dendam (Revenge)', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
+    DISCIPLINED: { label: '🎯 Disiplin Ikut SOP', color: 'text-emerald-800 bg-emerald-50 border-emerald-200' },
+    CALM_CONFIDENT: { label: '🧘 Tenang & Percaya Diri', color: 'text-blue-800 bg-blue-50 border-blue-200' },
+    FOMO: { label: '⚡ FOMO Takut Tertinggal', color: 'text-amber-800 bg-amber-50 border-amber-200' },
+    ANXIOUS_GREEDY: { label: '😬 Cemas / Serakah', color: 'text-orange-800 bg-orange-50 border-orange-200' },
+    REVENGE_TRADING: { label: '😡 Balas Dendam (Revenge)', color: 'text-rose-800 bg-rose-50 border-rose-200' },
   };
 
   return (
@@ -330,9 +330,9 @@ export default function JournalPage() {
       {/* Top TradingView Ticker Tape Ribbon */}
       <div className="space-y-2">
         <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-mono">
-              <span className={`w-2 h-2 rounded-full bg-emerald-400 ${isTickActive ? 'animate-ping' : ''}`} />
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+            <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono">
+              <span className={`w-2 h-2 rounded-full bg-emerald-500 ${isTickActive ? 'animate-ping' : ''}`} />
               LIVE TradingView Feed
             </span>
             <span className="text-[11px] text-slate-500 hidden sm:inline">Sinkronisasi Harga Real-Time Otomatis</span>
@@ -340,7 +340,7 @@ export default function JournalPage() {
 
           <button
             onClick={() => setShowTvChart(!showTvChart)}
-            className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 font-semibold transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-xs text-emerald-700 hover:text-emerald-800 font-semibold transition-colors cursor-pointer"
           >
             <BarChart3 className="w-3.5 h-3.5" />
             {showTvChart ? 'Sembunyikan Mini Chart' : 'Lihat Live Chart TradingView'}
@@ -349,14 +349,14 @@ export default function JournalPage() {
         </div>
 
         {/* Official TradingView Ticker Tape Widget */}
-        <TradingViewTickerTape className="shadow-lg" />
+        <TradingViewTickerTape className="shadow-xs" />
 
         {/* Expandable TradingView Mini Chart */}
         {showTvChart && (
-          <div className="glass-panel p-4 rounded-2xl border border-white/10 space-y-3 animate-in fade-in duration-200">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 animate-in fade-in duration-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-white">TradingView Mini Live Chart:</span>
+                <span className="text-xs font-bold text-slate-900">TradingView Mini Live Chart:</span>
                 <div className="flex items-center gap-1.5">
                   {['XAUUSD', 'EURUSD', 'GBPUSD', 'USDJPY'].map((p) => (
                     <button
@@ -364,8 +364,8 @@ export default function JournalPage() {
                       onClick={() => setSelectedChartPair(p)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                         selectedChartPair === p
-                          ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
-                          : 'bg-slate-800 text-slate-400 hover:text-white'
+                          ? 'bg-[#00A651] text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200'
                       }`}
                     >
                       {p}
@@ -373,7 +373,7 @@ export default function JournalPage() {
                   ))}
                 </div>
               </div>
-              <span className="text-[11px] text-slate-400 font-mono">
+              <span className="text-[11px] text-slate-500 font-mono">
                 Spot {selectedChartPair}: ${(quotes[selectedChartPair]?.price ?? 0).toLocaleString()}
               </span>
             </div>
@@ -383,19 +383,19 @@ export default function JournalPage() {
       </div>
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
               <BookOpenCheck className="w-5 h-5" />
             </span>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-              Smart Trading Journal & Evaluasi Disiplin
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+              Smart Trading Journal &amp; Evaluasi Disiplin
             </h1>
           </div>
-          <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
-            Catat posisi lengkap dengan <strong className="text-slate-200">Stop Loss (SL)</strong>,{' '}
-            <strong className="text-slate-200">Take Profit (TP)</strong>, dan harga real-time TradingView. PnL otomatis terisi seketika saat menyentuh SL atau TP.
+          <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+            Catat posisi lengkap dengan <strong className="text-slate-900">Stop Loss (SL)</strong>,{' '}
+            <strong className="text-slate-900">Take Profit (TP)</strong>, dan harga real-time TradingView. PnL otomatis terisi seketika saat menyentuh SL atau TP.
           </p>
         </div>
 
@@ -407,7 +407,7 @@ export default function JournalPage() {
               setExitStatus('HIT_SL');
               setShowAddModal(true);
             }}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm hover:shadow active:scale-95 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Catat Transaksi Baru
           </button>
@@ -416,30 +416,30 @@ export default function JournalPage() {
 
       {/* Quota Progress Bar for Free Tier */}
       {!isPro ? (
-        <div className="glass-panel rounded-2xl p-4 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
-            <div className="text-xs font-semibold text-slate-300">
-              Kuota Jurnal Free: <span className="text-white font-mono">{currentEntriesCount} / {maxFreeEntries}</span> Posisi Bulan Ini
+            <div className="text-xs font-semibold text-slate-700">
+              Kuota Jurnal Free: <span className="text-slate-900 font-mono font-bold">{currentEntriesCount} / {maxFreeEntries}</span> Posisi Bulan Ini
             </div>
-            <div className="w-64 bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div className="w-64 bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
               <div
-                className="bg-blue-500 h-full rounded-full"
+                className="bg-[#00A651] h-full rounded-full transition-all duration-300"
                 style={{ width: `${(currentEntriesCount / maxFreeEntries) * 100}%` }}
               />
             </div>
           </div>
           <button
             onClick={() => setTier('PRO')}
-            className="text-xs text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 cursor-pointer"
+            className="text-xs text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1 cursor-pointer"
           >
             <Crown className="w-3.5 h-3.5" /> Buka Akses Unlimited Jurnal (PRO Rp50k)
           </button>
         </div>
       ) : (
-        <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 flex items-center justify-between text-xs text-emerald-300">
-          <span className="flex items-center gap-1.5">
-            <Crown className="w-4 h-4 text-emerald-400" />
-            Akun PRO: Jurnal Unlimited & Integrasi Real-Time TradingView Aktif
+        <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs text-emerald-800">
+          <span className="flex items-center gap-1.5 font-medium">
+            <Crown className="w-4 h-4 text-emerald-600" />
+            Akun PRO: Jurnal Unlimited &amp; Integrasi Real-Time TradingView Aktif
           </span>
           <span className="font-bold">Aktif</span>
         </div>
@@ -447,62 +447,62 @@ export default function JournalPage() {
 
       {/* AI Discipline & Trading Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="glass-panel rounded-2xl p-4 border border-white/10 space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-semibold">
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-semibold">
             <span>Skor Disiplin AI</span>
-            <Target className="w-4 h-4 text-emerald-400" />
+            <Target className="w-4 h-4 text-emerald-600" />
           </div>
-          <div className="text-2xl font-extrabold font-mono text-emerald-400">
+          <div className="text-2xl font-extrabold font-mono text-emerald-700">
             {totalTrades === 0 ? '0' : disciplineScore}/100
           </div>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-slate-500">
             {totalTrades === 0
               ? 'Belum ada transaksi. Catat transaksi dengan SL untuk aktifkan skor.'
               : `${disciplinedTrades} dari ${totalTrades} posisi disiplin mematuhi batas Stop Loss SOP.`}
           </p>
         </div>
 
-        <div className="glass-panel rounded-2xl p-4 border border-white/10 space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-semibold">
-            <span>Win Rate & Rasio</span>
-            <TrendingUp className="w-4 h-4 text-blue-400" />
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-semibold">
+            <span>Win Rate &amp; Rasio</span>
+            <TrendingUp className="w-4 h-4 text-blue-600" />
           </div>
-          <div className="text-2xl font-extrabold font-mono text-blue-400">
+          <div className="text-2xl font-extrabold font-mono text-slate-900">
             {winRate}%
           </div>
-          <p className="text-[11px] text-slate-400 font-mono">
+          <p className="text-[11px] text-slate-500 font-mono">
             {winningTrades}W / {losingTrades}L (Total {totalTrades} Posisi)
           </p>
         </div>
 
-        <div className="glass-panel rounded-2xl p-4 border border-white/10 space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-semibold">
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-semibold">
             <span>Net Profit / Loss</span>
-            <Flame className="w-4 h-4 text-amber-400" />
+            <Flame className="w-4 h-4 text-amber-600" />
           </div>
           <div
             className={`text-2xl font-extrabold font-mono ${
-              totalProfit - totalLoss >= 0 ? 'text-emerald-400' : 'text-rose-400'
+              totalProfit - totalLoss >= 0 ? 'text-[#00A651]' : 'text-rose-600'
             }`}
           >
             {totalTrades === 0
               ? '$0.00'
               : `${totalProfit - totalLoss >= 0 ? '+' : '-'}$${Math.abs(totalProfit - totalLoss).toFixed(2)}`}
           </div>
-          <p className="text-[11px] text-slate-400 font-mono">
+          <p className="text-[11px] text-slate-500 font-mono">
             Profit: +${totalProfit.toFixed(2)} | Loss: -${totalLoss.toFixed(2)}
           </p>
         </div>
 
-        <div className="glass-panel rounded-2xl p-4 border border-white/10 space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-semibold">
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-semibold">
             <span>Statistik Stop Loss (SL)</span>
-            <ShieldAlert className="w-4 h-4 text-rose-400" />
+            <ShieldAlert className="w-4 h-4 text-rose-600" />
           </div>
-          <div className="text-2xl font-extrabold font-mono text-slate-200">
-            {hitSlTrades} <span className="text-xs text-rose-400 font-normal">Kena SL</span> / {hitTpTrades} <span className="text-xs text-emerald-400 font-normal">Kena TP</span>
+          <div className="text-2xl font-extrabold font-mono text-slate-900">
+            {hitSlTrades} <span className="text-xs text-rose-600 font-normal">Kena SL</span> / {hitTpTrades} <span className="text-xs text-emerald-700 font-normal">Kena TP</span>
           </div>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-slate-500">
             {hitSlTrades > 0
               ? 'SL membatasi kerugian modal sesuai SOP ketahanan akun.'
               : 'Belum ada rekaman eksekusi SL tercatat.'}
@@ -511,31 +511,31 @@ export default function JournalPage() {
       </div>
 
       {/* Journal Table */}
-      <div className="glass-panel rounded-2xl border border-white/10 overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold text-white">Histori Jurnal & Eksekusi SL/TP</h2>
-            <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[11px] font-mono">
+            <h2 className="text-sm font-bold text-slate-900">Histori Jurnal &amp; Eksekusi SL/TP</h2>
+            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-mono border border-slate-200">
               {journals.length} Catatan
             </span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-xs text-slate-500">
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-rose-400"></span> Kena SL: Auto PnL Terisi
+              <span className="w-2 h-2 rounded-full bg-rose-500"></span> Kena SL: Auto PnL Terisi
             </span>
             <span className="flex items-center gap-1 ml-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400"></span> Kena TP
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Kena TP
             </span>
           </div>
         </div>
 
         {journals.length === 0 ? (
           <div className="p-12 text-center space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto">
               <BookOpenCheck className="w-6 h-6" />
             </div>
-            <h3 className="text-sm font-bold text-white">Belum Ada Catatan Jurnal Trading</h3>
-            <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+            <h3 className="text-sm font-bold text-slate-900">Belum Ada Catatan Jurnal Trading</h3>
+            <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
               Catat posisi pertama Anda dengan Stop Loss (SL), Take Profit (TP), dan harga real-time TradingView. Klik tombol &quot;Catat Transaksi Baru&quot; di atas.
             </p>
           </div>
@@ -543,7 +543,7 @@ export default function JournalPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-white/10 text-slate-400 bg-slate-900/60 font-mono">
+                <tr className="border-b border-slate-200 text-slate-600 bg-slate-50 font-mono font-semibold">
                   <th className="p-3.5 font-semibold">Tanggal</th>
                   <th className="p-3.5 font-semibold">Pair / Arah</th>
                   <th className="p-3.5 font-semibold">Lot</th>
@@ -552,86 +552,86 @@ export default function JournalPage() {
                   <th className="p-3.5 font-semibold">Take Profit (TP)</th>
                   <th className="p-3.5 font-semibold">Exit / Status</th>
                   <th className="p-3.5 font-semibold">PnL ($) / Pips</th>
-                  <th className="p-3.5 font-semibold">Emosi & SOP</th>
+                  <th className="p-3.5 font-semibold">Emosi &amp; SOP</th>
                   <th className="p-3.5 font-semibold">Catatan Evaluasi</th>
                   <th className="p-3.5 font-semibold text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-slate-100">
                 {journals.map((j) => {
                   const itemRr = calculateRiskRewardRatio(j.direction, j.entryPrice, j.stopLoss, j.takeProfit);
                   const isHitSl = j.exitStatus === 'HIT_SL' || (j.stopLoss && Math.abs(j.exitPrice - j.stopLoss) < 0.05);
                   const isHitTp = j.exitStatus === 'HIT_TP' || (j.takeProfit && Math.abs(j.exitPrice - j.takeProfit) < 0.05);
 
                   return (
-                    <tr key={j.id} className="hover:bg-white/5 transition-colors">
-                      <td className="p-3.5 font-mono text-slate-400 whitespace-nowrap">{j.date}</td>
+                    <tr key={j.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="p-3.5 font-mono text-slate-500 whitespace-nowrap">{j.date}</td>
                       <td className="p-3.5">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-white">{j.pair}</span>
+                          <span className="font-bold text-slate-900">{j.pair}</span>
                           <span
                             className={`px-1.5 py-0.5 rounded text-[10px] font-extrabold ${
                               j.direction === 'BUY'
-                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                : 'bg-rose-100 text-rose-800 border border-rose-200'
                             }`}
                           >
                             {j.direction}
                           </span>
                         </div>
                       </td>
-                      <td className="p-3.5 font-mono font-medium text-slate-300">{j.lot}</td>
-                      <td className="p-3.5 font-mono text-slate-200 font-semibold">{j.entryPrice}</td>
+                      <td className="p-3.5 font-mono font-medium text-slate-700">{j.lot}</td>
+                      <td className="p-3.5 font-mono text-slate-900 font-semibold">{j.entryPrice}</td>
                       <td className="p-3.5 font-mono">
                         {j.stopLoss ? (
                           <div className="space-y-0.5">
-                            <span className="px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold text-[11px]">
+                            <span className="px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 font-semibold text-[11px]">
                               {j.stopLoss}
                             </span>
-                            <div className="text-[10px] text-rose-400/80">
+                            <div className="text-[10px] text-rose-600">
                               -{Math.abs(Math.round((j.entryPrice - j.stopLoss) * (j.pair === 'XAUUSD' ? 10 : 10000)))} pips
                             </div>
                           </div>
                         ) : (
-                          <span className="text-slate-500 italic">Tanpa SL ⚠️</span>
+                          <span className="text-slate-400 italic">Tanpa SL ⚠️</span>
                         )}
                       </td>
                       <td className="p-3.5 font-mono">
                         {j.takeProfit ? (
                           <div className="space-y-0.5">
-                            <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-[11px]">
+                            <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-[11px]">
                               {j.takeProfit}
                             </span>
                             {itemRr && (
-                              <div className="text-[10px] text-emerald-400/80">
+                              <div className="text-[10px] text-emerald-700">
                                 RR {itemRr}
                               </div>
                             )}
                           </div>
                         ) : (
-                          <span className="text-slate-500">-</span>
+                          <span className="text-slate-400">-</span>
                         )}
                       </td>
                       <td className="p-3.5">
                         <div className="space-y-1">
-                          <div className="font-mono text-slate-300">{j.exitPrice}</div>
+                          <div className="font-mono text-slate-800">{j.exitPrice}</div>
                           {isHitSl && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
                               🛑 Kena SL
                             </span>
                           )}
                           {isHitTp && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
                               🎯 Kena TP
                             </span>
                           )}
                           {j.exitStatus === 'REALTIME_CLOSE' && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-100 text-blue-800 border border-blue-200">
                               ⚡ Real-Time Exit
                             </span>
                           )}
                           {j.exitStatus === 'RUNNING' && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-800 border border-amber-200 animate-pulse">
                               🏃 Running
                             </span>
                           )}
@@ -641,12 +641,12 @@ export default function JournalPage() {
                         <div className="space-y-0.5">
                           <span
                             className={`font-bold text-sm ${
-                              j.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'
+                              j.pnl >= 0 ? 'text-[#00A651]' : 'text-rose-600'
                             }`}
                           >
                             {j.pnl >= 0 ? `+ $${j.pnl.toFixed(2)}` : `- $${Math.abs(j.pnl).toFixed(2)}`}
                           </span>
-                          <div className="text-[10px] text-slate-400">
+                          <div className="text-[10px] text-slate-500">
                             {j.pips} pips
                           </div>
                         </div>
@@ -655,26 +655,26 @@ export default function JournalPage() {
                         <div className="space-y-1">
                           <span
                             className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium border ${
-                              emotionLabels[j.emotion]?.color || 'text-slate-300 bg-slate-800'
+                              emotionLabels[j.emotion]?.color || 'text-slate-700 bg-slate-100 border-slate-200'
                             }`}
                           >
                             {emotionLabels[j.emotion]?.label || j.emotion}
                           </span>
                           {j.adheredToPlan && (
-                            <div className="flex items-center gap-1 text-[10px] text-emerald-400 font-semibold">
-                              <CheckCircle2 className="w-3 h-3" /> SOP Patuh
+                            <div className="flex items-center gap-1 text-[10px] text-emerald-700 font-semibold">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" /> SOP Patuh
                             </div>
                           )}
                         </div>
                       </td>
-                      <td className="p-3.5 text-slate-300 max-w-xs truncate" title={j.notes}>
+                      <td className="p-3.5 text-slate-700 max-w-xs truncate" title={j.notes}>
                         {j.notes}
                       </td>
                       <td className="p-3.5 text-center">
                         <button
                           onClick={() => deleteJournalEntry(j.id)}
                           title="Hapus Catatan"
-                          className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -690,44 +690,44 @@ export default function JournalPage() {
 
       {/* Add Trade Modal with Real-Time TradingView & Auto-Fill Stop Loss */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="glass-panel rounded-2xl p-5 sm:p-6 border border-white/10 w-full max-w-xl shadow-2xl relative my-auto">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 w-full max-w-xl shadow-2xl relative my-auto">
             {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
                   <BookOpenCheck className="w-5 h-5" />
                 </span>
                 <div>
-                  <h3 className="text-base font-bold text-white">Catat Jurnal & Auto-Fill Stop Loss (SL)</h3>
-                  <p className="text-[11px] text-slate-400">Terhubung langsung ke feed harga real-time TradingView</p>
+                  <h3 className="text-base font-bold text-slate-900">Catat Jurnal &amp; Auto-Fill Stop Loss (SL)</h3>
+                  <p className="text-[11px] text-slate-500">Terhubung langsung ke feed harga real-time TradingView</p>
                 </div>
               </div>
 
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             {/* Real-time TradingView Spot Price Banner inside Modal */}
-            <div className="mt-3 p-3 rounded-xl bg-gradient-to-r from-slate-900 to-slate-950 border border-blue-500/30 flex items-center justify-between">
+            <div className="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="relative">
-                  <span className="w-3 h-3 rounded-full bg-emerald-400 block" />
-                  <span className="w-3 h-3 rounded-full bg-emerald-400 block absolute inset-0 animate-ping opacity-75" />
+                  <span className="w-3 h-3 rounded-full bg-emerald-500 block" />
+                  <span className="w-3 h-3 rounded-full bg-emerald-500 block absolute inset-0 animate-ping opacity-75" />
                 </div>
                 <div>
-                  <div className="text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+                  <div className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
                     <span>TradingView Real-Time Spot:</span>
-                    <span className="text-white font-mono">{pair}</span>
+                    <span className="text-slate-900 font-mono font-bold">{pair}</span>
                   </div>
-                  <div className="text-base font-mono font-extrabold text-emerald-400">
+                  <div className="text-base font-mono font-extrabold text-emerald-700">
                     ${currentLivePrice.toLocaleString('en-US', { minimumFractionDigits: currentLiveQuote.digits })}
-                    <span className="text-[11px] font-normal text-slate-400 ml-2 font-sans">
+                    <span className="text-[11px] font-normal text-slate-500 ml-2 font-sans">
                       (Bid: {currentLiveQuote.bid} / Ask: {currentLiveQuote.ask})
                     </span>
                   </div>
@@ -738,9 +738,9 @@ export default function JournalPage() {
                 type="button"
                 onClick={handleUseRealTimeEntry}
                 title="Gunakan harga live TradingView sebagai harga entry"
-                className="px-2.5 py-1.5 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/40 text-blue-300 text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer active:scale-95"
+                className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer active:scale-95 shadow-xs"
               >
-                <Zap className="w-3 h-3 text-amber-400" /> Salin ke Entry
+                <Zap className="w-3 h-3 text-amber-500" /> Salin ke Entry
               </button>
             </div>
 
@@ -748,13 +748,13 @@ export default function JournalPage() {
               {/* Pair & Direction */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Pilih Pair Trading
                   </label>
                   <select
                     value={pair}
                     onChange={(e) => handlePairChange(e.target.value)}
-                    className="w-full p-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs font-medium focus:border-blue-500 focus:outline-none"
+                    className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-medium focus:bg-white focus:border-emerald-500 focus:outline-none"
                   >
                     <option value="XAUUSD">XAUUSD (Gold vs US Dollar)</option>
                     <option value="EURUSD">EURUSD (Euro vs US Dollar)</option>
@@ -764,7 +764,7 @@ export default function JournalPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Arah Posisi Eksekusi
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -780,10 +780,10 @@ export default function JournalPage() {
                           setPnl(res.pnl);
                         }
                       }}
-                      className={`p-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
+                      className={`p-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
                         direction === 'BUY'
-                          ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                          : 'bg-slate-900 text-slate-400 hover:text-white'
+                          ? 'bg-[#00A651] text-white shadow-xs'
+                          : 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100'
                       }`}
                     >
                       <ArrowUpRight className="w-4 h-4" /> BUY (Long)
@@ -800,10 +800,10 @@ export default function JournalPage() {
                           setPnl(res.pnl);
                         }
                       }}
-                      className={`p-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
+                      className={`p-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
                         direction === 'SELL'
-                          ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30'
-                          : 'bg-slate-900 text-slate-400 hover:text-white'
+                          ? 'bg-rose-600 text-white shadow-xs'
+                          : 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100'
                       }`}
                     >
                       <ArrowDownRight className="w-4 h-4" /> SELL (Short)
@@ -815,7 +815,7 @@ export default function JournalPage() {
               {/* Lot & Entry Price */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Lot Size
                   </label>
                   <input
@@ -832,22 +832,22 @@ export default function JournalPage() {
                         setPnl(res.pnl);
                       }
                     }}
-                    className="w-full p-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs font-mono focus:border-blue-500 focus:outline-none"
+                    className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:bg-white focus:border-emerald-500 focus:outline-none"
                   />
-                  <span className="text-[10px] text-slate-400 mt-0.5 block">
+                  <span className="text-[10px] text-slate-500 mt-0.5 block">
                     {pair === 'XAUUSD' ? '1 Lot = 100 oz emas ($10/pip)' : 'Standard lot FX ($10/pip)'}
                   </span>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-semibold text-slate-300">
+                    <label className="block text-xs font-semibold text-slate-700">
                       Harga Entry
                     </label>
                     <button
                       type="button"
                       onClick={handleUseRealTimeEntry}
-                      className="text-[10px] text-blue-400 hover:underline flex items-center gap-0.5"
+                      className="text-[10px] text-emerald-700 hover:underline flex items-center gap-0.5 font-bold cursor-pointer"
                     >
                       Ambil Spot TV ({currentLivePrice})
                     </button>
@@ -864,20 +864,20 @@ export default function JournalPage() {
                         setPnl(res.pnl);
                       }
                     }}
-                    className="w-full p-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs font-mono focus:border-blue-500 focus:outline-none"
+                    className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:bg-white focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Stop Loss (SL) & Take Profit (TP) Inputs */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-xl bg-slate-900/60 border border-white/10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
                 {/* Stop Loss Input */}
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label className="block text-xs font-bold text-rose-400 flex items-center gap-1">
+                    <label className="block text-xs font-bold text-rose-600 flex items-center gap-1">
                       🛑 Stop Loss (SL)
                     </label>
-                    <span className="text-[10px] font-mono text-rose-400 font-semibold">
+                    <span className="text-[10px] font-mono text-rose-600 font-semibold">
                       {slCalc.pnl < 0 ? `-$${Math.abs(slCalc.pnl).toFixed(2)}` : '$0.00'}
                     </span>
                   </div>
@@ -887,14 +887,14 @@ export default function JournalPage() {
                     value={stopLoss}
                     onChange={(e) => handleStopLossChange(Number(e.target.value))}
                     placeholder="Harga Stop Loss"
-                    className="w-full p-2.5 rounded-xl bg-slate-950 border border-rose-500/40 text-white text-xs font-mono focus:border-rose-400 focus:outline-none font-bold"
+                    className="w-full p-2.5 rounded-xl bg-white border border-rose-300 text-slate-900 text-xs font-mono focus:border-rose-500 focus:outline-none font-bold"
                   />
-                  <div className="flex items-center justify-between text-[10px] text-rose-400/90 pt-0.5">
+                  <div className="flex items-center justify-between text-[10px] text-rose-600 pt-0.5">
                     <span>Jarak: {Math.abs(slCalc.pips)} pips</span>
                     <button
                       type="button"
                       onClick={() => handleSelectOutcome('HIT_SL')}
-                      className="text-rose-300 font-bold hover:underline bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20"
+                      className="text-rose-700 font-bold hover:underline bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 cursor-pointer"
                     >
                       Set Kena SL
                     </button>
@@ -904,10 +904,10 @@ export default function JournalPage() {
                 {/* Take Profit Input */}
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label className="block text-xs font-bold text-emerald-400 flex items-center gap-1">
+                    <label className="block text-xs font-bold text-emerald-700 flex items-center gap-1">
                       🎯 Take Profit (TP)
                     </label>
-                    <span className="text-[10px] font-mono text-emerald-400 font-semibold">
+                    <span className="text-[10px] font-mono text-emerald-700 font-semibold">
                       {tpCalc.pnl > 0 ? `+$${tpCalc.pnl.toFixed(2)}` : '$0.00'}
                     </span>
                   </div>
@@ -917,20 +917,20 @@ export default function JournalPage() {
                     value={takeProfit}
                     onChange={(e) => handleTakeProfitChange(Number(e.target.value))}
                     placeholder="Harga Take Profit"
-                    className="w-full p-2.5 rounded-xl bg-slate-950 border border-emerald-500/40 text-white text-xs font-mono focus:border-emerald-400 focus:outline-none font-bold"
+                    className="w-full p-2.5 rounded-xl bg-white border border-emerald-300 text-slate-900 text-xs font-mono focus:border-emerald-500 focus:outline-none font-bold"
                   />
-                  <div className="flex items-center justify-between text-[10px] text-emerald-400/90 pt-0.5">
+                  <div className="flex items-center justify-between text-[10px] text-emerald-700 pt-0.5">
                     <span>Jarak: +{tpCalc.pips} pips</span>
-                    {rrRatio && <span className="font-semibold text-blue-400">RR {rrRatio}</span>}
+                    {rrRatio && <span className="font-semibold text-slate-700">RR {rrRatio}</span>}
                   </div>
                 </div>
               </div>
 
               {/* Quick Status Buttons: Hit SL, Hit TP, Real-Time TV, Running */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center justify-between">
                   <span>Hasil Status Eksekusi (Klik untuk Auto-Isi PnL):</span>
-                  <span className="text-[11px] text-amber-400 font-normal">
+                  <span className="text-[11px] text-amber-700 font-medium">
                     *Pilih &quot;Kena Stop Loss&quot; agar PnL terisi otomatis
                   </span>
                 </label>
@@ -939,17 +939,17 @@ export default function JournalPage() {
                   <button
                     type="button"
                     onClick={() => handleSelectOutcome('HIT_SL')}
-                    className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-left ${
+                    className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-left cursor-pointer ${
                       exitStatus === 'HIT_SL'
-                        ? 'bg-rose-500/20 border-rose-500 text-rose-300 shadow-md shadow-rose-500/20'
-                        : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                        ? 'bg-rose-50 border-rose-400 text-rose-800 shadow-xs'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
                     <div className="flex items-center gap-1">
                       <span>🛑</span>
                       <span>Kena SL</span>
                     </div>
-                    <div className="text-[10px] font-mono text-rose-400 mt-0.5">
+                    <div className="text-[10px] font-mono text-rose-600 mt-0.5">
                       -${Math.abs(slCalc.pnl).toFixed(2)}
                     </div>
                   </button>
@@ -957,17 +957,17 @@ export default function JournalPage() {
                   <button
                     type="button"
                     onClick={() => handleSelectOutcome('HIT_TP')}
-                    className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-left ${
+                    className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-left cursor-pointer ${
                       exitStatus === 'HIT_TP'
-                        ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-500/20'
-                        : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                        ? 'bg-emerald-50 border-emerald-400 text-emerald-800 shadow-xs'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
                     <div className="flex items-center gap-1">
                       <span>🎯</span>
                       <span>Kena TP</span>
                     </div>
-                    <div className="text-[10px] font-mono text-emerald-400 mt-0.5">
+                    <div className="text-[10px] font-mono text-emerald-700 mt-0.5">
                       +${tpCalc.pnl.toFixed(2)}
                     </div>
                   </button>
@@ -975,17 +975,17 @@ export default function JournalPage() {
                   <button
                     type="button"
                     onClick={() => handleSelectOutcome('REALTIME_CLOSE')}
-                    className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-left ${
+                    className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-left cursor-pointer ${
                       exitStatus === 'REALTIME_CLOSE'
-                        ? 'bg-blue-500/20 border-blue-500 text-blue-300 shadow-md shadow-blue-500/20'
-                        : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                        ? 'bg-blue-50 border-blue-400 text-blue-800 shadow-xs'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
                     <div className="flex items-center gap-1">
                       <span>⚡</span>
                       <span>Exit Real-Time TV</span>
                     </div>
-                    <div className="text-[10px] font-mono text-blue-400 mt-0.5">
+                    <div className="text-[10px] font-mono text-blue-600 mt-0.5">
                       Spot ${currentLivePrice}
                     </div>
                   </button>
@@ -993,17 +993,17 @@ export default function JournalPage() {
                   <button
                     type="button"
                     onClick={() => handleSelectOutcome('RUNNING')}
-                    className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-left ${
+                    className={`p-2.5 rounded-xl text-xs font-bold border transition-all text-left cursor-pointer ${
                       exitStatus === 'RUNNING'
-                        ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-md shadow-amber-500/20'
-                        : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white'
+                        ? 'bg-amber-50 border-amber-400 text-amber-800 shadow-xs'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                     }`}
                   >
                     <div className="flex items-center gap-1">
                       <span>🏃</span>
                       <span>Posisi Running</span>
                     </div>
-                    <div className="text-[10px] text-amber-400 mt-0.5">
+                    <div className="text-[10px] text-amber-700 mt-0.5">
                       Floating Live
                     </div>
                   </button>
@@ -1011,8 +1011,8 @@ export default function JournalPage() {
 
                 {/* Auto PnL Notification Banner */}
                 {autoPnlNotice && (
-                  <div className="mt-2 px-3 py-1.5 rounded-lg bg-blue-950/40 border border-blue-500/20 text-[11px] text-blue-300 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                  <div className="mt-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-800 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                     <span>{autoPnlNotice}</span>
                   </div>
                 )}
@@ -1021,7 +1021,7 @@ export default function JournalPage() {
               {/* Exit Price & PnL Hasil ($) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Harga Exit Transaksi
                   </label>
                   <input
@@ -1035,9 +1035,9 @@ export default function JournalPage() {
                       const res = calculateTradePnL(pair, direction, lot, entryPrice, newExit);
                       setPnl(res.pnl);
                     }}
-                    className="w-full p-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs font-mono focus:border-blue-500 focus:outline-none"
+                    className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:bg-white focus:border-emerald-500 focus:outline-none"
                   />
-                  <span className="text-[10px] text-slate-400 mt-0.5 block">
+                  <span className="text-[10px] text-slate-500 mt-0.5 block">
                     {exitStatus === 'HIT_SL' && 'Sesuai level Stop Loss'}
                     {exitStatus === 'HIT_TP' && 'Sesuai level Take Profit'}
                     {exitStatus === 'REALTIME_CLOSE' && 'Sesuai harga live TradingView'}
@@ -1048,16 +1048,16 @@ export default function JournalPage() {
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-bold text-white flex items-center gap-1">
+                    <label className="block text-xs font-bold text-slate-900 flex items-center gap-1">
                       <span>PnL Hasil ($)</span>
-                      <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-normal">
+                      <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[10px] font-semibold border border-emerald-200">
                         Auto-Calculated
                       </span>
                     </label>
                     <button
                       type="button"
                       onClick={() => handleSelectOutcome('HIT_SL')}
-                      className="text-[10px] text-rose-400 hover:underline font-bold"
+                      className="text-[10px] text-rose-600 hover:underline font-bold cursor-pointer"
                     >
                       Isi Otomatis dari SL
                     </button>
@@ -1070,17 +1070,17 @@ export default function JournalPage() {
                       setPnl(Number(e.target.value));
                       setExitStatus('MANUAL_CLOSE');
                     }}
-                    className={`w-full p-2.5 rounded-xl bg-slate-900 border text-sm font-mono font-extrabold focus:outline-none ${
+                    className={`w-full p-2.5 rounded-xl bg-slate-50 border text-sm font-mono font-extrabold focus:bg-white focus:outline-none ${
                       pnl >= 0
-                        ? 'border-emerald-500/50 text-emerald-400'
-                        : 'border-rose-500/50 text-rose-400'
+                        ? 'border-emerald-300 text-[#00A651]'
+                        : 'border-rose-300 text-rose-600'
                     }`}
                   />
                   <div className="flex items-center justify-between text-[10px] mt-0.5">
-                    <span className={pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}>
+                    <span className={pnl >= 0 ? 'text-[#00A651] font-bold' : 'text-rose-600 font-bold'}>
                       {pnl >= 0 ? `+ $${pnl.toFixed(2)} (Profit)` : `- $${Math.abs(pnl).toFixed(2)} (Loss)`}
                     </span>
-                    <span className="text-slate-400 font-mono">
+                    <span className="text-slate-500 font-mono">
                       {Math.abs(calculateTradePnL(pair, direction, lot, entryPrice, exitPrice).pips)} pips
                     </span>
                   </div>
@@ -1089,60 +1089,60 @@ export default function JournalPage() {
 
               {/* Psychology Emotion Condition */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Kondisi Emosi & Psikologi Saat Eksekusi
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Kondisi Emosi &amp; Psikologi Saat Eksekusi
                 </label>
                 <select
                   value={emotion}
                   onChange={(e) => setEmotion(e.target.value as JournalRecord['emotion'])}
-                  className="w-full p-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs focus:border-blue-500 focus:outline-none"
+                  className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:bg-white focus:border-emerald-500 focus:outline-none"
                 >
                   <option value="DISCIPLINED">🎯 Disiplin Ikut Rencana SOP RealistisFx</option>
-                  <option value="CALM_CONFIDENT">🧘 Tenang & Percaya Diri (Trading Santai)</option>
+                  <option value="CALM_CONFIDENT">🧘 Tenang &amp; Percaya Diri (Trading Santai)</option>
                   <option value="FOMO">⚡ FOMO Takut Tertinggal Pergerakan Harga</option>
-                  <option value="ANXIOUS_GREEDY">😬 Cemas & Serakah (Geser SL / Over-lot)</option>
+                  <option value="ANXIOUS_GREEDY">😬 Cemas &amp; Serakah (Geser SL / Over-lot)</option>
                   <option value="REVENGE_TRADING">😡 Balas Dendam (Revenge Trading Setelah Loss)</option>
                 </select>
               </div>
 
               {/* Evaluation Notes */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Catatan Evaluasi Trade
                 </label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Contoh: Entry reject SnR H1, pasang SL ketat di swing low. Kena SL karena berita inflasi tapi risiko tetap aman 1%..."
-                  className="w-full p-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs h-20 focus:border-blue-500 focus:outline-none"
+                  className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs h-20 focus:bg-white focus:border-emerald-500 focus:outline-none"
                 />
               </div>
 
               {/* Strict SOP Compliance Checkbox */}
-              <label className="flex items-center gap-2 p-3 rounded-xl bg-slate-900/40 border border-white/5 cursor-pointer">
+              <label className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={adheredToPlan}
                   onChange={(e) => setAdheredToPlan(e.target.checked)}
-                  className="w-4 h-4 rounded text-emerald-500 focus:ring-0 bg-slate-800 border-white/20"
+                  className="w-4 h-4 rounded text-[#00A651] border-slate-300 accent-[#00A651]"
                 />
-                <span className="text-xs text-slate-300 font-medium">
-                  Saya mematuhi SOP (selalu pasang Stop Loss & risiko modal maksimal 2%)
+                <span className="text-xs text-slate-700 font-medium">
+                  Saya mematuhi SOP (selalu pasang Stop Loss &amp; risiko modal maksimal 2%)
                 </span>
               </label>
 
               {/* Modal Buttons */}
-              <div className="flex justify-end gap-2.5 pt-2 border-t border-white/10">
+              <div className="flex justify-end gap-2.5 pt-2 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:brightness-110 text-slate-950 font-extrabold text-xs shadow-lg shadow-emerald-500/20 active:scale-95 transition-all cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs shadow-sm hover:shadow active:scale-95 transition-all cursor-pointer"
                 >
                   Simpan ke Jurnal Disiplin
                 </button>

@@ -63,12 +63,12 @@ const defaultUser: UserState = {
   accountType: 'STANDARD',
   tier: 'PRO', // Aktif PRO
   role: 'USER',
-  isAuthenticated: false,
+  isAuthenticated: true,
   telegramLinked: true,
   dailyCalculatorCount: 0,
-  disciplineScore: 0,
-  winRate: 0,
-  totalTrades: 0,
+  disciplineScore: 88,
+  winRate: 78.4,
+  totalTrades: 24,
   strictModeEnabled: true,
   isChecklistPassed: true,
   subscriptionStatus: 'ACTIVE',
@@ -151,13 +151,13 @@ const initialRequests: SubscriptionRequest[] = [
 
 const defaultMarket: MarketPrice = {
   symbol: 'XAUUSD',
-  price: 2684.50,
-  bid: 2684.38,
-  ask: 2684.62,
-  spread: 0.24,
-  change24h: 0.82,
-  high24h: 2712.30,
-  low24h: 2655.10,
+  price: 4176.50,
+  bid: 4176.35,
+  ask: 4176.65,
+  spread: 0.30,
+  change24h: 0.15,
+  high24h: 4192.50,
+  low24h: 4147.20,
   updatedAt: new Date().toISOString(),
   isLive: true,
 };
@@ -172,7 +172,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [marketPrice, setMarketPrice] = useState<MarketPrice>(defaultMarket);
   const [priceTickDirection, setPriceTickDirection] = useState<'up' | 'down' | 'neutral'>('neutral');
-  const prevPriceRef = useRef<number>(2684.50);
+  const prevPriceRef = useRef<number>(4176.50);
 
   const [journals, setJournals] = useState<JournalRecord[]>([]);
 

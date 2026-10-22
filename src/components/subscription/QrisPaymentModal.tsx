@@ -99,15 +99,15 @@ export default function QrisPaymentModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-      <div className="glass-panel rounded-3xl p-5 sm:p-7 border border-emerald-500/30 w-full max-w-xl shadow-2xl relative my-auto max-h-[92vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 w-full max-w-xl shadow-2xl relative my-auto max-h-[92vh] overflow-y-auto">
         {/* Close Button */}
         <button
           onClick={() => {
             setIsPaymentModalOpen(false);
             setSubmitted(false);
           }}
-          className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
+          className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -116,26 +116,26 @@ export default function QrisPaymentModal() {
           <div className="space-y-5">
             {/* Modal Header */}
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold mb-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-[#00A651] border border-emerald-200 text-[11px] font-bold mb-2">
                 <Crown className="w-3.5 h-3.5" /> LANGGANAN REALISTISFX PRO
               </div>
-              <h2 className="text-xl font-extrabold text-white">
+              <h2 className="text-xl font-extrabold text-slate-900">
                 Aktivasi Fitur PRO Rp50.000 / Bulan
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
                 Ikuti 3 langkah mudah: Isi data akun, scan kode QRIS resmi, upload bukti pembayaran, dan konfirmasi ke WhatsApp Admin.
               </p>
             </div>
 
             {/* Stepper Navigation */}
-            <div className="grid grid-cols-3 gap-2 border-b border-white/10 pb-4">
+            <div className="grid grid-cols-3 gap-2 border-b border-slate-200 pb-4">
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all text-center ${
+                className={`py-2 px-2 rounded-xl text-xs font-bold transition-all text-center cursor-pointer ${
                   step === 1
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-slate-900/60 text-slate-400 hover:text-white'
+                    ? 'bg-[#00A651] text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:text-slate-900'
                 }`}
               >
                 1. Data Akun
@@ -143,10 +143,10 @@ export default function QrisPaymentModal() {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all text-center ${
+                className={`py-2 px-2 rounded-xl text-xs font-bold transition-all text-center cursor-pointer ${
                   step === 2
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-slate-900/60 text-slate-400 hover:text-white'
+                    ? 'bg-[#00A651] text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:text-slate-900'
                 }`}
               >
                 2. Scan QRIS
@@ -154,10 +154,10 @@ export default function QrisPaymentModal() {
               <button
                 type="button"
                 onClick={() => setStep(3)}
-                className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all text-center ${
+                className={`py-2 px-2 rounded-xl text-xs font-bold transition-all text-center cursor-pointer ${
                   step === 3
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-slate-900/60 text-slate-400 hover:text-white'
+                    ? 'bg-[#00A651] text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:text-slate-900'
                 }`}
               >
                 3. Kirim Bukti
@@ -168,7 +168,7 @@ export default function QrisPaymentModal() {
             {step === 1 && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
                     Pilih Paket Langganan:
                   </label>
                   <div className="grid grid-cols-3 gap-2">
@@ -183,17 +183,17 @@ export default function QrisPaymentModal() {
                         onClick={() => setPlanDuration(p.key)}
                         className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
                           planDuration === p.key
-                            ? 'bg-emerald-600/20 border-emerald-500 text-white shadow-lg shadow-emerald-500/10'
-                            : 'bg-slate-900/60 border-white/10 text-slate-400 hover:text-white'
+                            ? 'bg-emerald-50 border-[#00A651] text-[#00A651] shadow-sm'
+                            : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
                         }`}
                       >
-                        <span className="text-[10px] font-bold block text-emerald-400 uppercase">
+                        <span className="text-[10px] font-bold block uppercase">
                           {p.badge}
                         </span>
-                        <span className="text-xs font-extrabold block text-white mt-0.5">
+                        <span className="text-xs font-extrabold block text-slate-900 mt-0.5">
                           {p.label}
                         </span>
-                        <span className="text-[11px] font-mono text-slate-300">{p.price}</span>
+                        <span className="text-[11px] font-mono text-slate-600">{p.price}</span>
                       </button>
                     ))}
                   </div>
@@ -201,19 +201,19 @@ export default function QrisPaymentModal() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
                       ID Akun Anda (Otomatis)
                     </label>
                     <input
                       type="text"
                       value={accountId}
                       onChange={(e) => setAccountId(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs font-mono font-bold"
+                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono font-bold"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
                       Nama Lengkap Trader
                     </label>
                     <input
@@ -222,14 +222,14 @@ export default function QrisPaymentModal() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Nama Anda"
-                      className="w-full p-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs"
+                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:bg-white focus:border-[#00A651] focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
                       Nomor WhatsApp Aktif (Wajib untuk Konfirmasi)
                     </label>
                     <input
@@ -238,12 +238,12 @@ export default function QrisPaymentModal() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="081234567890"
-                      className="w-full p-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs font-mono"
+                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:bg-white focus:border-[#00A651] focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
                       Email Terdaftar
                     </label>
                     <input
@@ -252,7 +252,7 @@ export default function QrisPaymentModal() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="nama@gmail.com"
-                      className="w-full p-2.5 rounded-xl bg-slate-900 border border-white/10 text-white text-xs"
+                      className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:bg-white focus:border-[#00A651] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -260,7 +260,7 @@ export default function QrisPaymentModal() {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs tracking-wide shadow-lg shadow-emerald-500/20 hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+                  className="w-full py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs tracking-wide shadow-md shadow-[#00A651]/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2"
                 >
                   <span>Lanjut ke Scan QRIS ({currentPlan.label})</span>
                   <Sparkles className="w-4 h-4" />
@@ -410,14 +410,14 @@ export default function QrisPaymentModal() {
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="py-2.5 px-4 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold"
+                    className="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer transition-colors"
                   >
                     Kembali
                   </button>
                   <button
                     type="button"
                     onClick={() => setStep(3)}
-                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20 flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="flex-1 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all"
                   >
                     <span>Sudah Bayar? Upload Bukti Screenshot</span>
                     <Sparkles className="w-4 h-4" />
@@ -429,14 +429,14 @@ export default function QrisPaymentModal() {
             {/* STEP 3: Upload Bukti & Hubungi WA Admin */}
             {step === 3 && (
               <form onSubmit={handleSubmitProof} className="space-y-4">
-                <div className="p-4 rounded-2xl bg-slate-900/80 border border-white/10 space-y-3">
-                  <span className="text-xs font-bold text-white block">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <span className="text-xs font-bold text-slate-900 block">
                     Upload Screenshot Bukti Transfer / Scan QRIS:
                   </span>
 
-                  <label className="border-2 border-dashed border-white/20 hover:border-emerald-500/50 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors bg-slate-950/40">
-                    <Upload className="w-8 h-8 text-emerald-400 mb-2" />
-                    <span className="text-xs font-semibold text-slate-200">
+                  <label className="border-2 border-dashed border-slate-300 hover:border-[#00A651] rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white">
+                    <Upload className="w-8 h-8 text-[#00A651] mb-2" />
+                    <span className="text-xs font-semibold text-slate-800">
                       Klik untuk Upload Screenshot Bukti Transfer
                     </span>
                     <span className="text-[10px] text-slate-500 mt-0.5">
@@ -451,32 +451,32 @@ export default function QrisPaymentModal() {
                   </label>
 
                   {proofFile && (
-                    <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 flex items-center justify-between">
+                    <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                        <span className="text-xs text-slate-200">Screenshot Bukti Siap Dikirim</span>
+                        <CheckCircle2 className="w-4 h-4 text-[#00A651]" />
+                        <span className="text-xs text-slate-800 font-medium">Screenshot Bukti Siap Dikirim</span>
                       </div>
-                      <span className="text-[10px] text-emerald-400 font-bold">Terlampir</span>
+                      <span className="text-[10px] text-[#00A651] font-bold">Terlampir</span>
                     </div>
                   )}
                 </div>
 
                 {/* WhatsApp Admin Direct Link Button */}
-                <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-300">
-                    <MessageCircle className="w-4 h-4 text-emerald-400" />
+                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-900">
+                    <MessageCircle className="w-4 h-4 text-[#00A651]" />
                     Konfirmasi Cepat via WhatsApp Admin:
                   </div>
-                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 leading-relaxed font-normal">
                     Kirim pesan otomatis langsung ke Admin RealistisFx untuk verifikasi prioritas dalam 5-15 menit:
                   </p>
                   <a
                     href={waUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-[#00A651]/20 transition-all cursor-pointer active:scale-95"
                   >
-                    <MessageCircle className="w-4 h-4" />
+                    <MessageCircle className="w-4 h-4 fill-white text-white" />
                     <span>Kirim Bukti ke WhatsApp Admin ({adminWhatsAppNumber})</span>
                   </a>
                 </div>
@@ -485,13 +485,13 @@ export default function QrisPaymentModal() {
                   <button
                     type="button"
                     onClick={() => setStep(2)}
-                    className="py-2.5 px-4 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold"
+                    className="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer transition-colors"
                   >
                     Kembali
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/25 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="flex-1 py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <CheckCircle2 className="w-4 h-4" />
                     <span>Konfirmasi Pembayaran Saya</span>
@@ -503,31 +503,31 @@ export default function QrisPaymentModal() {
         ) : (
           /* Submission Success State */
           <div className="text-center py-6 space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-50 text-[#00A651] border border-emerald-200">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
             <div>
-              <h3 className="text-lg font-extrabold text-white">
+              <h3 className="text-lg font-extrabold text-slate-900">
                 Bukti Pembayaran QRIS Telah Diterima!
               </h3>
-              <p className="text-xs text-slate-300 mt-1.5 max-w-sm mx-auto leading-relaxed">
-                Permohonan aktivasi akun PRO Anda dengan ID <b className="text-emerald-400 font-mono">{accountId}</b> telah masuk ke antrean verifikasi Admin RealistisFx.
+              <p className="text-xs text-slate-600 mt-1.5 max-w-sm mx-auto leading-relaxed">
+                Permohonan aktivasi akun PRO Anda dengan ID <b className="text-[#00A651] font-mono">{accountId}</b> telah masuk ke antrean verifikasi Admin RealistisFx.
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-900/80 border border-white/10 text-left text-xs space-y-2">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left text-xs space-y-2">
               <div className="flex justify-between">
-                <span className="text-slate-400">Status Akun:</span>
-                <span className="font-bold text-amber-400">⏳ Menunggu Konfirmasi Admin</span>
+                <span className="text-slate-500">Status Akun:</span>
+                <span className="font-bold text-amber-700">⏳ Menunggu Konfirmasi Admin</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Paket Dipilih:</span>
-                <span className="font-mono text-white">{currentPlan.name} ({currentPlan.label})</span>
+                <span className="text-slate-500">Paket Dipilih:</span>
+                <span className="font-mono text-slate-900 font-bold">{currentPlan.name} ({currentPlan.label})</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Nomor WhatsApp:</span>
-                <span className="font-mono text-white">{phone}</span>
+                <span className="text-slate-500">Nomor WhatsApp:</span>
+                <span className="font-mono text-slate-900 font-bold">{phone}</span>
               </div>
             </div>
 
@@ -536,9 +536,9 @@ export default function QrisPaymentModal() {
                 href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg"
+                className="w-full py-2.5 px-4 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-[#00A651]/20 cursor-pointer"
               >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle className="w-4 h-4 fill-white text-white" />
                 <span>Kirim Bukti Pembayaran ke WhatsApp Admin Sekarang</span>
               </a>
 
@@ -548,9 +548,9 @@ export default function QrisPaymentModal() {
                   setIsPaymentModalOpen(false);
                   setSubmitted(false);
                 }}
-                className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs cursor-pointer"
+                className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs cursor-pointer transition-colors"
               >
-                Tutup & Kembali ke Dashboard
+                Tutup &amp; Kembali ke Dashboard
               </button>
             </div>
           </div>

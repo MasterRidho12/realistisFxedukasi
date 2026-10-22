@@ -5,16 +5,14 @@ import Link from 'next/link';
 import {
   Menu,
   Crown,
-  ShieldCheck,
-  Send,
-  Sparkles,
   Globe,
   TrendingUp,
   TrendingDown,
   LogOut,
   Radio,
-  Shield,
-  CreditCard
+  CreditCard,
+  ExternalLink,
+  MessageCircle,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
@@ -50,64 +48,81 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 md:px-8 border-b border-white/10 bg-[#0B0F19]/85 backdrop-blur-xl">
-      {/* Left: Mobile Toggle & Market Session */}
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 md:px-6 lg:px-8 border-b border-slate-200/90 bg-white/95 backdrop-blur-md shadow-xs">
+      {/* Left: Mobile Toggle & Brand (on Mobile) & Market Session */}
+      <div className="flex items-center gap-2.5 sm:gap-3.5">
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/5 lg:hidden focus:outline-none"
+          className="p-2 text-slate-600 hover:text-slate-900 rounded-xl hover:bg-slate-100 lg:hidden focus:outline-none cursor-pointer"
           aria-label="Buka Menu"
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/5 text-xs text-slate-300">
-          <Globe className="w-3.5 h-3.5 text-blue-400" />
-          <span className="text-slate-400">Sesi:</span>
-          <span className="font-semibold text-emerald-400 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        {/* Mobile Brand Logo */}
+        <Link href="/" className="flex lg:hidden items-center gap-2 select-none">
+          <div className="relative w-8 h-8 rounded-xl overflow-hidden border border-emerald-500/40 shadow-xs bg-[#0a1f18] flex items-center justify-center shrink-0">
+            <img
+              alt="REALISTIS FX Logo"
+              width={32}
+              height={32}
+              className="w-full h-full object-cover"
+              src="/images/logo.png"
+            />
+          </div>
+          <span className="font-extrabold text-sm tracking-wider text-slate-900">
+            REALISTIS<span className="text-[#00A651]"> FX</span>
+          </span>
+        </Link>
+
+        {/* Market Session Pill */}
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 shadow-xs">
+          <Globe className="w-3.5 h-3.5 text-sky-600" />
+          <span className="text-slate-500 font-medium">Sesi:</span>
+          <span className="font-semibold text-[#00A651] flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00A651] animate-pulse" />
             London / NY
           </span>
-          <span className="text-slate-600">|</span>
-          <span className="font-mono text-slate-300 text-[11px]">{currentTime || '00:00:00 WIB'}</span>
+          <span className="text-slate-300">|</span>
+          <span className="font-mono text-slate-700 text-[11px] font-semibold">{currentTime || '00:00:00 WIB'}</span>
         </div>
 
         {/* Real-Time Live XAU/USD Spot Ticker */}
         <div
           className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs transition-all duration-300 ${
             priceTickDirection === 'up'
-              ? 'bg-emerald-500/20 border-emerald-500/50 shadow-md shadow-emerald-500/20'
+              ? 'bg-emerald-50 border-emerald-300 shadow-xs'
               : priceTickDirection === 'down'
-              ? 'bg-rose-500/20 border-rose-500/50 shadow-md shadow-rose-500/20'
-              : 'bg-slate-900/60 border-white/10'
+              ? 'bg-rose-50 border-rose-300 shadow-xs'
+              : 'bg-slate-50 border-slate-200'
           }`}
           title="Harga Real-Time XAU/USD Live Feed"
         >
           <div className="flex items-center gap-1.5">
-            <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
-            <span className="font-bold text-amber-300">XAU/USD:</span>
+            <Radio className="w-3 h-3 text-[#00A651] animate-pulse" />
+            <span className="font-bold text-amber-700">XAU/USD:</span>
           </div>
 
           <span
             className={`font-mono font-extrabold transition-colors duration-200 ${
               priceTickDirection === 'up'
-                ? 'text-emerald-300 font-black'
+                ? 'text-[#00A651] font-black'
                 : priceTickDirection === 'down'
-                ? 'text-rose-400 font-black'
-                : 'text-white'
+                ? 'text-rose-600 font-black'
+                : 'text-slate-900'
             }`}
           >
-            {(marketPrice?.price ?? 2684.50).toLocaleString('en-US', {
+            {(marketPrice?.price ?? 4176.50).toLocaleString('en-US', {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
           </span>
 
           <span
-            className={`hidden md:inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded ${
+            className={`hidden sm:inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded ${
               (marketPrice?.change24h ?? 0.82) >= 0
-                ? 'bg-emerald-500/20 text-emerald-400'
-                : 'bg-rose-500/20 text-rose-400'
+                ? 'bg-emerald-100 text-[#00A651]'
+                : 'bg-rose-100 text-rose-700'
             }`}
           >
             {(marketPrice?.change24h ?? 0.82) >= 0 ? (
@@ -120,8 +135,30 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Right: Role Status & Payment Button */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      {/* Right: Quick Action Buttons & Status */}
+      <div className="flex items-center gap-2 sm:gap-2.5">
+        {/* Live MQL5 Link Button (like realistisfx.com) */}
+        <a
+          href="https://www.mql5.com/en/signals/2388343?source=Site+Signals+My"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 transition-colors"
+          title="Lihat Verifikasi Sinyal Live MQL5"
+        >
+          <span>Live MQL5</span>
+          <ExternalLink className="w-3 h-3 text-slate-500" />
+        </a>
+
+        {/* Copy-Trade WhatsApp Button */}
+        <a
+          href="https://wa.me/6287774229255?text=Halo%20Mas%20Rizky%20Juhri%2C%20saya%20tertarik%20untuk%20bergabung%20Copy%20Trade%20REALISTIS%20FX%20(Gold%20Breakout%20XAUUSD).%20Mohon%20panduan%20pendaftaran%20dan%20setup%20akunnya.%20Terima%20kasih."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all"
+        >
+          <MessageCircle className="w-3.5 h-3.5 fill-white text-white" />
+          <span>Mulai Copy-Trade</span>
+        </a>
 
         {/* Upgrade / Active Badge */}
         {!isPro ? (
@@ -129,8 +166,8 @@ export default function Navbar() {
             onClick={openPaymentModal}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               isPending
-                ? 'bg-amber-500/20 border border-amber-500/40 text-amber-300'
-                : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-md shadow-emerald-500/20 hover:brightness-110 active:scale-95'
+                ? 'bg-amber-50 border border-amber-300 text-amber-800'
+                : 'bg-[#00A651] hover:bg-[#008F45] text-white shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95'
             }`}
           >
             {isPending ? (
@@ -146,8 +183,8 @@ export default function Navbar() {
             )}
           </button>
         ) : (
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
-            <Crown className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-bold">
+            <Crown className="w-3.5 h-3.5 text-[#00A651]" />
             <span className="hidden sm:inline">PRO</span> VIP
           </div>
         )}
@@ -155,7 +192,7 @@ export default function Navbar() {
         {/* Logout Button */}
         <button
           onClick={logout}
-          className="p-2 text-slate-400 hover:text-rose-400 rounded-xl hover:bg-rose-500/10 transition-colors cursor-pointer"
+          className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition-colors cursor-pointer"
           title="Keluar Akun"
         >
           <LogOut className="w-4 h-4" />

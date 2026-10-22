@@ -34,7 +34,7 @@ export default function TradingViewTickerTape({ className = '' }: TradingViewTic
       showSymbolLogo: true,
       isTransparent: true,
       displayMode: 'adaptive',
-      colorTheme: 'dark',
+      colorTheme: 'light',
       locale: 'id',
     });
 
@@ -48,7 +48,7 @@ export default function TradingViewTickerTape({ className = '' }: TradingViewTic
   }, []);
 
   return (
-    <div className={`overflow-hidden rounded-xl border border-white/10 bg-slate-900/60 backdrop-blur-md ${className}`}>
+    <div className={`overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs ${className}`}>
       <div className="tradingview-widget-container" ref={containerRef}>
         <div className="tradingview-widget-container__widget"></div>
       </div>

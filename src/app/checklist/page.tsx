@@ -89,48 +89,48 @@ export default function ChecklistPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
               <ShieldAlert className="w-5 h-5" />
             </span>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
               Anti-FOMO SOP Checklist
             </h1>
           </div>
-          <p className="text-xs text-slate-400 max-w-2xl">
+          <p className="text-xs text-slate-600 max-w-2xl">
             Prosedur standar operasional (SOP) pra-eksekusi order untuk memproteksi trader dari jebakan impulsif.
           </p>
         </div>
 
         <button
           onClick={handleReset}
-          className="px-3 py-2 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-1.5 cursor-pointer"
+          className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-xs font-semibold text-slate-700 flex items-center gap-1.5 cursor-pointer transition-all"
         >
           <RotateCcw className="w-3.5 h-3.5" /> Reset SOP Harian
         </button>
       </div>
 
       {/* Strict Mode Toggle Box (Pro Feature) */}
-      <div className="glass-panel rounded-2xl p-5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
               Mode Ketat Anti-FOMO (Strict Lock)
             </h3>
             {isPro ? (
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
                 PRO FITUR
               </span>
             ) : (
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
                 KHUSUS PRO
               </span>
             )}
           </div>
-          <p className="text-xs text-slate-400 max-w-xl">
-            Jika diaktifkan, kalkulator lot di menu utama akan <span className="text-amber-400 font-semibold">terkunci otomatis</span> jika 6 poin checklist di bawah ini belum dicentang secara lengkap.
+          <p className="text-xs text-slate-600 max-w-xl">
+            Jika diaktifkan, kalkulator lot di menu utama akan <span className="text-amber-700 font-semibold">terkunci otomatis</span> jika 6 poin checklist di bawah ini belum dicentang secara lengkap.
           </p>
         </div>
 
@@ -139,8 +139,8 @@ export default function ChecklistPage() {
             onClick={toggleStrictMode}
             className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer transition-all ${
               user.strictModeEnabled
-                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                : 'bg-slate-800 text-slate-400'
+                ? 'bg-[#00A651] text-white shadow-sm'
+                : 'bg-slate-100 text-slate-700 border border-slate-200'
             }`}
           >
             {user.strictModeEnabled ? (
@@ -156,31 +156,31 @@ export default function ChecklistPage() {
         ) : (
           <button
             onClick={() => setTier('PRO')}
-            className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold border border-amber-500/30 flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold border border-amber-300 flex items-center gap-1.5 cursor-pointer transition-all"
           >
-            <Crown className="w-4 h-4 text-emerald-400" /> Buka Mode Ketat (PRO)
+            <Crown className="w-4 h-4 text-amber-600" /> Buka Mode Ketat (PRO)
           </button>
         )}
       </div>
 
       {/* Progress Indicator */}
-      <div className="glass-panel rounded-2xl p-5 border border-white/10 flex items-center justify-between">
+      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
         <div className="space-y-1">
-          <span className="text-xs text-slate-400">Status Validasi SOP Anda:</span>
-          <div className="text-lg font-bold text-white flex items-center gap-2">
+          <span className="text-xs text-slate-500">Status Validasi SOP Anda:</span>
+          <div className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <span>{completedCount} dari 6 Aturan Terverifikasi</span>
             {isFullyPassed && (
-              <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+              <span className="text-xs font-semibold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200">
                 100% Lulus SOP
               </span>
             )}
           </div>
         </div>
 
-        <div className="w-48 bg-slate-800 h-2 rounded-full overflow-hidden">
+        <div className="w-48 bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
           <div
             className={`h-full transition-all duration-300 rounded-full ${
-              isFullyPassed ? 'bg-emerald-400' : 'bg-blue-500'
+              isFullyPassed ? 'bg-[#00A651]' : 'bg-emerald-400'
             }`}
             style={{ width: `${(completedCount / 6) * 100}%` }}
           />
@@ -195,10 +195,10 @@ export default function ChecklistPage() {
             <div
               key={item.key}
               onClick={() => toggleCheck(item.key)}
-              className={`glass-panel p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 ${
+              className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 ${
                 isDone
-                  ? 'border-emerald-500/40 bg-emerald-950/15'
-                  : 'border-white/10 hover:border-white/20'
+                  ? 'border-emerald-400 bg-emerald-50/60 shadow-xs'
+                  : 'border-slate-200 bg-white hover:border-emerald-300 hover:shadow-xs'
               }`}
             >
               <div className="mt-0.5">
@@ -206,24 +206,24 @@ export default function ChecklistPage() {
                   type="checkbox"
                   checked={isDone}
                   onChange={() => toggleCheck(item.key)}
-                  className="w-5 h-5 rounded text-emerald-500 bg-slate-900 border-white/20 focus:ring-0 cursor-pointer"
+                  className="w-5 h-5 rounded text-[#00A651] border-slate-300 focus:ring-emerald-500 cursor-pointer accent-[#00A651]"
                 />
               </div>
 
               <div className="space-y-1 flex-1">
                 <h3
                   className={`text-sm font-bold ${
-                    isDone ? 'text-emerald-300' : 'text-white'
+                    isDone ? 'text-emerald-800' : 'text-slate-900'
                   }`}
                 >
                   {item.title}
                 </h3>
-                <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
               </div>
 
               {isDone && (
-                <span className="text-emerald-400 font-bold text-xs flex items-center gap-1 flex-shrink-0">
-                  <CheckCircle2 className="w-4 h-4" /> Lulus
+                <span className="text-emerald-700 font-bold text-xs flex items-center gap-1 flex-shrink-0">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Lulus
                 </span>
               )}
             </div>
@@ -232,16 +232,16 @@ export default function ChecklistPage() {
       </div>
 
       {/* Bottom CTA to Calculator */}
-      <div className="pt-4 flex justify-between items-center">
-        <p className="text-xs text-slate-400">
+      <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <p className="text-xs text-slate-500">
           Disiplin adalah satu-satunya pelindung modal retail trader di pasar forex.
         </p>
 
         <Link
-          href="/calculator"
-          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-500/20"
+          href="/"
+          className="px-5 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm hover:shadow transition-all w-fit"
         >
-          Lanjut ke Kalkulator Lot Aman <ArrowRight className="w-4 h-4" />
+          Lanjut ke Beranda &amp; EA Breakout <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
     </div>
