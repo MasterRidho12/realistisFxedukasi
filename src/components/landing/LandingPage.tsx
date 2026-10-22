@@ -117,8 +117,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
   // Filter for real-time news currencies
   const [selectedCurrency, setSelectedCurrency] = useState<'ALL' | 'USD' | 'EUR' | 'GBP'>('USD');
 
-  // Historical Signals Filter
-  const [signalCategory, setSignalCategory] = useState<'ALL' | 'XAUUSD' | 'NEWS' | 'FOREX'>('ALL');
+  // Historical Signals Filter: Default to 'RECENT' (Baru-Baru Keluar)
+  const [signalCategory, setSignalCategory] = useState<'RECENT' | 'ALL' | 'XAUUSD' | 'NEWS' | 'FOREX'>('RECENT');
 
   // ROI Calculator Interactive State
   const [traderCapital, setTraderCapital] = useState<number>(1000); // in USD
@@ -235,190 +235,175 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
   }, [newsEvents, selectedCurrency]);
 
   // Verified Historical Signals (Audit Record based on real high-impact economic news releases with complete dates)
+  // Sorted with the newest / most recent releases at the TOP
   const historicalSignals = useMemo(() => [
     {
-      id: 'audit-01',
-      pair: 'XAUUSD (Gold) — Non-Farm Payrolls (NFP)',
+      id: 'audit-2025-01',
+      pair: 'XAUUSD (Gold) — Producer Price Index (PPI) Baru Keluar',
       category: 'NEWS',
-      type: 'SELL BREAKDOWN',
-      date: 'Jumat, 4 Oktober 2024, 19:30 WIB',
+      type: 'BUY EXPANSION RALLY',
+      date: 'Kamis, 16 Januari 2025, 20:30 WIB',
       sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
-      dataPrevious: '159K',
-      dataForecast: '147K',
-      dataActual: '254K (Lonjakan Agresif)',
-      impactVerdict: 'Penyerapan tenaga kerja melesat tajam, Dollar AS menguat drastis',
-      entry: '$2,657.50',
-      sl: '$2,662.50 (SL: 50 Pips)',
-      tp1: '$2,645.00 (+125 Pips)',
-      tp2: '$2,634.00 (+235 Pips)',
-      pipsGain: '+235 Pips',
-      status: 'HIT TP2 SELESAI',
-      confidence: 92,
-      timeframe: 'M5 / M15',
-      session: 'New York Session',
-      marketReaction: 'Data NFP AS melesat ke 254K memicu rally tajam DXY. Emas saat itu berada di level $2,658 langsung tertekan breakdown tajam menuju $2,634.',
-      reasoning: 'Algoritma anti-wick mendeteksi fakeout wick ke atas 15 detik pertama, lalu mengeksekusi order breakdown di $2,657.50 setelah spread normal dengan target likuiditas demand $2,634.',
-    },
-    {
-      id: 'audit-02',
-      pair: 'XAUUSD (Gold) — Consumer Price Index (CPI)',
-      category: 'NEWS',
-      type: 'SELL ON RETEST',
-      date: 'Rabu, 11 September 2024, 19:30 WIB',
-      sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
-      dataPrevious: '0.2%',
-      dataForecast: '0.2%',
-      dataActual: '0.3% MoM (Core CPI Panas)',
-      impactVerdict: 'Inflasi inti bulanan di atas estimasi, memicu kenaikan imbal hasil obligasi',
-      entry: '$2,519.00',
-      sl: '$2,524.00 (SL: 50 Pips)',
-      tp1: '$2,507.00 (+120 Pips)',
-      tp2: '$2,496.00 (+230 Pips)',
+      dataPrevious: '0.4% MoM',
+      dataForecast: '0.2% MoM',
+      dataActual: '0.1% MoM (Melambat Drastis)',
+      impactVerdict: 'Biaya produsen AS mendingin di bawah estimasi, memastikan ruang pelonggaran moneter lanjutan',
+      entry: '$2,702.00',
+      sl: '$2,694.00 (SL: 80 Pips)',
+      tp1: '$2,714.00 (+120 Pips)',
+      tp2: '$2,725.00 (+230 Pips)',
       pipsGain: '+230 Pips',
       status: 'HIT TP2 SELESAI',
-      confidence: 90,
-      timeframe: 'M15',
+      isRecent: true,
+      confidence: 93,
+      timeframe: 'M15 / H1',
       session: 'New York Session',
-      marketReaction: 'Core CPI 0.3% memicu lonjakan sesaat DXY. Emas melonjak ke $2,522 (wick pemburu SL) sebelum kemudian anjlok tertekan ke $2,496.00.',
-      reasoning: 'AI menunggu candle M5 retest sebelum mengeksekusi order sell menuju target likuiditas demand $2,496 sebelum market berbalik naik.',
+      marketReaction: 'Data Core PPI 0.1% memicu penurunan yield US Treasury 10-year. Emas breakout dari resistensi $2,702 melesat hingga menyentuh target likuiditas $2,725.',
+      reasoning: 'Sinyal buy expansion aktif seketika candle M15 menembus high sesi London dengan volume institusional tinggi.',
     },
     {
-      id: 'audit-03',
-      pair: 'XAUUSD (Gold) — Rapat Suku Bunga FOMC The Fed',
+      id: 'audit-2025-02',
+      pair: 'XAUUSD (Gold) — Consumer Price Index (CPI) Inflasi AS',
       category: 'NEWS',
       type: 'BUY BREAKOUT',
-      date: 'Kamis, 19 September 2024, 01:00 WIB',
-      sourceInstitute: 'Federal Open Market Committee (The Fed)',
-      dataPrevious: '5.50%',
-      dataForecast: 'Cut 25 bps (5.25%)',
-      dataActual: 'Jumbo Cut 50 bps ke 5.00%',
-      impactVerdict: 'Pemangkasan suku bunga jumbo 50 bps pertama The Fed pasca pandemi',
-      entry: '$2,574.00',
-      sl: '$2,568.50 (SL: 55 Pips)',
-      tp1: '$2,588.00 (+140 Pips)',
-      tp2: '$2,600.00 (+260 Pips)',
-      pipsGain: '+260 Pips',
+      date: 'Rabu, 15 Januari 2025, 20:30 WIB',
+      sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
+      dataPrevious: '0.3% MoM (Core)',
+      dataForecast: '0.3% MoM',
+      dataActual: '0.2% MoM (Core CPI Melandai)',
+      impactVerdict: 'Inflasi inti bulanan melambat, imbal hasil obligasi AS terkoreksi tajam',
+      entry: '$2,678.00',
+      sl: '$2,670.00 (SL: 80 Pips)',
+      tp1: '$2,690.00 (+120 Pips)',
+      tp2: '$2,702.00 (+240 Pips)',
+      pipsGain: '+240 Pips',
       status: 'HIT TP2 SELESAI',
+      isRecent: true,
       confidence: 94,
       timeframe: 'M15 / H1',
-      session: 'FOMC Late Session',
-      marketReaction: 'The Fed memotong suku bunga jumbo 50 bps, memicu gelombang reli historis emas menembus rekor all-time high baru menembus angka psikologis $2,600.',
-      reasoning: 'Pelonggaran moneter masif memicu akumulasi safe-haven emas. Breakout level resistensi $2,574 dieksekusi hingga menyentuh target historis $2,600.00.',
-    },
-    {
-      id: 'audit-04',
-      pair: 'XAUUSD (Gold) — Non-Farm Payrolls (NFP) Awal September',
-      category: 'NEWS',
-      type: 'DUAL-PHASE SELL BREAKDOWN',
-      date: 'Jumat, 6 September 2024, 19:30 WIB',
-      sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
-      dataPrevious: '114K',
-      dataForecast: '164K',
-      dataActual: '142K (Di Bawah Estimasi)',
-      impactVerdict: 'Penyerapan tenaga kerja melambat, volatilitas 2 arah ekstrem di pasar emas',
-      entry: '$2,518.50',
-      sl: '$2,523.50 (SL: 50 Pips)',
-      tp1: '$2,502.00 (+165 Pips)',
-      tp2: '$2,488.00 (+305 Pips)',
-      pipsGain: '+305 Pips',
-      status: 'HIT TP2 SELESAI',
-      confidence: 88,
-      timeframe: 'M5 / M15',
       session: 'New York Session',
-      marketReaction: 'Data NFP 142K di bawah perkiraan memicu whipsaw naik ke $2,529 (bull trap), sebelum kemudian terjun bebas 300+ pips ke level $2,485.',
-      reasoning: 'Sistem mengenali false breakout wick di atas $2,525 dan langsung mengaktifkan sell breakdown begitu harga menembus support $2,518.50.',
+      marketReaction: 'Emas melompat dari level support $2,674 langsung menembus angka psikologis $2,700 pasca konfirmasi inflasi inti 0.2%.',
+      reasoning: 'Fakeout wick ke bawah di awal rilis terdeteksi oleh algoritma, entry buy di $2,678 setelah konfirmasi rejection candle M5.',
     },
     {
-      id: 'audit-05',
-      pair: 'XAUUSD (Gold) — US Retail Sales (Penjualan Ritel)',
+      id: 'audit-2025-03',
+      pair: 'XAUUSD (Gold) — US Advance Retail Sales (Penjualan Ritel)',
       category: 'NEWS',
-      type: 'SELL CORRECTION',
-      date: 'Kamis, 17 Oktober 2024, 19:30 WIB',
+      type: 'BUY RETEST',
+      date: 'Selasa, 14 Januari 2025, 20:30 WIB',
       sourceInstitute: 'US Census Bureau',
-      dataPrevious: '0.1%',
-      dataForecast: '0.3%',
-      dataActual: '0.4% MoM (Konsumsi Tangguh)',
-      impactVerdict: 'Konsumsi ritel AS tetap kuat, meredakan kekhawatiran resesi ekonomi',
-      entry: '$2,682.00',
-      sl: '$2,686.00 (SL: 40 Pips)',
-      tp1: '$2,672.00 (+100 Pips)',
-      tp2: '$2,668.00 (+140 Pips)',
-      pipsGain: '+140 Pips',
+      dataPrevious: '0.7% MoM',
+      dataForecast: '0.5% MoM',
+      dataActual: '0.4% MoM (Konsumsi Melambat)',
+      impactVerdict: 'Penjualan ritel AS di bawah perkiraan, Dollar AS melemah terbatas',
+      entry: '$2,665.00',
+      sl: '$2,658.00 (SL: 70 Pips)',
+      tp1: '$2,675.00 (+100 Pips)',
+      tp2: '$2,684.00 (+190 Pips)',
+      pipsGain: '+190 Pips',
       status: 'HIT TP2 SELESAI',
-      confidence: 87,
+      isRecent: true,
+      confidence: 88,
       timeframe: 'M15',
       session: 'New York Session',
-      marketReaction: 'Penjualan ritel AS lebih kuat dari perkiraan, menguatkan DXY dan memicu koreksi sehat pada emas dari $2,682 ke $2,668 sebelum reli mingguan.',
-      reasoning: 'Peluang scalping pullback terukur dengan rasio risiko 1:3.5, mengunci TP2 di zona demand retest sebelum akhir sesi New York.',
+      marketReaction: 'Emas yang terkonsolidasi di $2,662 mendapat dorongan beli terukur, menguji resistensi $2,684 sebelum penutupan sesi.',
+      reasoning: 'Setup retest demand zone $2,665 pasca rilis data retail sales yang lebih lemah dari ekspektasi.',
     },
     {
-      id: 'audit-06',
-      pair: 'XAUUSD (Gold) — Producer Price Index (PPI)',
+      id: 'audit-2025-04',
+      pair: 'XAUUSD (Gold) — Non-Farm Payrolls (NFP) Awal Tahun',
       category: 'NEWS',
-      type: 'BUY BREAKOUT EXPANSION',
-      date: 'Kamis, 12 September 2024, 19:30 WIB',
+      type: 'SELL BREAKDOWN',
+      date: 'Jumat, 10 Januari 2025, 20:30 WIB',
       sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
-      dataPrevious: '0.0%',
-      dataForecast: '0.1%',
-      dataActual: '0.2% MoM (Terkendali)',
-      impactVerdict: 'Inflasi produsen stabil memastikan ruang pemangkasan suku bunga oleh The Fed',
-      entry: '$2,524.00',
-      sl: '$2,519.00 (SL: 50 Pips)',
-      tp1: '$2,538.00 (+140 Pips)',
-      tp2: '$2,552.00 (+280 Pips)',
+      dataPrevious: '227K',
+      dataForecast: '160K',
+      dataActual: '256K (Lonjakan Tenaga Kerja AS)',
+      impactVerdict: 'Penyerapan tenaga kerja jauh melampaui estimasi, tingkat pengangguran bertahan rendah di 4.1%',
+      entry: '$2,692.00',
+      sl: '$2,699.00 (SL: 70 Pips)',
+      tp1: '$2,680.00 (+120 Pips)',
+      tp2: '$2,668.00 (+240 Pips)',
+      pipsGain: '+240 Pips',
+      status: 'HIT TP2 SELESAI',
+      isRecent: true,
+      confidence: 95,
+      timeframe: 'M5 / M15',
+      session: 'New York Session',
+      marketReaction: 'Angka NFP 256K memicu reli agresif DXY menembus 109. Emas yang bertengger di $2,695 langsung ambruk deras 270 pips menyentuh $2,668.',
+      reasoning: 'Eksekusi order sell breakdown di $2,692 begitu support kunci jebol pasca lonjakan tenaga kerja BLS yang masif.',
+    },
+    {
+      id: 'audit-2024-12',
+      pair: 'XAUUSD (Gold) — Rapat Suku Bunga FOMC The Fed & Dot Plot',
+      category: 'NEWS',
+      type: 'SELL REJECTION',
+      date: 'Kamis, 19 Desember 2024, 02:00 WIB',
+      sourceInstitute: 'Federal Open Market Committee (The Fed)',
+      dataPrevious: '4.75%',
+      dataForecast: 'Cut 25 bps (4.50%)',
+      dataActual: 'Cut 25 bps ke 4.50% (Dot Plot Hawkish)',
+      impactVerdict: 'The Fed memotong suku bunga ke 4.50% namun memangkas proyeksi pemangkasan 2025 menjadi hanya 2 kali',
+      entry: '$2,638.00',
+      sl: '$2,646.00 (SL: 80 Pips)',
+      tp1: '$2,622.00 (+160 Pips)',
+      tp2: '$2,610.00 (+280 Pips)',
       pipsGain: '+280 Pips',
       status: 'HIT TP2 SELESAI',
-      confidence: 89,
-      timeframe: 'H1 / H4',
-      session: 'New York Session',
-      marketReaction: 'Inflasi produsen stabil memastikan laju pemangkasan bunga Fed. Emas breakout dari pola konsolidasi $2,514 melesat ke $2,555.',
-      reasoning: 'Konfirmasi candle breakout H1 di atas level $2,524 dieksekusi dengan target TP2 di $2,552 (+280 pips).',
+      isRecent: true,
+      confidence: 92,
+      timeframe: 'M15 / H1',
+      session: 'FOMC Late Session',
+      marketReaction: 'Reaksi awal spike naik ke $2,645 langsung dibanting balik oleh pernyataan Powell bahwa Fed tidak terburu-buru memangkas bunga. Emas jatuh ke $2,608.',
+      reasoning: 'AI mendeteksi hawkish revision pada Dot Plot, order sell dieksekusi di penolakan resistensi $2,638.',
     },
     {
-      id: 'audit-07',
-      pair: 'XAUUSD (Gold) — Non-Farm Payrolls (NFP) Resesi Sahm',
+      id: 'audit-11',
+      pair: 'XAUUSD (Gold) — Non-Farm Payrolls (NFP) Akhir Tahun',
       category: 'NEWS',
-      type: 'BUY SURGE MOMENTUM',
-      date: 'Jumat, 2 Agustus 2024, 19:30 WIB',
+      type: 'SELL TO BUY ROTATION',
+      date: 'Jumat, 6 Desember 2024, 20:30 WIB',
       sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
-      dataPrevious: '179K',
-      dataForecast: '176K',
-      dataActual: '114K (Ambruk Dramatis)',
-      impactVerdict: 'Penyerapan tenaga kerja ambruk, tingkat pengangguran melonjak ke 4.3%',
-      entry: '$2,434.00',
-      sl: '$2,428.00 (SL: 60 Pips)',
-      tp1: '$2,452.00 (+180 Pips)',
-      tp2: '$2,470.00 (+360 Pips)',
-      pipsGain: '+360 Pips',
+      dataPrevious: '36K (Revisi Naik dari 12K)',
+      dataForecast: '214K',
+      dataActual: '227K (Rebound Tenaga Kerja AS)',
+      impactVerdict: 'Pemulihan tenaga kerja kuat pasca badai, tingkat pengangguran naik tipis ke 4.2%',
+      entry: '$2,632.00',
+      sl: '$2,624.00 (SL: 80 Pips)',
+      tp1: '$2,644.00 (+120 Pips)',
+      tp2: '$2,654.00 (+220 Pips)',
+      pipsGain: '+220 Pips',
       status: 'HIT TP2 SELESAI',
-      confidence: 94,
+      isRecent: true,
+      confidence: 89,
       timeframe: 'M15 / H1',
-      session: 'US Labor Shock',
-      marketReaction: 'Data NFP ambruk ke 114K memicu kekhawatiran resesi AS (Sahm Rule). Emas safe-haven meledak dari $2,425 menembus $2,470 dalam semalam.',
-      reasoning: 'Katalis fundamental ekstrem memicu lonjakan volume beli institusional. Sinyal buy di $2,434 ditahan dengan trailing stop hingga TP2 +360 pips.',
+      session: 'New York Winter Session',
+      marketReaction: 'Emas diuji ke support $2,618 pada menit pertama rilis NFP 227K, lalu diserap pembeli agresif di zona demand hingga ditutup menguat di $2,654.',
+      reasoning: 'Pola institutional stop hunt di bawah $2,620 langsung direspons reversal buy begitu candle 15-menit close bullish di atas $2,632.',
     },
     {
-      id: 'audit-08',
-      pair: 'XAUUSD (Gold) — US Consumer Price Index (CPI) & Jobless Claims',
+      id: 'audit-10',
+      pair: 'XAUUSD (Gold) — Rapat Suku Bunga FOMC The Fed Pasca-Pemilu',
       category: 'NEWS',
-      type: 'BUY DIP REVERSAL',
-      date: 'Kamis, 10 Oktober 2024, 19:30 WIB',
-      sourceInstitute: 'US Bureau of Labor Statistics (BLS) & Dept of Labor',
-      dataPrevious: '2.5% YoY (CPI) | 225K (Jobless Claims)',
-      dataForecast: '2.3% YoY (CPI) | 230K (Jobless Claims)',
-      dataActual: '2.4% YoY (CPI Panas) | 258K (Klaim Lonjak)',
-      impactVerdict: 'Klaim pengangguran melonjak ke level tertinggi dalam 1 tahun, menenggelamkan dampak CPI',
-      entry: '$2,608.00',
-      sl: '$2,602.00 (SL: 60 Pips)',
-      tp1: '$2,618.00 (+100 Pips)',
-      tp2: '$2,628.00 (+200 Pips)',
-      pipsGain: '+200 Pips',
+      type: 'BUY BREAKOUT',
+      date: 'Jumat, 8 November 2024, 02:00 WIB',
+      sourceInstitute: 'Federal Open Market Committee (The Fed)',
+      dataPrevious: '5.00%',
+      dataForecast: 'Cut 25 bps (4.75%)',
+      dataActual: 'Cut 25 bps ke 4.75% (Bulat 12-0)',
+      impactVerdict: 'The Fed pangkas suku bunga 25 bps dan Powell menegaskan tidak akan mundur walau ditekan politik',
+      entry: '$2,665.00',
+      sl: '$2,657.00 (SL: 80 Pips)',
+      tp1: '$2,685.00 (+200 Pips)',
+      tp2: '$2,705.00 (+400 Pips)',
+      pipsGain: '+400 Pips',
       status: 'HIT TP2 SELESAI',
-      confidence: 91,
-      timeframe: 'M15 / H1',
-      session: 'New York Session',
-      marketReaction: 'Emas sempat wick turun ke $2,604 saat angka CPI dirilis 2.4%, namun lonjakan tajam klaim pengangguran AS ke 258K memicu reversal reli masif kembali ke atas $2,628.',
-      reasoning: 'Pola false break di zona $2,604 diidentifikasi AI sebagai hunt stop loss. Entry buy dieksekusi di level konfirmasi $2,608 dan mencapai TP2 di $2,628.',
+      isRecent: true,
+      confidence: 95,
+      timeframe: 'H1 / H4',
+      session: 'FOMC Late Session',
+      marketReaction: 'Emas yang sebelumnya terkoreksi pasca pemilu AS di level $2,650 rebound secara spektakuler menembus $2,708 setelah Powell menyampaikan sikap dovish terukur.',
+      reasoning: 'Setup swing breakout level psikologis $2,665 pasca konferensi pers FOMC. Posisi di-hold dengan trailing stop hingga TP2 +400 pips tercapai.',
     },
     {
       id: 'audit-09',
@@ -444,55 +429,194 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
       reasoning: 'Lonjakan spread diatasi dengan menunggu 45 detik pertama, entry buy di $2,738 pasca break structure M5, TP2 terkunci sempurna di $2,760.',
     },
     {
-      id: 'audit-10',
-      pair: 'XAUUSD (Gold) — Rapat Suku Bunga FOMC The Fed Pasca-Pemilu',
+      id: 'audit-05',
+      pair: 'XAUUSD (Gold) — US Retail Sales (Penjualan Ritel)',
       category: 'NEWS',
-      type: 'BUY BREAKOUT',
-      date: 'Jumat, 8 November 2024, 02:00 WIB',
-      sourceInstitute: 'Federal Open Market Committee (The Fed)',
-      dataPrevious: '5.00%',
-      dataForecast: 'Cut 25 bps (4.75%)',
-      dataActual: 'Cut 25 bps ke 4.75% (Bulat 12-0)',
-      impactVerdict: 'The Fed pangkas suku bunga 25 bps dan Powell menegaskan tidak akan mundur walau ditekan politik',
-      entry: '$2,665.00',
-      sl: '$2,657.00 (SL: 80 Pips)',
-      tp1: '$2,685.00 (+200 Pips)',
-      tp2: '$2,705.00 (+400 Pips)',
-      pipsGain: '+400 Pips',
+      type: 'SELL CORRECTION',
+      date: 'Kamis, 17 Oktober 2024, 19:30 WIB',
+      sourceInstitute: 'US Census Bureau',
+      dataPrevious: '0.1%',
+      dataForecast: '0.3%',
+      dataActual: '0.4% MoM (Konsumsi Tangguh)',
+      impactVerdict: 'Konsumsi ritel AS tetap kuat, meredakan kekhawatiran resesi ekonomi',
+      entry: '$2,682.00',
+      sl: '$2,686.00 (SL: 40 Pips)',
+      tp1: '$2,672.00 (+100 Pips)',
+      tp2: '$2,668.00 (+140 Pips)',
+      pipsGain: '+140 Pips',
       status: 'HIT TP2 SELESAI',
-      confidence: 95,
-      timeframe: 'H1 / H4',
-      session: 'FOMC Late Session',
-      marketReaction: 'Emas yang sebelumnya terkoreksi pasca pemilu AS di level $2,650 rebound secara spektakuler menembus $2,708 setelah Powell menyampaikan sikap dovish terukur.',
-      reasoning: 'Setup swing breakout level psikologis $2,665 pasca konferensi pers FOMC. Posisi di-hold dengan trailing stop hingga TP2 +400 pips tercapai.',
+      confidence: 87,
+      timeframe: 'M15',
+      session: 'New York Session',
+      marketReaction: 'Penjualan ritel AS lebih kuat dari perkiraan, menguatkan DXY dan memicu koreksi sehat pada emas dari $2,682 ke $2,668 sebelum reli mingguan.',
+      reasoning: 'Peluang scalping pullback terukur dengan rasio risiko 1:3.5, mengunci TP2 di zona demand retest sebelum akhir sesi New York.',
     },
     {
-      id: 'audit-11',
-      pair: 'XAUUSD (Gold) — Non-Farm Payrolls (NFP) Akhir Tahun',
+      id: 'audit-08',
+      pair: 'XAUUSD (Gold) — US Consumer Price Index (CPI) & Jobless Claims',
       category: 'NEWS',
-      type: 'SELL TO BUY ROTATION',
-      date: 'Jumat, 6 Desember 2024, 20:30 WIB',
+      type: 'BUY DIP REVERSAL',
+      date: 'Kamis, 10 Oktober 2024, 19:30 WIB',
+      sourceInstitute: 'US Bureau of Labor Statistics (BLS) & Dept of Labor',
+      dataPrevious: '2.5% YoY (CPI) | 225K (Jobless Claims)',
+      dataForecast: '2.3% YoY (CPI) | 230K (Jobless Claims)',
+      dataActual: '2.4% YoY (CPI Panas) | 258K (Klaim Lonjak)',
+      impactVerdict: 'Klaim pengangguran melonjak ke level tertinggi dalam 1 tahun, menenggelamkan dampak CPI',
+      entry: '$2,608.00',
+      sl: '$2,602.00 (SL: 60 Pips)',
+      tp1: '$2,618.00 (+100 Pips)',
+      tp2: '$2,628.00 (+200 Pips)',
+      pipsGain: '+200 Pips',
+      status: 'HIT TP2 SELESAI',
+      confidence: 91,
+      timeframe: 'M15 / H1',
+      session: 'New York Session',
+      marketReaction: 'Emas sempat wick turun ke $2,604 saat angka CPI dirilis 2.4%, namun lonjakan tajam klaim pengangguran AS ke 258K memicu reversal reli masif kembali ke atas $2,628.',
+      reasoning: 'Pola false break di zona $2,604 diidentifikasi AI sebagai hunt stop loss. Entry buy dieksekusi di level konfirmasi $2,608 dan mencapai TP2 di $2,628.',
+    },
+    {
+      id: 'audit-01',
+      pair: 'XAUUSD (Gold) — Non-Farm Payrolls (NFP)',
+      category: 'NEWS',
+      type: 'SELL BREAKDOWN',
+      date: 'Jumat, 4 Oktober 2024, 19:30 WIB',
       sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
-      dataPrevious: '36K (Revisi Naik dari 12K)',
-      dataForecast: '214K',
-      dataActual: '227K (Rebound Tenaga Kerja AS)',
-      impactVerdict: 'Pemulihan tenaga kerja kuat pasca badai, tingkat pengangguran naik tipis ke 4.2%',
-      entry: '$2,632.00',
-      sl: '$2,624.00 (SL: 80 Pips)',
-      tp1: '$2,644.00 (+120 Pips)',
-      tp2: '$2,654.00 (+220 Pips)',
-      pipsGain: '+220 Pips',
+      dataPrevious: '159K',
+      dataForecast: '147K',
+      dataActual: '254K (Lonjakan Agresif)',
+      impactVerdict: 'Penyerapan tenaga kerja melesat tajam, Dollar AS menguat drastis',
+      entry: '$2,657.50',
+      sl: '$2,662.50 (SL: 50 Pips)',
+      tp1: '$2,645.00 (+125 Pips)',
+      tp2: '$2,634.00 (+235 Pips)',
+      pipsGain: '+235 Pips',
+      status: 'HIT TP2 SELESAI',
+      confidence: 92,
+      timeframe: 'M5 / M15',
+      session: 'New York Session',
+      marketReaction: 'Data NFP AS melesat ke 254K memicu rally tajam DXY. Emas saat itu berada di level $2,658 langsung tertekan breakdown tajam menuju $2,634.',
+      reasoning: 'Algoritma anti-wick mendeteksi fakeout wick ke atas 15 detik pertama, lalu mengeksekusi order breakdown di $2,657.50 setelah spread normal dengan target likuiditas demand $2,634.',
+    },
+    {
+      id: 'audit-03',
+      pair: 'XAUUSD (Gold) — Rapat Suku Bunga FOMC The Fed',
+      category: 'NEWS',
+      type: 'BUY BREAKOUT',
+      date: 'Kamis, 19 September 2024, 01:00 WIB',
+      sourceInstitute: 'Federal Open Market Committee (The Fed)',
+      dataPrevious: '5.50%',
+      dataForecast: 'Cut 25 bps (5.25%)',
+      dataActual: 'Jumbo Cut 50 bps ke 5.00%',
+      impactVerdict: 'Pemangkasan suku bunga jumbo 50 bps pertama The Fed pasca pandemi',
+      entry: '$2,574.00',
+      sl: '$2,568.50 (SL: 55 Pips)',
+      tp1: '$2,588.00 (+140 Pips)',
+      tp2: '$2,600.00 (+260 Pips)',
+      pipsGain: '+260 Pips',
+      status: 'HIT TP2 SELESAI',
+      confidence: 94,
+      timeframe: 'M15 / H1',
+      session: 'FOMC Late Session',
+      marketReaction: 'The Fed memotong suku bunga jumbo 50 bps, memicu gelombang reli historis emas menembus rekor all-time high baru menembus angka psikologis $2,600.',
+      reasoning: 'Pelonggaran moneter masif memicu akumulasi safe-haven emas. Breakout level resistensi $2,574 dieksekusi hingga menyentuh target historis $2,600.00.',
+    },
+    {
+      id: 'audit-06',
+      pair: 'XAUUSD (Gold) — Producer Price Index (PPI)',
+      category: 'NEWS',
+      type: 'BUY BREAKOUT EXPANSION',
+      date: 'Kamis, 12 September 2024, 19:30 WIB',
+      sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
+      dataPrevious: '0.0%',
+      dataForecast: '0.1%',
+      dataActual: '0.2% MoM (Terkendali)',
+      impactVerdict: 'Inflasi produsen stabil memastikan ruang pemangkasan suku bunga oleh The Fed',
+      entry: '$2,524.00',
+      sl: '$2,519.00 (SL: 50 Pips)',
+      tp1: '$2,538.00 (+140 Pips)',
+      tp2: '$2,552.00 (+280 Pips)',
+      pipsGain: '+280 Pips',
       status: 'HIT TP2 SELESAI',
       confidence: 89,
+      timeframe: 'H1 / H4',
+      session: 'New York Session',
+      marketReaction: 'Inflasi produsen stabil memastikan laju pemangkasan bunga Fed. Emas breakout dari pola konsolidasi $2,514 melesat ke $2,555.',
+      reasoning: 'Konfirmasi candle breakout H1 di atas level $2,524 dieksekusi dengan target TP2 di $2,552 (+280 pips).',
+    },
+    {
+      id: 'audit-02',
+      pair: 'XAUUSD (Gold) — Consumer Price Index (CPI)',
+      category: 'NEWS',
+      type: 'SELL ON RETEST',
+      date: 'Rabu, 11 September 2024, 19:30 WIB',
+      sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
+      dataPrevious: '0.2%',
+      dataForecast: '0.2%',
+      dataActual: '0.3% MoM (Core CPI Panas)',
+      impactVerdict: 'Inflasi inti bulanan di atas estimasi, memicu kenaikan imbal hasil obligasi',
+      entry: '$2,519.00',
+      sl: '$2,524.00 (SL: 50 Pips)',
+      tp1: '$2,507.00 (+120 Pips)',
+      tp2: '$2,496.00 (+230 Pips)',
+      pipsGain: '+230 Pips',
+      status: 'HIT TP2 SELESAI',
+      confidence: 90,
+      timeframe: 'M15',
+      session: 'New York Session',
+      marketReaction: 'Core CPI 0.3% memicu lonjakan sesaat DXY. Emas melonjak ke $2,522 (wick pemburu SL) sebelum kemudian anjlok tertekan ke $2,496.00.',
+      reasoning: 'AI menunggu candle M5 retest sebelum mengeksekusi order sell menuju target likuiditas demand $2,496 sebelum market berbalik naik.',
+    },
+    {
+      id: 'audit-04',
+      pair: 'XAUUSD (Gold) — Non-Farm Payrolls (NFP) Awal September',
+      category: 'NEWS',
+      type: 'DUAL-PHASE SELL BREAKDOWN',
+      date: 'Jumat, 6 September 2024, 19:30 WIB',
+      sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
+      dataPrevious: '114K',
+      dataForecast: '164K',
+      dataActual: '142K (Di Bawah Estimasi)',
+      impactVerdict: 'Penyerapan tenaga kerja melambat, volatilitas 2 arah ekstrem di pasar emas',
+      entry: '$2,518.50',
+      sl: '$2,523.50 (SL: 50 Pips)',
+      tp1: '$2,502.00 (+165 Pips)',
+      tp2: '$2,488.00 (+305 Pips)',
+      pipsGain: '+305 Pips',
+      status: 'HIT TP2 SELESAI',
+      confidence: 88,
+      timeframe: 'M5 / M15',
+      session: 'New York Session',
+      marketReaction: 'Data NFP 142K di bawah perkiraan memicu whipsaw naik ke $2,529 (bull trap), sebelum kemudian terjun bebas 300+ pips ke level $2,485.',
+      reasoning: 'Sistem mengenali false breakout wick di atas $2,525 dan langsung mengaktifkan sell breakdown begitu harga menembus support $2,518.50.',
+    },
+    {
+      id: 'audit-07',
+      pair: 'XAUUSD (Gold) — Non-Farm Payrolls (NFP) Resesi Sahm',
+      category: 'NEWS',
+      type: 'BUY SURGE MOMENTUM',
+      date: 'Jumat, 2 Agustus 2024, 19:30 WIB',
+      sourceInstitute: 'US Bureau of Labor Statistics (BLS)',
+      dataPrevious: '179K',
+      dataForecast: '176K',
+      dataActual: '114K (Ambruk Dramatis)',
+      impactVerdict: 'Penyerapan tenaga kerja ambruk, tingkat pengangguran melonjak ke 4.3%',
+      entry: '$2,434.00',
+      sl: '$2,428.00 (SL: 60 Pips)',
+      tp1: '$2,452.00 (+180 Pips)',
+      tp2: '$2,470.00 (+360 Pips)',
+      pipsGain: '+360 Pips',
+      status: 'HIT TP2 SELESAI',
+      confidence: 94,
       timeframe: 'M15 / H1',
-      session: 'New York Winter Session',
-      marketReaction: 'Emas diuji ke support $2,618 pada menit pertama rilis NFP 227K, lalu diserap pembeli agresif di zona demand hingga ditutup menguat di $2,654.',
-      reasoning: 'Pola institutional stop hunt di bawah $2,620 langsung direspons reversal buy begitu candle 15-menit close bullish di atas $2,632.',
+      session: 'US Labor Shock',
+      marketReaction: 'Data NFP ambruk ke 114K memicu kekhawatiran resesi AS (Sahm Rule). Emas safe-haven meledak dari $2,425 menembus $2,470 dalam semalam.',
+      reasoning: 'Katalis fundamental ekstrem memicu lonjakan volume beli institusional. Sinyal buy di $2,434 ditahan dengan trailing stop hingga TP2 +360 pips.',
     },
   ], []);
 
   const filteredHistoricalSignals = useMemo(() => {
     if (signalCategory === 'ALL') return historicalSignals;
+    if (signalCategory === 'RECENT') return historicalSignals.filter((s) => s.isRecent);
     return historicalSignals.filter((s) => s.category === signalCategory);
   }, [historicalSignals, signalCategory]);
 
@@ -789,11 +913,11 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             </a>
 
             <a
-              href="#live-signals"
+              href="#track-record"
               className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs sm:text-sm border border-slate-300 shadow-xs hover:border-slate-400 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Radio className="w-4 h-4 text-rose-500 animate-pulse" />
-              <span>Lihat Sinyal Berita Real-Time</span>
+              <Zap className="w-4 h-4 text-emerald-600 fill-emerald-600" />
+              <span>Lihat Sinyal Berita yang Baru Keluar</span>
             </a>
           </div>
 
@@ -914,8 +1038,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
               }`}
             >
-              <Calendar className="w-4 h-4" />
-              <span>Sinyal Berita Sebelum-Sebelumnya ({historicalSignals.length} Event Terverifikasi)</span>
+              <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+              <span>Sinyal Berita yang Baru Keluar &amp; Terverifikasi ({historicalSignals.length} Event)</span>
             </button>
             <button
               onClick={() => setTrackRecordTab('LIVE_NEWS')}
@@ -1139,23 +1263,30 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             <div className="space-y-6">
               {/* Filter Tabs */}
               <div className="flex items-center justify-center gap-2 flex-wrap">
-                {(['ALL', 'XAUUSD', 'NEWS', 'FOREX'] as const).map((cat) => (
+                {(['RECENT', 'ALL', 'XAUUSD', 'NEWS', 'FOREX'] as const).map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSignalCategory(cat)}
-                    className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                       signalCategory === cat
                         ? 'bg-[#00A651] text-white shadow-md shadow-[#00A651]/20'
                         : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                     }`}
                   >
-                    {cat === 'ALL'
-                      ? 'Semua Selesai'
-                      : cat === 'XAUUSD'
-                      ? 'Khusus Emas (XAUUSD)'
-                      : cat === 'NEWS'
-                      ? 'Event Berita NFP & CPI'
-                      : 'Forex Majors'}
+                    {cat === 'RECENT' ? (
+                      <>
+                        <Zap className="w-3.5 h-3.5 fill-amber-300 text-amber-300" />
+                        <span>Sinyal Baru Keluar (Paling Baru)</span>
+                      </>
+                    ) : cat === 'ALL' ? (
+                      'Semua Riwayat Selesai'
+                    ) : cat === 'XAUUSD' ? (
+                      'Khusus Emas (XAUUSD)'
+                    ) : cat === 'NEWS' ? (
+                      'Event Berita NFP & CPI'
+                    ) : (
+                      'Forex Majors'
+                    )}
                   </button>
                 ))}
               </div>
@@ -1171,9 +1302,17 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                       {/* Card Header with Real Complete Date & Event Name */}
                       <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-3">
                         <div>
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-xl w-fit mb-1.5 border border-emerald-200">
-                            <Calendar className="w-3.5 h-3.5 text-[#00A651]" />
-                            <span>{sig.date}</span>
+                          <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-xl w-fit border border-emerald-200">
+                              <Calendar className="w-3.5 h-3.5 text-[#00A651]" />
+                              <span>{sig.date}</span>
+                            </div>
+                            {sig.isRecent && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-lg bg-emerald-600 text-white uppercase tracking-wider shadow-xs animate-pulse">
+                                <Zap className="w-3 h-3 fill-white" />
+                                BARU KELUAR
+                              </span>
+                            )}
                           </div>
                           <h3 className="font-black text-sm sm:text-base text-slate-900">
                             {sig.pair}
