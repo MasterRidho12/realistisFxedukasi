@@ -178,7 +178,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Crown className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Bayar </span>PRO <span>Rp50k</span>
+                <span className="hidden sm:inline">Upgrade </span>VIP <span>Rp500k</span>
               </>
             )}
           </button>

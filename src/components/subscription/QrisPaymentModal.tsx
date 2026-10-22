@@ -44,9 +44,9 @@ export default function QrisPaymentModal() {
   if (!isPaymentModalOpen) return null;
 
   const planPricing = {
-    '1_MONTH': { name: '1 Bulan PRO', amount: 50000, label: 'Rp 50.000' },
-    '3_MONTHS': { name: '3 Bulan PRO', amount: 135000, label: 'Rp 135.000 (Diskon 10%)' },
-    '1_YEAR': { name: '1 Tahun PRO', amount: 499000, label: 'Rp 499.000 (Diskon 17%)' },
+    '1_MONTH': { name: '1 Bulan VIP Member Area', amount: 500000, label: 'Rp 500.000' },
+    '3_MONTHS': { name: '3 Bulan VIP (Hemat 15%)', amount: 1275000, label: 'Rp 1.275.000 (Hemat 15%)' },
+    '1_YEAR': { name: '1 Tahun VIP (Hemat 35%)', amount: 3900000, label: 'Rp 3.900.000 (Hemat 35%)' },
   };
 
   const currentPlan = planPricing[planDuration];
@@ -117,13 +117,13 @@ export default function QrisPaymentModal() {
             {/* Modal Header */}
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-[#00A651] border border-emerald-200 text-[11px] font-bold mb-2">
-                <Crown className="w-3.5 h-3.5" /> LANGGANAN REALISTISFX PRO
+                <Crown className="w-3.5 h-3.5" /> LANGGANAN VIP MEMBER AREA
               </div>
               <h2 className="text-xl font-extrabold text-slate-900">
-                Aktivasi Fitur PRO Rp50.000 / Bulan
+                Aktivasi VIP Member Area &amp; Sinyal AI (Rp 500.000 / Bulan)
               </h2>
               <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                Ikuti 3 langkah mudah: Isi data akun, scan kode QRIS resmi, upload bukti pembayaran, dan konfirmasi ke WhatsApp Admin.
+                Akses penuh Sinyal AI XAUUSD real-time, Playbook Berita NFP/CPI, dan Private Channel Telegram VIP RealistisFx.
               </p>
             </div>
 
@@ -169,13 +169,13 @@ export default function QrisPaymentModal() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Pilih Paket Langganan:
+                    Pilih Paket Langganan VIP:
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {[
-                      { key: '1_MONTH' as const, label: '1 Bulan', price: 'Rp 50.000', badge: 'Standar' },
-                      { key: '3_MONTHS' as const, label: '3 Bulan', price: 'Rp 135.000', badge: 'Hemat 10%' },
-                      { key: '1_YEAR' as const, label: '1 Tahun', price: 'Rp 499.000', badge: 'VIP Hemat' },
+                      { key: '1_MONTH' as const, label: '1 Bulan', price: 'Rp 500.000', badge: 'Standar' },
+                      { key: '3_MONTHS' as const, label: '3 Bulan', price: 'Rp 1.275.000', badge: 'Hemat 15%' },
+                      { key: '1_YEAR' as const, label: '1 Tahun', price: 'Rp 3.900.000', badge: 'Hemat 35%' },
                     ].map((p) => (
                       <button
                         key={p.key}

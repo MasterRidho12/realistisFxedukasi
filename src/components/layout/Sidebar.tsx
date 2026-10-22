@@ -281,10 +281,10 @@ export default function Sidebar() {
                 <div className="p-1 rounded-md bg-emerald-100 text-[#00A651]">
                   <Crown className="w-4 h-4" />
                 </div>
-                <span className="text-xs font-bold text-slate-900 tracking-wide">RealistisFx PRO</span>
+                <span className="text-xs font-bold text-slate-900 tracking-wide">RealistisFx VIP</span>
               </div>
               <p className="text-[11px] text-slate-600 leading-relaxed">
-                Hanya <span className="text-[#00A651] font-bold">Rp50.000</span>/bln via scan QRIS. Buka XAUUSD, bot H-30, &amp; analisa MC.
+                Hanya <span className="text-[#00A651] font-bold">Rp500.000</span>/bln via QRIS. Buka Sinyal AI XAUUSD, Playbook Berita, &amp; VIP Telegram.
               </p>
               <button
                 type="button"
@@ -292,7 +292,7 @@ export default function Sidebar() {
                 className="w-full py-2 px-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                {isPending ? 'Lihat Bukti QRIS' : 'Bayar via QRIS (Rp50k)'}
+                {isPending ? 'Lihat Bukti QRIS' : 'Aktivasi VIP (Rp500k)'}
               </button>
             </div>
           </div>
