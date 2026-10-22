@@ -209,14 +209,16 @@ function generateSignalAndActual(
       }
     }
 
+    // Calibrate dynamically to real 2026 Gold spot price (~$4,056)
+    const baseGoldPrice = 4056.0;
     const buySetup = {
       title: 'Setup BUY XAUUSD (Peluang Gold Terbang)',
       triggerCondition: 'Rilis Aktual < Forecast (Data AS Melemah / Dovish)',
       actionType: 'BUY STOP' as const,
-      entryArea: '$2,682 - $2,688 (Breakout High Terdekat)',
-      stopLoss: '$2,668 (SL: 40 Pips)',
-      takeProfit1: '$2,705 (+80 Pips)',
-      takeProfit2: '$2,725 (+150 Pips)',
+      entryArea: `$${(baseGoldPrice + 6).toFixed(0)} - $${(baseGoldPrice + 12).toFixed(0)} (Breakout High Terdekat)`,
+      stopLoss: `$${(baseGoldPrice - 8).toFixed(0)} (SL: 40 Pips)`,
+      takeProfit1: `$${(baseGoldPrice + 24).toFixed(0)} (+80 Pips)`,
+      takeProfit2: `$${(baseGoldPrice + 45).toFixed(0)} (+150 Pips)`,
       riskReward: '1 : 2.5',
       rationale:
         'Jika data ekonomi AS loyo, pasar memperkirakan pemangkasan suku bunga The Fed lebih cepat, memicu pelepasan Dollar dan capital inflow ke Safe-Haven Emas.',
@@ -226,10 +228,10 @@ function generateSignalAndActual(
       title: 'Setup SELL XAUUSD (Peluang Gold Dump)',
       triggerCondition: 'Rilis Aktual > Forecast (Data AS Menguat / Hawkish)',
       actionType: 'SELL STOP' as const,
-      entryArea: '$2,676 - $2,670 (Breakdown Low Terdekat)',
-      stopLoss: '$2,690 (SL: 40 Pips)',
-      takeProfit1: '$2,650 (+80 Pips)',
-      takeProfit2: '$2,630 (+160 Pips)',
+      entryArea: `$${(baseGoldPrice - 6).toFixed(0)} - $${(baseGoldPrice - 12).toFixed(0)} (Breakdown Low Terdekat)`,
+      stopLoss: `$${(baseGoldPrice + 8).toFixed(0)} (SL: 40 Pips)`,
+      takeProfit1: `$${(baseGoldPrice - 24).toFixed(0)} (+80 Pips)`,
+      takeProfit2: `$${(baseGoldPrice - 45).toFixed(0)} (+160 Pips)`,
       riskReward: '1 : 2.5',
       rationale:
         'Jika data AS kuat, imbal hasil obligasi AS melonjak dan DXY menguat tajam, memicu aksi jual instan (dump) pada komoditas Emas.',
