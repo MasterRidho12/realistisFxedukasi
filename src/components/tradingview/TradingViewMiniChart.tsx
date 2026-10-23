@@ -13,6 +13,7 @@ const SYMBOL_MAP: Record<string, string> = {
   EURUSD: 'FX:EURUSD',
   GBPUSD: 'FX:GBPUSD',
   USDJPY: 'FX:USDJPY',
+  AUDUSD: 'FX:AUDUSD',
 };
 
 export default function TradingViewMiniChart({

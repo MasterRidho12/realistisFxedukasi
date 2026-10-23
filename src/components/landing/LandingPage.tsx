@@ -56,6 +56,7 @@ import {
 import { useUser } from '@/context/UserContext';
 import { EnrichedNewsItem } from '@/app/api/news/route';
 import type { HistoricalSignalItem } from '@/app/api/signals/route';
+import AiBacktestSection from '@/components/landing/AiBacktestSection';
 
 interface LandingPageProps {
   onOpenAuth?: (initialMode?: 'login' | 'register') => void;
@@ -676,7 +677,11 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-slate-600">
+          <nav className="hidden lg:flex items-center gap-5 text-xs font-bold text-slate-600">
+            <a href="#ai-backtest" className="hover:text-[#00A651] transition-colors flex items-center gap-1.5 text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+              <LineChart className="w-3.5 h-3.5 text-[#00A651]" />
+              <span>Backtest AI (2020-2026)</span>
+            </a>
             <a href="#track-record" className="hover:text-[#00A651] transition-colors flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-[#00A651]" />
               <span>Riwayat Sinyal Berita</span>
@@ -738,6 +743,20 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           <div className="lg:hidden border-t border-slate-200 bg-white/98 backdrop-blur-lg px-4 pt-4 pb-8 space-y-4 shadow-xl animate-in slide-in-from-top-4 duration-200 max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain">
             {/* Navigation Links */}
             <nav className="grid grid-cols-1 gap-1 text-xs font-bold text-slate-700">
+              <a
+                href="#ai-backtest"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 hover:bg-emerald-100 transition-colors"
+              >
+                <div className="p-1.5 rounded-lg bg-[#00A651] text-white">
+                  <LineChart className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-emerald-950 font-black">Backtest AI: SNR &amp; Breakout (2020-2026)</div>
+                  <div className="text-[10px] text-emerald-700 font-semibold">5 Pair TradingView (+178,650 Pips • WR 79.8%)</div>
+                </div>
+              </a>
+
               <a
                 href="#track-record"
                 onClick={() => setMobileMenuOpen(false)}
@@ -912,6 +931,14 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             </a>
 
             <a
+              href="#ai-backtest"
+              className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-[#00A651] font-extrabold text-xs sm:text-sm border border-emerald-300 shadow-xs active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <LineChart className="w-4 h-4 text-[#00A651]" />
+              <span>Hasil Backtest AI (2020 - 2026)</span>
+            </a>
+
+            <a
               href="#track-record"
               className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs sm:text-sm border border-slate-300 shadow-xs hover:border-slate-400 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
@@ -1010,6 +1037,9 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           </div>
         </div>
       </section>
+
+      {/* 3b. AI QUANTITATIVE BACKTEST SECTION (2020 - 2026) - 5 PAIRS WITH SNR & BREAKOUT */}
+      <AiBacktestSection onOpenAuth={openAuth} onOpenPayment={openPaymentModal} />
 
       {/* 4. VERIFIED HISTORICAL NEWS SIGNALS & TRACK RECORD (Real Official BLS/Fed Data) */}
       <section id="track-record" className="py-16 sm:py-20 bg-slate-50 border-b border-slate-200 scroll-mt-20 sm:scroll-mt-24">
