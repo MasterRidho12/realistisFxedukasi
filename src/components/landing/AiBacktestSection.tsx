@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   Lock,
   ChevronRight,
-  Filter,
   BarChart3,
   Flame,
   Award,
@@ -22,22 +21,12 @@ import {
   Zap,
   Info,
   Maximize2,
-  X,
   Target,
-  Search,
-  Sliders,
-  DollarSign,
-  ArrowDownRight,
-  ChevronDown
+  Crown
 } from 'lucide-react';
 import {
   PairKey,
-  BacktestTrade,
   BACKTEST_PAIRS,
-  ALL_HISTORICAL_TRADES,
-  BACKTEST_MONTHLY_DATA,
-  BACKTEST_DAILY_STATS,
-  BACKTEST_EQUITY_CURVE,
   EquityCurvePoint
 } from '@/data/backtestData';
 import TradingViewMiniChart from '@/components/tradingview/TradingViewMiniChart';
@@ -54,50 +43,14 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
   // 2. Chart Mode: 'EQUITY_CURVE' | 'CANDLE_SIMULATOR' | 'TRADINGVIEW_WIDGET'
   const [chartMode, setChartMode] = useState<'EQUITY_CURVE' | 'CANDLE_SIMULATOR' | 'TRADINGVIEW_WIDGET'>('EQUITY_CURVE');
 
-  // 3. Pips Calculation Mode: 'DAILY' | 'MONTHLY' | 'YEARLY'
-  const [pipsCalcMode, setPipsCalcMode] = useState<'DAILY' | 'MONTHLY' | 'YEARLY'>('MONTHLY');
+  // 3. Pips Calculation Mode: 'MONTHLY' | 'DAILY' | 'YEARLY'
+  const [pipsCalcMode, setPipsCalcMode] = useState<'MONTHLY' | 'DAILY' | 'YEARLY'>('MONTHLY');
 
-  // 4. Trade History Filter States
-  const [selectedYearFilter, setSelectedYearFilter] = useState<string>('ALL');
-  const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>('ALL');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
-  // 5. Active Hovered Point on SVG Chart
+  // 4. Active Hovered Point on SVG Chart
   const [hoveredPoint, setHoveredPoint] = useState<EquityCurvePoint | null>(null);
-
-  // 6. Detailed Trade Modal
-  const [activeTradeModal, setActiveTradeModal] = useState<BacktestTrade | null>(null);
 
   // Active Pair Metrics
   const pairData = BACKTEST_PAIRS[selectedPair];
-
-  // Filtered Trades for the Table Log
-  const filteredTrades = useMemo(() => {
-    let list = selectedPair === 'ALL' ? ALL_HISTORICAL_TRADES : pairData.trades;
-
-    if (selectedYearFilter !== 'ALL') {
-      const yr = parseInt(selectedYearFilter, 10);
-      list = list.filter((t) => t.year === yr);
-    }
-
-    if (selectedTypeFilter !== 'ALL') {
-      list = list.filter((t) => t.type.includes(selectedTypeFilter));
-    }
-
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(
-        (t) =>
-          t.pair.toLowerCase().includes(q) ||
-          t.keySnrLevel.toLowerCase().includes(q) ||
-          t.aiAnalysis.toLowerCase().includes(q) ||
-          t.tradingViewRef.toLowerCase().includes(q) ||
-          t.date.toLowerCase().includes(q)
-      );
-    }
-
-    return list;
-  }, [selectedPair, pairData, selectedYearFilter, selectedTypeFilter, searchQuery]);
 
   // SVG Chart Geometry Calculations
   const chartPoints = pairData.equityCurve;
@@ -131,46 +84,46 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
   }, [svgPathData, usableWidth]);
 
   return (
-    <section id="ai-backtest" className="py-16 sm:py-24 bg-[#0B131B] text-white relative overflow-hidden border-b border-slate-800 scroll-mt-14 sm:scroll-mt-20">
-      {/* Background Glow Accents */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#00A651]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+    <section id="ai-backtest" className="py-14 sm:py-20 bg-[#F8FAFC] text-slate-900 relative overflow-hidden border-b border-slate-200 scroll-mt-14 sm:scroll-mt-20">
+      {/* Subtle Ambient Background Highlights */}
+      <div className="absolute top-0 left-1/3 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-emerald-50/50 rounded-full blur-3xl pointer-events-none -z-10" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10 relative z-10">
         {/* ========================================================= */}
         {/* SECTION HEADER                                            */}
         {/* ========================================================= */}
-        <div className="text-center max-w-4xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-black tracking-wide uppercase shadow-sm">
-            <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-            <span>Audit Backtest AI Kuantitatif 2020 – 2026 (7 Tahun Data Nyata)</span>
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-black uppercase tracking-wider shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-[#00A651]" />
+            <span>Audit Backtest AI Kuantitatif 2020 – 2026 (Data Nyata)</span>
           </div>
 
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-snug">
             Hasil Backtest AI: Strategi Key{' '}
             <span className="text-[#00A651]">Support &amp; Resistance (SNR)</span> +{' '}
-            <span className="text-emerald-400">Breakout Momentum</span>
+            <span className="text-emerald-700">Breakout Momentum</span>
           </h2>
 
-          <p className="text-xs sm:text-sm text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            Dianalisis secara objektif oleh mesin komputasi AI RealistisFx dengan merujuk langsung ke harga historis riil{' '}
-            <strong className="text-white font-bold underline decoration-emerald-500">TradingView</strong> dari{' '}
-            <span className="text-emerald-400 font-extrabold">Januari 2020 hingga Oktober 2026</span>. Bukan data tebakan atau khayalan, setiap titik entry Buy &amp; Sell diverifikasi dengan level Support &amp; Resistance pasar yang sesungguhnya.
+          <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Dianalisis secara objektif oleh algoritma AI RealistisFx merujuk langsung ke harga historis riil{' '}
+            <strong className="text-slate-900 font-bold underline decoration-[#00A651]">TradingView</strong> dari{' '}
+            <span className="text-[#00A651] font-extrabold">Januari 2020 hingga Oktober 2026</span> di 5 pair utama, dengan kalkulasi pips harian, bulanan, dan tahunan.
           </p>
         </div>
 
         {/* ========================================================= */}
-        {/* 5-PAIR TABS SELECTOR (XAUUSD, EURUSD, USDJPY, GBPUSD, AUDUSD, ALL) */}
+        {/* 5-PAIR SELECTOR (XAUUSD, EURUSD, USDJPY, GBPUSD, AUDUSD, ALL) */}
         {/* ========================================================= */}
-        <div className="bg-slate-900/80 p-2 sm:p-2.5 rounded-2xl sm:rounded-3xl border border-slate-800 shadow-xl backdrop-blur-md">
+        <div className="bg-white p-2 sm:p-2.5 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
             {[
               { key: 'ALL' as PairKey, label: 'Portofolio 5 Pair', sub: 'Gabungan AI', icon: Layers, badge: 'All-In-One' },
               { key: 'XAUUSD' as PairKey, label: 'XAUUSD (Gold)', sub: 'Emas Spot', icon: Flame, badge: 'WR 82.1%' },
-              { key: 'EURUSD' as PairKey, label: 'EURUSD', sub: 'Euro / US Dollar', icon: Activity, badge: 'WR 78.8%' },
-              { key: 'USDJPY' as PairKey, label: 'USDJPY', sub: 'Dollar / Yen', icon: TrendingUp, badge: 'WR 80.6%' },
-              { key: 'GBPUSD' as PairKey, label: 'GBPUSD', sub: 'Pound / Dollar', icon: BarChart3, badge: 'WR 78.4%' },
-              { key: 'AUDUSD' as PairKey, label: 'AUDUSD', sub: 'Aussie / Dollar', icon: Target, badge: 'WR 76.8%' },
+              { key: 'EURUSD' as PairKey, label: 'EURUSD', sub: 'Euro / USD', icon: Activity, badge: 'WR 78.8%' },
+              { key: 'USDJPY' as PairKey, label: 'USDJPY', sub: 'USD / Yen', icon: TrendingUp, badge: 'WR 80.6%' },
+              { key: 'GBPUSD' as PairKey, label: 'GBPUSD', sub: 'Pound / USD', icon: BarChart3, badge: 'WR 78.4%' },
+              { key: 'AUDUSD' as PairKey, label: 'AUDUSD', sub: 'Aussie / USD', icon: Target, badge: 'WR 76.8%' },
             ].map((p) => {
               const Icon = p.icon;
               const isActive = selectedPair === p.key;
@@ -180,23 +133,23 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                   key={p.key}
                   type="button"
                   onClick={() => setSelectedPair(p.key)}
-                  className={`p-3 sm:p-3.5 rounded-xl sm:rounded-2xl transition-all cursor-pointer text-left flex flex-col justify-between group relative overflow-hidden ${
+                  className={`p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl transition-all cursor-pointer text-left flex flex-col justify-between group min-w-0 ${
                     isActive
-                      ? 'bg-gradient-to-br from-[#00A651] to-emerald-800 text-white shadow-lg shadow-[#00A651]/25 ring-2 ring-emerald-400/50'
-                      : 'bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-slate-700/50'
+                      ? 'bg-[#00A651] text-white shadow-md shadow-[#00A651]/20 ring-2 ring-[#00A651]/30'
+                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'
                   }`}
                 >
                   <div className="flex items-center justify-between w-full mb-1">
-                    <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${isActive ? 'bg-black/30 text-white' : 'bg-slate-700/60 text-slate-400'}`}>
+                    <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded truncate ${isActive ? 'bg-black/20 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}>
                       {p.badge}
                     </span>
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-emerald-400 group-hover:scale-110 transition-transform'}`} />
+                    <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${isActive ? 'text-white' : 'text-[#00A651]'}`} />
                   </div>
-                  <div>
-                    <div className="font-black text-xs sm:text-sm tracking-tight truncate text-white">
+                  <div className="min-w-0">
+                    <div className={`font-black text-xs sm:text-sm tracking-tight truncate ${isActive ? 'text-white' : 'text-slate-900'}`}>
                       {p.label}
                     </div>
-                    <div className={`text-[10px] truncate ${isActive ? 'text-emerald-100' : 'text-slate-400'}`}>
+                    <div className={`text-[10px] truncate ${isActive ? 'text-emerald-100' : 'text-slate-500'}`}>
                       {p.sub}
                     </div>
                   </div>
@@ -209,151 +162,151 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
         {/* ========================================================= */}
         {/* SUMMARY METRIC CARDS FOR ACTIVE PAIR                      */}
         {/* ========================================================= */}
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-2.5 sm:gap-4">
           {/* Card 1: Win Rate */}
-          <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-emerald-500/30 shadow-md flex flex-col justify-between relative overflow-hidden">
-            <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-              <span className="font-semibold">Win Rate AI</span>
-              <Award className="w-4 h-4 text-emerald-400" />
+          <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between min-w-0">
+            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+              <span className="font-semibold truncate">Win Rate AI</span>
+              <Award className="w-3.5 h-3.5 text-[#00A651] shrink-0" />
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black font-mono text-[#00A651]">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-black font-mono text-[#00A651] truncate">
                 {pairData.winRate}%
               </div>
-              <div className="text-[11px] text-slate-300 mt-1">
-                <span className="text-emerald-400 font-bold">{pairData.winningTrades} Menang</span> / {pairData.losingTrades} Kalah
+              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">
+                <span className="text-[#00A651] font-bold">{pairData.winningTrades} W</span> / {pairData.losingTrades} L
               </div>
             </div>
-            <div className="w-full bg-slate-800 h-1.5 rounded-full mt-3 overflow-hidden">
+            <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2.5 overflow-hidden">
               <div className="bg-[#00A651] h-full rounded-full" style={{ width: `${pairData.winRate}%` }} />
             </div>
           </div>
 
           {/* Card 2: Total Pips 2020-2026 */}
-          <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 shadow-md flex flex-col justify-between">
-            <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-              <span className="font-semibold">Total Pips (6+ Thn)</span>
-              <TrendingUp className="w-4 h-4 text-[#00A651]" />
+          <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between min-w-0">
+            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+              <span className="font-semibold truncate">Total Pips (6+ Thn)</span>
+              <TrendingUp className="w-3.5 h-3.5 text-[#00A651] shrink-0" />
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black font-mono text-white">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-black font-mono text-slate-900 truncate">
                 +{pairData.totalPips.toLocaleString('id-ID')}
               </div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                Akumulasi Net Gain Pips
+              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">
+                Akumulasi Net Gain
               </div>
             </div>
-            <span className="text-[10px] text-emerald-400 font-mono mt-3">
-              Total {pairData.totalTrades} Transaksi AI
+            <span className="text-[10px] text-[#00A651] font-mono font-bold mt-2 truncate">
+              {pairData.totalTrades} Transaksi
             </span>
           </div>
 
           {/* Card 3: Rata-rata Pips Per Hari */}
-          <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 shadow-md flex flex-col justify-between">
-            <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-              <span className="font-semibold">Pips / Hari (Avg)</span>
-              <Clock className="w-4 h-4 text-sky-400" />
+          <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between min-w-0">
+            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+              <span className="font-semibold truncate">Pips / Hari (Avg)</span>
+              <Clock className="w-3.5 h-3.5 text-sky-600 shrink-0" />
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-300">
-                +{pairData.avgDailyPips} Pips
+              <div className="text-xl sm:text-2xl lg:text-3xl font-black font-mono text-sky-700 truncate">
+                +{pairData.avgDailyPips}
               </div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                Rata-rata Harian Aktif
+              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">
+                Pips / Hari Aktif
               </div>
             </div>
-            <span className="text-[10px] text-sky-400 font-mono mt-3">
-              Best Day: +{pairData.dailyStats.bestDayPips} Pips
+            <span className="text-[10px] text-sky-600 font-mono font-bold mt-2 truncate">
+              Best: +{pairData.dailyStats.bestDayPips} Pips
             </span>
           </div>
 
           {/* Card 4: Rata-rata Pips Per Bulan */}
-          <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 shadow-md flex flex-col justify-between">
-            <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-              <span className="font-semibold">Pips / Bulan (Avg)</span>
-              <Calendar className="w-4 h-4 text-amber-400" />
+          <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between min-w-0">
+            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+              <span className="font-semibold truncate">Pips / Bulan (Avg)</span>
+              <Calendar className="w-3.5 h-3.5 text-amber-600 shrink-0" />
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black font-mono text-white">
-                +{pairData.avgMonthlyPips} Pips
+              <div className="text-xl sm:text-2xl lg:text-3xl font-black font-mono text-slate-900 truncate">
+                +{pairData.avgMonthlyPips}
               </div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                Konsistensi Performa Bulanan
+              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">
+                Rata-rata Konsisten
               </div>
             </div>
-            <span className="text-[10px] text-amber-400 font-mono mt-3">
+            <span className="text-[10px] text-amber-700 font-mono font-bold mt-2 truncate">
               Best: {pairData.bestYear}
             </span>
           </div>
 
-          {/* Card 5: Profit Factor & Sharpe */}
-          <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 shadow-md flex flex-col justify-between">
-            <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-              <span className="font-semibold">Profit Factor</span>
-              <Zap className="w-4 h-4 text-emerald-400" />
+          {/* Card 5: Profit Factor */}
+          <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between min-w-0">
+            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+              <span className="font-semibold truncate">Profit Factor</span>
+              <Zap className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black font-mono text-[#00A651]">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-black font-mono text-[#00A651] truncate">
                 {pairData.profitFactor}
               </div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                Sharpe Ratio: {pairData.sharpeRatio}
+              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">
+                Sharpe: {pairData.sharpeRatio}
               </div>
             </div>
-            <span className="text-[10px] text-slate-400 font-mono mt-3">
-              R:R Rata-rata: {pairData.avgRiskReward}
+            <span className="text-[10px] text-slate-600 font-mono font-bold mt-2 truncate">
+              RR: {pairData.avgRiskReward}
             </span>
           </div>
 
-          {/* Card 6: Max Drawdown Terkendali */}
-          <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 shadow-md flex flex-col justify-between">
-            <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-              <span className="font-semibold">Max Drawdown</span>
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          {/* Card 6: Max Drawdown */}
+          <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between min-w-0">
+            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+              <span className="font-semibold truncate">Max Drawdown</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             </div>
             <div>
-              <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-400">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-black font-mono text-emerald-700 truncate">
                 {pairData.maxDrawdownPct}%
               </div>
-              <div className="text-[11px] text-slate-400 mt-1">
-                Risiko Ketat Maks 1-2%
+              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">
+                Risiko 1-2% Terkontrol
               </div>
             </div>
-            <span className="text-[10px] text-emerald-400 font-mono mt-3">
-              Disiplin SOP Anti-MC
+            <span className="text-[10px] text-[#00A651] font-mono font-bold mt-2 truncate">
+              SOP Anti-MC
             </span>
           </div>
         </div>
 
         {/* ========================================================= */}
-        {/* INTERACTIVE CHART SECTION                                 */}
+        {/* INTERACTIVE CHART SECTION (LIGHT THEME)                   */}
         {/* ========================================================= */}
-        <div className="bg-slate-900/90 rounded-3xl border border-slate-800 shadow-2xl p-4 sm:p-6 lg:p-8 space-y-6">
+        <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xs p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Chart Header & Mode Tabs */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-mono text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/30">
+                <span className="font-mono text-xs font-bold text-[#00A651] bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200">
                   {pairData.name} ({pairData.symbol})
                 </span>
-                <span className="text-xs text-slate-400">
-                  Visualisasi Grafik Kuantitatif 2020 - 2026
+                <span className="text-xs text-slate-500">
+                  Visualisasi Grafik Kuantitatif 2020 – 2026
                 </span>
               </div>
-              <h3 className="text-lg sm:text-xl font-black text-white mt-1">
-                Kurva Pertumbuhan Akumulasi Pips &amp; Validasi Level Chart
+              <h3 className="text-base sm:text-lg font-black text-slate-900 mt-1">
+                Grafik Pertumbuhan Akumulasi Pips &amp; Validasi Level Chart
               </h3>
             </div>
 
             {/* View Mode Switcher */}
-            <div className="flex items-center gap-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800 shrink-0 self-start md:self-auto overflow-x-auto w-full md:w-auto">
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0 self-start sm:self-auto overflow-x-auto max-w-full">
               <button
                 type="button"
                 onClick={() => setChartMode('EQUITY_CURVE')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   chartMode === 'EQUITY_CURVE'
                     ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <LineChart className="w-3.5 h-3.5" />
@@ -363,10 +316,10 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
               <button
                 type="button"
                 onClick={() => setChartMode('CANDLE_SIMULATOR')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   chartMode === 'CANDLE_SIMULATOR'
                     ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Target className="w-3.5 h-3.5" />
@@ -376,10 +329,10 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
               <button
                 type="button"
                 onClick={() => setChartMode('TRADINGVIEW_WIDGET')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   chartMode === 'TRADINGVIEW_WIDGET'
                     ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Maximize2 className="w-3.5 h-3.5" />
@@ -388,43 +341,39 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
             </div>
           </div>
 
-          {/* VIEW 1: INTERACTIVE SVG EQUITY CURVE */}
+          {/* VIEW 1: LIGHT SVG EQUITY CURVE */}
           {chartMode === 'EQUITY_CURVE' && (
-            <div className="space-y-4">
-              <div className="relative w-full overflow-hidden bg-slate-950 rounded-2xl border border-slate-800 p-2 sm:p-4">
+            <div className="space-y-3">
+              <div className="relative w-full overflow-hidden bg-slate-50/70 rounded-2xl border border-slate-200 p-2 sm:p-4">
                 {/* Milestone Info Banner if hovered */}
                 {hoveredPoint ? (
-                  <div className="absolute top-4 right-4 z-20 bg-slate-900/95 border border-emerald-500/40 p-3 rounded-xl shadow-xl max-w-xs animate-in fade-in duration-150 backdrop-blur-md">
-                    <div className="flex items-center justify-between text-xs text-slate-400 font-mono mb-1">
-                      <span>{hoveredPoint.date}</span>
-                      <span className="text-emerald-400 font-black font-mono">+{hoveredPoint.cumulativePips.toLocaleString()} Pips</span>
+                  <div className="absolute top-3 right-3 z-20 bg-white/95 border border-emerald-300 p-2.5 rounded-xl shadow-md max-w-xs animate-in fade-in duration-150 backdrop-blur-xs text-xs">
+                    <div className="flex items-center justify-between font-mono mb-1 gap-2">
+                      <span className="text-slate-500 font-bold">{hoveredPoint.date}</span>
+                      <span className="text-[#00A651] font-black">+{hoveredPoint.cumulativePips.toLocaleString()} Pips</span>
                     </div>
                     {hoveredPoint.milestone && (
-                      <p className="text-[11px] text-white font-bold leading-snug">
+                      <p className="text-[11px] text-slate-800 font-bold leading-snug">
                         ⚡ {hoveredPoint.milestone}
                       </p>
                     )}
                   </div>
                 ) : (
-                  <div className="absolute top-4 right-4 z-20 bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded-lg text-[11px] text-slate-400 font-mono hidden sm:block">
-                    Arahkan mouse / ketuk titik kurva untuk melihat data
+                  <div className="absolute top-3 right-3 z-20 bg-white/90 border border-slate-200 px-2.5 py-1 rounded-lg text-[10px] text-slate-500 font-mono hidden sm:block">
+                    Arahkan mouse / ketuk titik kurva untuk melihat rincian
                   </div>
                 )}
 
                 {/* SVG Responsive Container */}
                 <svg
                   viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-                  className="w-full h-56 sm:h-72 overflow-visible select-none"
+                  className="w-full h-52 sm:h-64 lg:h-72 overflow-visible select-none"
                 >
                   <defs>
-                    <linearGradient id="equityGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#00A651" stopOpacity="0.45" />
+                    <linearGradient id="equityGradLight" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#00A651" stopOpacity="0.22" />
                       <stop offset="100%" stopColor="#00A651" stopOpacity="0.0" />
                     </linearGradient>
-                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="3" result="glow" />
-                      <feComposite in="SourceGraphic" in2="glow" operator="over" />
-                    </filter>
                   </defs>
 
                   {/* Horizontal Grid lines */}
@@ -438,7 +387,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                           y1={y}
                           x2={svgWidth - paddingX}
                           y2={y}
-                          stroke="#1E293B"
+                          stroke="#E2E8F0"
                           strokeDasharray="4 4"
                           strokeWidth="1"
                         />
@@ -462,7 +411,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                     y1={svgHeight - paddingY}
                     x2={svgWidth - paddingX}
                     y2={svgHeight - paddingY}
-                    stroke="#334155"
+                    stroke="#CBD5E1"
                     strokeWidth="1.5"
                   />
                   <text
@@ -477,7 +426,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                   </text>
 
                   {/* Area fill */}
-                  <path d={svgAreaPathData} fill="url(#equityGrad)" />
+                  <path d={svgAreaPathData} fill="url(#equityGradLight)" />
 
                   {/* Main Line */}
                   <path
@@ -487,7 +436,6 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                     strokeWidth="3.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    filter="url(#glow)"
                   />
 
                   {/* Points on line */}
@@ -500,29 +448,29 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                     return (
                       <g
                         key={pt.timestamp}
-                        className="cursor-pointer transition-all"
+                        className="cursor-pointer"
                         onMouseEnter={() => setHoveredPoint(pt)}
                         onClick={() => setHoveredPoint(pt)}
+                        onTouchStart={() => setHoveredPoint(pt)}
                       >
                         {/* Milestone indicator ring */}
                         {hasMilestone && (
                           <circle
                             cx={x}
                             cy={y}
-                            r={isHovered ? 9 : 6.5}
+                            r={isHovered ? 8 : 6}
                             fill="none"
                             stroke="#EAB308"
                             strokeWidth="2"
-                            className="animate-pulse"
                           />
                         )}
 
                         <circle
                           cx={x}
                           cy={y}
-                          r={isHovered ? 6 : 4}
-                          fill={hasMilestone ? '#EAB308' : isHovered ? '#FFFFFF' : '#00A651'}
-                          stroke="#0B131B"
+                          r={isHovered ? 5.5 : 3.5}
+                          fill={hasMilestone ? '#EAB308' : isHovered ? '#008F45' : '#00A651'}
+                          stroke="#FFFFFF"
                           strokeWidth="2"
                         />
 
@@ -531,7 +479,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                           <text
                             x={x}
                             y={svgHeight - 8}
-                            fill="#94A3B8"
+                            fill="#64748B"
                             fontSize="9"
                             textAnchor="middle"
                             fontFamily="monospace"
@@ -546,96 +494,96 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
               </div>
 
               {/* Chart Footer Highlights */}
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
-                <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 pt-1">
+                <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-3 rounded-full bg-[#00A651]" />
-                    <span>Pertumbuhan Pips Akumulatif</span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#00A651]" />
+                    <span>Akumulasi Pips Konsisten</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-3 rounded-full bg-amber-400 ring-2 ring-amber-400/30" />
-                    <span>Momen Volatilitas / Breakout Mayor</span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 ring-2 ring-amber-200" />
+                    <span>Momen Breakout Mayor</span>
                   </div>
                 </div>
-                <div className="text-emerald-400 font-mono font-bold">
+                <div className="text-[#00A651] font-mono font-bold">
                   Total Gain 2020-2026: +{pairData.totalPips.toLocaleString()} Pips
                 </div>
               </div>
             </div>
           )}
 
-          {/* VIEW 2: SNR & BREAKOUT ANATOMY SIMULATOR */}
+          {/* VIEW 2: SNR & BREAKOUT ANATOMY SIMULATOR (LIGHT THEME) */}
           {chartMode === 'CANDLE_SIMULATOR' && (
-            <div className="bg-slate-950 p-5 sm:p-7 rounded-2xl border border-slate-800 space-y-6">
+            <div className="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-200 space-y-5">
               <div className="max-w-2xl">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00A651] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                   Playbook Algoritma AI RealistisFx
                 </span>
-                <h4 className="text-base sm:text-lg font-black text-white mt-1">
+                <h4 className="text-sm sm:text-base font-black text-slate-900 mt-1">
                   Bagaimana AI Memvalidasi Level Kunci SNR &amp; Menghindari False Breakout
                 </h4>
-                <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
                   Algoritma tidak pernah entry saat harga menyentuh garis resistensi pertama kali. AI menunggu 3 konfirmasi: Breakout Candle Close di atas Key Level, Volume Spike 1.5x ATR, dan Retest konfirmasi rejection (RBS).
                 </p>
               </div>
 
-              {/* Visual Interactive Diagram */}
-              <div className="relative p-6 sm:p-8 rounded-2xl bg-slate-900/90 border border-slate-700/80 overflow-hidden font-mono text-xs">
+              {/* Visual Interactive Diagram in Light Theme */}
+              <div className="relative p-4 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs overflow-hidden font-mono text-xs">
                 {/* Resistance Level Line */}
-                <div className="relative flex items-center justify-between pb-10 border-b-2 border-dashed border-rose-500/80">
-                  <span className="text-rose-400 font-bold bg-rose-950/80 px-2.5 py-1 rounded border border-rose-500/40">
+                <div className="relative flex items-center justify-between pb-8 border-b-2 border-dashed border-rose-400">
+                  <span className="text-rose-700 font-bold bg-rose-50 px-2.5 py-1 rounded-md border border-rose-200 text-[11px] sm:text-xs">
                     🔴 KEY RESISTANCE LEVEL (Contoh: $2,075.00 ATH / Paritas 1.0000)
                   </span>
-                  <span className="text-[11px] text-rose-300 font-bold hidden sm:inline">
+                  <span className="text-[10px] text-rose-600 font-bold hidden sm:inline">
                     Zona Plafon Kuat (Sell Liquidity Pool)
                   </span>
                 </div>
 
                 {/* Simulated Candle Sequence */}
-                <div className="my-8 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                <div className="my-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                   {/* Step 1: Accumulation */}
-                  <div className="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700">
-                    <span className="text-[10px] font-bold text-slate-400 block mb-1">TAHAP 1</span>
-                    <div className="font-bold text-slate-200">Konsolidasi di Bawah SNR</div>
-                    <p className="text-[10px] text-slate-400 mt-1 font-sans">
-                      Harga menguji level resistensi 2-3x membentuk higher lows (akumulasi buyer).
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <span className="text-[10px] font-bold text-slate-400 block mb-0.5">TAHAP 1</span>
+                    <div className="font-bold text-slate-900 text-xs">Konsolidasi SNR</div>
+                    <p className="text-[10px] text-slate-500 mt-1 font-sans leading-snug">
+                      Harga menguji level resistensi 2-3x membentuk higher lows.
                     </p>
                   </div>
 
                   {/* Step 2: Breakout with Volume */}
-                  <div className="p-3.5 rounded-xl bg-emerald-950/70 border border-emerald-500/50 ring-1 ring-emerald-500/30">
-                    <span className="text-[10px] font-bold text-emerald-400 block mb-1">TAHAP 2: TRIGGER</span>
-                    <div className="font-bold text-emerald-300">Breakout Close Candle H1</div>
-                    <p className="text-[10px] text-emerald-200/80 mt-1 font-sans">
+                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-300 ring-1 ring-emerald-200">
+                    <span className="text-[10px] font-bold text-[#00A651] block mb-0.5">TAHAP 2: TRIGGER</span>
+                    <div className="font-bold text-emerald-900 text-xs">Breakout Candle H1</div>
+                    <p className="text-[10px] text-emerald-700 mt-1 font-sans leading-snug">
                       Candle menutup penuh di atas resistensi dengan volume &gt; 150% ATR.
                     </p>
                   </div>
 
                   {/* Step 3: Retest Confirmation */}
-                  <div className="p-3.5 rounded-xl bg-sky-950/70 border border-sky-500/50">
-                    <span className="text-[10px] font-bold text-sky-400 block mb-1">TAHAP 3: ENTRY</span>
-                    <div className="font-bold text-sky-300">Retest RBS (Resistance to Support)</div>
-                    <p className="text-[10px] text-sky-200/80 mt-1 font-sans">
-                      Harga pullback menguji garis yang tertembus, wick rejection memicu eksekusi buy order.
+                  <div className="p-3 rounded-xl bg-sky-50 border border-sky-300">
+                    <span className="text-[10px] font-bold text-sky-700 block mb-0.5">TAHAP 3: ENTRY</span>
+                    <div className="font-bold text-sky-900 text-xs">Retest RBS (Pullback)</div>
+                    <p className="text-[10px] text-sky-700 mt-1 font-sans leading-snug">
+                      Harga pullback menguji garis tertembus, wick rejection memicu order buy.
                     </p>
                   </div>
 
                   {/* Step 4: Exit TP1 / TP2 */}
-                  <div className="p-3.5 rounded-xl bg-amber-950/70 border border-amber-500/50">
-                    <span className="text-[10px] font-bold text-amber-400 block mb-1">TAHAP 4: RESULT</span>
-                    <div className="font-bold text-amber-300">Hit TP1 &amp; Trailing TP2</div>
-                    <p className="text-[10px] text-amber-200/80 mt-1 font-sans">
-                      Amankan 50% lot di TP1 (1:1.5 RR), biarkan sisa runner mencapai TP2 (+1:3.0 RR).
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-300">
+                    <span className="text-[10px] font-bold text-amber-700 block mb-0.5">TAHAP 4: RESULT</span>
+                    <div className="font-bold text-amber-900 text-xs">Hit TP1 &amp; Trailing TP2</div>
+                    <p className="text-[10px] text-amber-700 mt-1 font-sans leading-snug">
+                      Kunci 50% lot di TP1 (1:1.5 RR), biarkan sisa runner capai TP2 (+1:3.0 RR).
                     </p>
                   </div>
                 </div>
 
                 {/* Support Level Line */}
-                <div className="relative flex items-center justify-between pt-10 border-t-2 border-dashed border-emerald-500/80">
-                  <span className="text-emerald-400 font-bold bg-emerald-950/80 px-2.5 py-1 rounded border border-emerald-500/40">
+                <div className="relative flex items-center justify-between pt-8 border-t-2 border-dashed border-emerald-400">
+                  <span className="text-[#00A651] font-bold bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 text-[11px] sm:text-xs">
                     🟢 KEY SUPPORT LEVEL (Contoh: $1,616.00 / 0.9535 Parity Low)
                   </span>
-                  <span className="text-[11px] text-emerald-300 font-bold hidden sm:inline">
+                  <span className="text-[10px] text-[#00A651] font-bold hidden sm:inline">
                     Lantai Demand Institusional (Buy Liquidity Zone)
                   </span>
                 </div>
@@ -643,19 +591,19 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
             </div>
           )}
 
-          {/* VIEW 3: TRADINGVIEW DIRECT EMBED */}
+          {/* VIEW 3: TRADINGVIEW DIRECT EMBED (LIGHT THEME) */}
           {chartMode === 'TRADINGVIEW_WIDGET' && (
-            <div className="space-y-4">
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 flex items-center justify-between flex-wrap gap-2">
+            <div className="space-y-3">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center justify-between flex-wrap gap-2">
                 <span>
-                  Widget Resmi TradingView: Menampilkan harga pasar langsung pair{' '}
-                  <strong className="text-emerald-400">{pairData.symbol}</strong>.
+                  Widget Resmi TradingView: Menampilkan chart pasar langsung pair{' '}
+                  <strong className="text-[#00A651]">{pairData.symbol}</strong>.
                 </span>
-                <span className="font-mono text-[11px] text-slate-400">
+                <span className="font-mono text-[11px] text-slate-500 font-bold">
                   Data Feed: TradingView Real-Time
                 </span>
               </div>
-              <div className="rounded-2xl overflow-hidden border border-slate-800 bg-white shadow-lg">
+              <div className="rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-xs">
                 <TradingViewMiniChart
                   symbol={selectedPair === 'ALL' ? 'XAUUSD' : selectedPair}
                   height={320}
@@ -666,46 +614,46 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
         </div>
 
         {/* ========================================================= */}
-        {/* HITUNGAN PIPS SECTION: PER HARI, PER BULAN, PER TAHUN      */}
+        {/* HITUNGAN PIPS LENGKAP: PER HARI, PER BULAN, PER TAHUN      */}
         {/* ========================================================= */}
-        <div className="bg-slate-900/90 rounded-3xl border border-slate-800 shadow-2xl p-4 sm:p-6 lg:p-8 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+        <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xs p-4 sm:p-6 lg:p-8 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                <span className="p-1.5 rounded-lg bg-emerald-50 text-[#00A651] border border-emerald-200">
                   <BarChart3 className="w-4 h-4" />
                 </span>
-                <h3 className="text-lg sm:text-xl font-black text-white">
-                  Hitungan Pips Lengkap: Per Hari, Per Bulan &amp; Per Tahun
+                <h3 className="text-base sm:text-lg font-black text-slate-900">
+                  Hitungan Pips: Per Hari, Per Bulan &amp; Per Tahun
                 </h3>
               </div>
-              <p className="text-xs text-slate-400 mt-1">
-                Transparansi penuh performa pips AI dari 2020 hingga sekarang untuk pair {pairData.name}
+              <p className="text-xs text-slate-500 mt-0.5">
+                Rincian matriks perolehan pips algoritma AI dari 2020 sampai 2026 untuk {pairData.name}
               </p>
             </div>
 
             {/* Sub-mode selector */}
-            <div className="flex items-center gap-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800 shrink-0 self-start sm:self-auto">
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0 self-start sm:self-auto overflow-x-auto max-w-full">
               <button
                 type="button"
                 onClick={() => setPipsCalcMode('MONTHLY')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   pipsCalcMode === 'MONTHLY'
                     ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Calendar className="w-3.5 h-3.5" />
-                <span>Pips Per Bulan (Heatmap 2020-2026)</span>
+                <span>Pips Per Bulan (2020-2026)</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setPipsCalcMode('DAILY')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   pipsCalcMode === 'DAILY'
                     ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Clock className="w-3.5 h-3.5" />
@@ -715,10 +663,10 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
               <button
                 type="button"
                 onClick={() => setPipsCalcMode('YEARLY')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   pipsCalcMode === 'YEARLY'
                     ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Award className="w-3.5 h-3.5" />
@@ -727,38 +675,38 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
             </div>
           </div>
 
-          {/* 1. MONTHLY PIPS HEATMAP TABLE (2020 - 2026) */}
+          {/* 1. MONTHLY PIPS HEATMAP TABLE (LIGHT THEME) */}
           {pipsCalcMode === 'MONTHLY' && (
-            <div className="space-y-4">
-              <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950">
-                <table className="w-full min-w-[760px] text-xs text-center border-collapse">
+            <div className="space-y-3">
+              <div className="w-full max-w-full overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-xs overscroll-x-contain">
+                <table className="w-full min-w-[720px] text-xs text-center border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-800 bg-slate-900/90 text-slate-400 font-mono text-[11px]">
-                      <th className="p-3 text-left font-bold text-white">Tahun</th>
+                    <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-mono text-[11px]">
+                      <th className="p-3 text-left font-bold text-slate-900">Tahun</th>
                       {['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'].map((m) => (
                         <th key={m} className="p-2 font-semibold">
                           {m}
                         </th>
                       ))}
-                      <th className="p-3 font-bold text-emerald-400 bg-slate-900">Total Tahun</th>
-                      <th className="p-3 font-bold text-white bg-slate-900">Win Rate</th>
+                      <th className="p-3 font-bold text-[#00A651] bg-emerald-50/50">Total Thn</th>
+                      <th className="p-3 font-bold text-slate-900 bg-slate-100">Win Rate</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60 font-mono">
+                  <tbody className="divide-y divide-slate-100 font-mono">
                     {pairData.monthlyData.map((row) => (
-                      <tr key={row.year} className="hover:bg-slate-900/50 transition-colors">
-                        <td className="p-3 text-left font-bold text-white bg-slate-900/40">
+                      <tr key={row.year} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="p-3 text-left font-bold text-slate-900 bg-slate-50/40">
                           {row.year}
                         </td>
                         {row.months.map((m) => {
                           const isPositive = m.pips >= 0;
                           return (
-                            <td key={m.month} className="p-1.5 sm:p-2">
+                            <td key={m.month} className="p-1 sm:p-1.5">
                               <span
                                 className={`inline-block w-full py-1 px-1 rounded text-[11px] font-bold ${
                                   isPositive
-                                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                                    : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                                    ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                    : 'bg-rose-50 text-rose-700 border border-rose-200'
                                 }`}
                               >
                                 {isPositive ? `+${m.pips}` : m.pips}
@@ -766,10 +714,10 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                             </td>
                           );
                         })}
-                        <td className="p-3 font-black text-emerald-400 bg-slate-900/40">
+                        <td className="p-3 font-black text-[#00A651] bg-emerald-50/40">
                           +{row.totalPips.toLocaleString()}
                         </td>
-                        <td className="p-3 font-black text-white bg-slate-900/40">
+                        <td className="p-3 font-black text-slate-900 bg-slate-50/40">
                           {row.winRate}%
                         </td>
                       </tr>
@@ -778,45 +726,45 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                 </table>
               </div>
 
-              <div className="flex items-center justify-between text-xs text-slate-400 flex-wrap gap-2">
+              <div className="flex items-center justify-between text-xs text-slate-500 flex-wrap gap-2 pt-1">
                 <span>
-                  🟢 Hijau: Bulan profit neto positif | 🔴 Merah: Bulan drawdown terkendali (SL ketat 1-2%).
+                  🟢 Hijau: Bulan profit neto | 🔴 Merah: Bulan drawdown terkendali (SL ketat 1-2%).
                 </span>
-                <span className="text-emerald-400 font-mono font-bold">
-                  Konsistensi: &gt;96% bulan mencetak profit positif
+                <span className="text-[#00A651] font-mono font-bold">
+                  Konsistensi: &gt;96% bulan profit positif
                 </span>
               </div>
             </div>
           )}
 
-          {/* 2. DAILY PIPS STATS */}
+          {/* 2. DAILY PIPS STATS (LIGHT THEME) */}
           {pipsCalcMode === 'DAILY' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Daily Highlights Box */}
-              <div className="p-5 sm:p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
-                <h4 className="text-sm font-black text-white flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-emerald-400" />
-                  Statistik Rata-Rata Per Hari ({pairData.symbol})
+              <div className="p-4 sm:p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+                <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-[#00A651]" />
+                  Statistik Rata-Rata Harian ({pairData.symbol})
                 </h4>
 
                 <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-                    <span className="text-slate-400 block text-[11px]">Rata-rata Pips / Hari</span>
-                    <span className="text-lg font-black font-mono text-emerald-400 mt-1 block">
+                  <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
+                    <span className="text-slate-500 block text-[11px]">Rata-rata Pips / Hari</span>
+                    <span className="text-lg font-black font-mono text-[#00A651] mt-0.5 block">
                       +{pairData.dailyStats.avgPipsPerDay} Pips
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-                    <span className="text-slate-400 block text-[11px]">Win Rate Hari Trading</span>
-                    <span className="text-lg font-black font-mono text-white mt-1 block">
+                  <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
+                    <span className="text-slate-500 block text-[11px]">Win Rate Hari Trading</span>
+                    <span className="text-lg font-black font-mono text-slate-900 mt-0.5 block">
                       {pairData.dailyStats.winRateDaysPct}%
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-                    <span className="text-slate-400 block text-[11px]">Best Single Day</span>
-                    <span className="text-lg font-black font-mono text-emerald-300 mt-1 block">
+                  <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
+                    <span className="text-slate-500 block text-[11px]">Best Single Day</span>
+                    <span className="text-lg font-black font-mono text-emerald-700 mt-0.5 block">
                       +{pairData.dailyStats.bestDayPips} Pips
                     </span>
                     <span className="text-[10px] text-slate-400 truncate block mt-0.5">
@@ -824,26 +772,26 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800">
-                    <span className="text-slate-400 block text-[11px]">Max Daily Loss (Cutloss)</span>
-                    <span className="text-lg font-black font-mono text-rose-400 mt-1 block">
+                  <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
+                    <span className="text-slate-500 block text-[11px]">Max Daily Loss (Cutloss)</span>
+                    <span className="text-lg font-black font-mono text-rose-600 mt-0.5 block">
                       {pairData.dailyStats.maxDailyLossPips} Pips
                     </span>
                     <span className="text-[10px] text-slate-400 block mt-0.5">
-                      Terkunci otomatis SOP risiko
+                      Terkunci SOP ketat
                     </span>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed pt-2 border-t border-slate-800/80">
+                <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-200">
                   Dengan rata-rata <strong>+{pairData.dailyStats.avgPipsPerDay} pips/hari</strong>, trader dengan modal $1,000 (menggunakan 0.05 lot aman) memproyeksikan potensi pertumbuhan konsisten tanpa overtrading.
                 </p>
               </div>
 
               {/* Daily Distribution Bars */}
-              <div className="p-5 sm:p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
-                <h4 className="text-sm font-black text-white flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-emerald-400" />
+              <div className="p-4 sm:p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+                <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-[#00A651]" />
                   Distribusi Hasil Pips Per Hari
                 </h4>
 
@@ -851,12 +799,12 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                   {pairData.dailyStats.pipsDistribution.map((dist) => (
                     <div key={dist.range} className="space-y-1">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-mono text-slate-300">{dist.range}</span>
-                        <span className="font-mono font-bold text-white">
+                        <span className="font-mono text-slate-700 font-medium">{dist.range}</span>
+                        <span className="font-mono font-bold text-slate-900">
                           {dist.count} hari ({dist.percentage}%)
                         </span>
                       </div>
-                      <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                      <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full ${
                             dist.range.includes('>') || dist.range.includes('+50') || dist.range.includes('+30') || dist.range.includes('+15')
@@ -875,35 +823,35 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
             </div>
           )}
 
-          {/* 3. YEARLY PIPS SUMMARY (2020 - 2026) */}
+          {/* 3. YEARLY PIPS SUMMARY (LIGHT THEME) */}
           {pipsCalcMode === 'YEARLY' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
               {pairData.yearlyStats.map((yr) => (
                 <div
                   key={yr.year}
-                  className="p-5 rounded-2xl bg-slate-950 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-3"
+                  className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-emerald-300 transition-all flex flex-col justify-between space-y-2.5"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-black font-mono text-white">
+                    <span className="text-base sm:text-lg font-black font-mono text-slate-900">
                       {yr.year}
                     </span>
-                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-50 text-[#00A651] border border-emerald-200">
                       WR {yr.winRate}%
                     </span>
                   </div>
 
                   <div>
-                    <div className="text-2xl font-black font-mono text-[#00A651]">
+                    <div className="text-xl sm:text-2xl font-black font-mono text-[#00A651]">
                       +{yr.pips.toLocaleString()} Pips
                     </div>
-                    <div className="text-xs text-slate-400 mt-1">
-                      {yr.trades} Posisi ({yr.winningTrades} Menang / {yr.losingTrades} Kalah)
+                    <div className="text-xs text-slate-500 mt-0.5">
+                      {yr.trades} Posisi ({yr.winningTrades} W / {yr.losingTrades} L)
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
-                    <span>Profit Factor: <strong className="text-white">{yr.profitFactor}</strong></span>
-                    <span>Max DD: <strong className="text-emerald-400">{yr.maxDrawdownPct}%</strong></span>
+                  <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
+                    <span>Profit Factor: <strong className="text-slate-900">{yr.profitFactor}</strong></span>
+                    <span>Max DD: <strong className="text-emerald-700">{yr.maxDrawdownPct}%</strong></span>
                   </div>
                 </div>
               ))}
@@ -912,183 +860,18 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
         </div>
 
         {/* ========================================================= */}
-        {/* RIWAYAT ENTRY NYATA (VALIDASI TRADINGVIEW 2020 - 2026)      */}
-        {/* ========================================================= */}
-        <div className="bg-slate-900/90 rounded-3xl border border-slate-800 shadow-2xl p-4 sm:p-6 lg:p-8 space-y-6">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  <ShieldCheck className="w-4 h-4" />
-                </span>
-                <h3 className="text-lg sm:text-xl font-black text-white">
-                  Riwayat Entry Riil: Buy &amp; Sell Terverifikasi TradingView (2020 - 2026)
-                </h3>
-              </div>
-              <p className="text-xs text-slate-400 mt-1">
-                Bukan hasil khayalan. Setiap transaksi di bawah ini mencatat tanggal, jam WIB, level support resistance kunci, titik entry, stop loss, dan take profit riil.
-              </p>
-            </div>
-
-            {/* Filters Bar: Year, Type, Search */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* Year Filter */}
-              <div className="relative">
-                <select
-                  value={selectedYearFilter}
-                  onChange={(e) => setSelectedYearFilter(e.target.value)}
-                  className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-300 font-bold focus:border-[#00A651] outline-hidden cursor-pointer"
-                >
-                  <option value="ALL">Semua Tahun (2020-2026)</option>
-                  <option value="2026">2026 (Tahun Ini)</option>
-                  <option value="2025">2025</option>
-                  <option value="2024">2024</option>
-                  <option value="2023">2023</option>
-                  <option value="2022">2022</option>
-                  <option value="2021">2021</option>
-                  <option value="2020">2020</option>
-                </select>
-              </div>
-
-              {/* Type Filter */}
-              <div className="relative">
-                <select
-                  value={selectedTypeFilter}
-                  onChange={(e) => setSelectedTypeFilter(e.target.value)}
-                  className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-300 font-bold focus:border-[#00A651] outline-hidden cursor-pointer"
-                >
-                  <option value="ALL">Semua Tipe Entry</option>
-                  <option value="BUY">BUY Order</option>
-                  <option value="SELL">SELL Order</option>
-                  <option value="BREAKOUT">Breakout Momentum</option>
-                  <option value="RETEST">SNR Retest / Pullback</option>
-                </select>
-              </div>
-
-              {/* Search Box */}
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Cari level / tanggal..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-8 pr-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-500 focus:border-[#00A651] outline-hidden w-40 sm:w-48"
-                />
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
-              </div>
-            </div>
-          </div>
-
-          {/* Trade Table Logs */}
-          <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950">
-            <table className="w-full min-w-[850px] text-xs text-left">
-              <thead>
-                <tr className="border-b border-slate-800 bg-slate-900/90 text-slate-400 font-mono text-[11px]">
-                  <th className="p-3.5 font-bold">Waktu &amp; Tanggal</th>
-                  <th className="p-3.5 font-bold">Pair &amp; TF</th>
-                  <th className="p-3.5 font-bold">Arah &amp; Strategi</th>
-                  <th className="p-3.5 font-bold">Level Kunci SNR</th>
-                  <th className="p-3.5 font-bold">Harga Masuk (Entry)</th>
-                  <th className="p-3.5 font-bold">Stop Loss (SL)</th>
-                  <th className="p-3.5 font-bold">Target TP / Exit</th>
-                  <th className="p-3.5 font-bold">Hasil Pips</th>
-                  <th className="p-3.5 font-bold text-center">Status</th>
-                  <th className="p-3.5 font-bold text-center">Detail</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
-                {filteredTrades.map((t) => {
-                  const isBuy = t.type.includes('BUY');
-                  return (
-                    <tr
-                      key={t.id}
-                      className="hover:bg-slate-900/60 transition-colors cursor-pointer group"
-                      onClick={() => setActiveTradeModal(t)}
-                    >
-                      <td className="p-3.5 text-slate-300">
-                        <div className="font-bold">{t.date}</div>
-                        <div className="text-[10px] text-slate-500 font-sans">{t.session}</div>
-                      </td>
-
-                      <td className="p-3.5">
-                        <span className="font-extrabold text-white text-xs">{t.pairKey}</span>
-                        <span className="block text-[10px] text-slate-400">{t.timeframe}</span>
-                      </td>
-
-                      <td className="p-3.5">
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-black uppercase ${
-                            isBuy
-                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                              : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                          }`}
-                        >
-                          {t.type}
-                        </span>
-                      </td>
-
-                      <td className="p-3.5 font-sans text-slate-300 max-w-[200px] truncate" title={t.keySnrLevel}>
-                        <span className="font-semibold text-white block">{t.keySnrLevel}</span>
-                      </td>
-
-                      <td className="p-3.5 font-bold text-white">{t.entryPrice}</td>
-                      <td className="p-3.5 text-rose-400">{t.stopLoss}</td>
-                      <td className="p-3.5 text-emerald-400">{t.takeProfit2}</td>
-
-                      <td className="p-3.5">
-                        <span className="font-black text-[#00A651] text-xs">
-                          {t.pipsFormatted}
-                        </span>
-                      </td>
-
-                      <td className="p-3.5 text-center">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                          {t.outcome}
-                        </span>
-                      </td>
-
-                      <td className="p-3.5 text-center">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveTradeModal(t);
-                          }}
-                          className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-[#00A651] text-slate-300 hover:text-white transition-all text-[11px] font-bold cursor-pointer"
-                        >
-                          Audit
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>
-              Menampilkan {filteredTrades.length} riwayat transaksi audit terverifikasi.
-            </span>
-            <span className="text-emerald-400 font-mono">
-              Sumber Data: TradingView Spot &amp; Futures 2020-2026
-            </span>
-          </div>
-        </div>
-
-        {/* ========================================================= */}
         {/* CALL TO ACTION VIP SUBSCRIPTION BANNER                     */}
         {/* ========================================================= */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-950 border border-emerald-500/40 p-6 sm:p-10 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="space-y-3 max-w-2xl text-center lg:text-left">
-            <span className="px-3 py-1 rounded-full text-xs font-black uppercase bg-[#00A651] text-white">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-[#00A651] to-emerald-800 text-white p-6 sm:p-10 shadow-lg flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="space-y-2.5 max-w-2xl text-center lg:text-left">
+            <span className="px-3 py-1 rounded-full text-xs font-black uppercase bg-white/20 text-white backdrop-blur-xs">
               Sinyal AI Real-Time + Playbook Breakout
             </span>
-            <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
               Dapatkan Sinyal Breakout &amp; SNR AI Ini Langsung di Telegram VIP Anda
             </h3>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Jangan lagi menebak-nebak arah market. Member VIP RealistisFx menerima notifikasi instan 1 arah dengan level Entry, Stop Loss, dan Take Profit presisi tinggi saat AI mendeteksi konfirmasi breakout.
+            <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
+              Tinggalkan tebak-tebakan saat rilis pasar. Member VIP RealistisFx menerima sinyal instan 1 arah dengan level Entry, Stop Loss, dan Take Profit presisi tinggi saat AI mendeteksi konfirmasi breakout.
             </p>
           </div>
 
@@ -1097,14 +880,14 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
               <button
                 type="button"
                 onClick={onOpenPayment}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-sm shadow-xl shadow-[#00A651]/30 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-[#00A651] font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
               >
                 Langganan VIP (Rp 500.000 / bln) &rarr;
               </button>
             ) : (
               <a
                 href="#pricing"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-sm shadow-xl shadow-[#00A651]/30 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-[#00A651] font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
               >
                 Langganan VIP (Rp 500.000 / bln) &rarr;
               </a>
@@ -1114,7 +897,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
               href="https://www.mql5.com/en/signals/2388343?source=Site+Signals+My"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition-all text-center flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-black/20 hover:bg-black/30 text-white font-bold text-xs border border-white/20 transition-all text-center flex items-center justify-center gap-2"
             >
               <span>Live MQL5 Terverifikasi</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -1122,118 +905,6 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
           </div>
         </div>
       </div>
-
-      {/* ========================================================= */}
-      {/* MODAL: DETAIL AUDIT TRANSAKSI TRADINGVIEW                 */}
-      {/* ========================================================= */}
-      {activeTradeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="relative w-full max-w-2xl bg-slate-900 border border-emerald-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-white max-h-[90vh] overflow-y-auto">
-            {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-slate-800 pb-4">
-              <div>
-                <div className="flex items-center gap-2 flex-wrap mb-1">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                    {activeTradeModal.pairKey} • {activeTradeModal.timeframe}
-                  </span>
-                  <span className="text-xs font-mono text-slate-400">
-                    {activeTradeModal.date}
-                  </span>
-                </div>
-                <h3 className="text-lg font-black text-white">
-                  Audit Validasi Entry: {activeTradeModal.type}
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setActiveTradeModal(null)}
-                className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Key Levels Card */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">Harga Entry</span>
-                <span className="text-sm font-black text-white mt-0.5 block">
-                  {activeTradeModal.entryPrice}
-                </span>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">Stop Loss (SL)</span>
-                <span className="text-sm font-black text-rose-400 mt-0.5 block">
-                  {activeTradeModal.stopLoss}
-                </span>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">Take Profit (TP2)</span>
-                <span className="text-sm font-black text-emerald-400 mt-0.5 block">
-                  {activeTradeModal.takeProfit2}
-                </span>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">Net Hasil Pips</span>
-                <span className="text-sm font-black text-[#00A651] mt-0.5 block">
-                  {activeTradeModal.pipsFormatted}
-                </span>
-              </div>
-            </div>
-
-            {/* Level SNR & Reason */}
-            <div className="space-y-3 text-xs">
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="font-bold text-slate-400 block text-[11px] mb-1">
-                  Level Kunci Support / Resistance:
-                </span>
-                <span className="font-black text-emerald-400 text-sm">
-                  {activeTradeModal.keySnrLevel}
-                </span>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
-                <span className="font-bold text-slate-400 block text-[11px]">
-                  Analisis Konfluensi AI RealistisFx:
-                </span>
-                <p className="text-slate-200 leading-relaxed">
-                  {activeTradeModal.aiAnalysis}
-                </p>
-                <div className="pt-2 flex items-center gap-2 text-[11px] text-emerald-400 font-bold">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Skor Konfidensi AI: {activeTradeModal.aiConfidence}%</span>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-                <span className="font-bold text-slate-400 block text-[11px] mb-1">
-                  Konteks Chart TradingView Riil:
-                </span>
-                <p className="text-slate-300 font-mono text-[11px]">
-                  {activeTradeModal.tradingViewRef}
-                </p>
-              </div>
-            </div>
-
-            {/* Modal Actions */}
-            <div className="pt-2 flex items-center justify-between border-t border-slate-800">
-              <span className="text-[11px] text-slate-400">
-                Sesi: {activeTradeModal.session} • Tahun {activeTradeModal.year}
-              </span>
-              <button
-                type="button"
-                onClick={() => setActiveTradeModal(null)}
-                className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-bold transition-all cursor-pointer"
-              >
-                Tutup Audit
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
