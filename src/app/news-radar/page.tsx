@@ -48,7 +48,7 @@ function getDynamicSignalLevels(currency: string, title: string, liveXauSpot: nu
 
   // 1. USD Events -> Primary pair is Gold (XAUUSD)
   if (curr === 'USD') {
-    const spot = liveXauSpot > 0 ? liveXauSpot : 4174.50;
+    const spot = liveXauSpot > 0 ? liveXauSpot : 4442.50;
 
     const buyEntryLow = (spot + 3.50).toFixed(2);
     const buyEntryHigh = (spot + 6.00).toFixed(2);
@@ -56,8 +56,8 @@ function getDynamicSignalLevels(currency: string, title: string, liveXauSpot: nu
     const buyTP1 = (spot + 12.00).toFixed(2);
     const buyTP2 = (spot + 24.00).toFixed(2);
 
-    const sellEntryHigh = (spot - 3.50).toFixed(2);
     const sellEntryLow = (spot - 6.00).toFixed(2);
+    const sellEntryHigh = (spot - 3.50).toFixed(2);
     const sellSL = (spot + 4.00).toFixed(2);
     const sellTP1 = (spot - 12.00).toFixed(2);
     const sellTP2 = (spot - 24.00).toFixed(2);
@@ -71,18 +71,18 @@ function getDynamicSignalLevels(currency: string, title: string, liveXauSpot: nu
       buy: {
         entryArea: `$${buyEntryLow} - $${buyEntryHigh}`,
         entryClean: `$${buyEntryLow}`,
-        stopLoss: `$${buySL} (SL: 40 Pips)`,
-        takeProfit1: `$${buyTP1} (+120 Pips)`,
-        takeProfit2: `$${buyTP2} (+240 Pips)`,
-        distanceText: `Breakout +35 Pips ($3.50) di atas spot saat ini ($${spot.toFixed(2)})`,
+        stopLoss: `$${buySL} (SL: 40 Pips di bawah Entry)`,
+        takeProfit1: `$${buyTP1} (+120 Pips Gain)`,
+        takeProfit2: `$${buyTP2} (+240 Pips Gain)`,
+        distanceText: `Breakout +35 Pips ($3.50) di atas spot ($${spot.toFixed(2)})`,
       },
       sell: {
-        entryArea: `$${sellEntryHigh} - $${sellEntryLow}`,
-        entryClean: `$${sellEntryHigh}`,
-        stopLoss: `$${sellSL} (SL: 40 Pips)`,
-        takeProfit1: `$${sellTP1} (-120 Pips)`,
-        takeProfit2: `$${sellTP2} (-240 Pips)`,
-        distanceText: `Breakdown -35 Pips ($3.50) di bawah spot saat ini ($${spot.toFixed(2)})`,
+        entryArea: `$${sellEntryLow} - $${sellEntryHigh}`,
+        entryClean: `$${sellEntryLow}`,
+        stopLoss: `$${sellSL} (SL: 40 Pips di atas Entry)`,
+        takeProfit1: `$${sellTP1} (+120 Pips Drop Turun)`,
+        takeProfit2: `$${sellTP2} (+240 Pips Drop Turun)`,
+        distanceText: `Breakdown -35 Pips ($3.50) di bawah spot ($${spot.toFixed(2)})`,
       },
     };
   }
@@ -99,17 +99,17 @@ function getDynamicSignalLevels(currency: string, title: string, liveXauSpot: nu
       buy: {
         entryArea: '1.0885 - 1.0900',
         entryClean: '1.0885',
-        stopLoss: '1.0850 (SL: 35 Pips)',
-        takeProfit1: '1.0945 (+60 Pips)',
-        takeProfit2: '1.1005 (+120 Pips)',
+        stopLoss: '1.0850 (SL: 35 Pips di bawah Entry)',
+        takeProfit1: '1.0945 (+60 Pips Gain)',
+        takeProfit2: '1.1005 (+120 Pips Gain)',
         distanceText: '+33 Pips di atas spot saat ini (1.0852)',
       },
       sell: {
-        entryArea: '1.0820 - 1.0805',
-        entryClean: '1.0820',
-        stopLoss: '1.0855 (SL: 35 Pips)',
-        takeProfit1: '1.0760 (-60 Pips)',
-        takeProfit2: '1.0700 (-120 Pips)',
+        entryArea: '1.0805 - 1.0820',
+        entryClean: '1.0805',
+        stopLoss: '1.0855 (SL: 35 Pips di atas Entry)',
+        takeProfit1: '1.0760 (+60 Pips Drop Turun)',
+        takeProfit2: '1.0700 (+120 Pips Drop Turun)',
         distanceText: '-32 Pips di bawah spot saat ini (1.0852)',
       },
     };
@@ -127,17 +127,17 @@ function getDynamicSignalLevels(currency: string, title: string, liveXauSpot: nu
       buy: {
         entryArea: '1.3080 - 1.3095',
         entryClean: '1.3080',
-        stopLoss: '1.3040 (SL: 40 Pips)',
-        takeProfit1: '1.3150 (+70 Pips)',
-        takeProfit2: '1.3220 (+140 Pips)',
+        stopLoss: '1.3040 (SL: 40 Pips di bawah Entry)',
+        takeProfit1: '1.3150 (+70 Pips Gain)',
+        takeProfit2: '1.3220 (+140 Pips Gain)',
         distanceText: '+35 Pips di atas spot saat ini (1.3045)',
       },
       sell: {
-        entryArea: '1.3005 - 1.2990',
-        entryClean: '1.3005',
-        stopLoss: '1.3045 (SL: 40 Pips)',
-        takeProfit1: '1.2935 (-70 Pips)',
-        takeProfit2: '1.2865 (-140 Pips)',
+        entryArea: '1.2990 - 1.3005',
+        entryClean: '1.2990',
+        stopLoss: '1.3045 (SL: 40 Pips di atas Entry)',
+        takeProfit1: '1.2935 (+70 Pips Drop Turun)',
+        takeProfit2: '1.2865 (+140 Pips Drop Turun)',
         distanceText: '-40 Pips di bawah spot saat ini (1.3045)',
       },
     };
@@ -155,17 +155,17 @@ function getDynamicSignalLevels(currency: string, title: string, liveXauSpot: nu
       buy: {
         entryArea: '153.00 - 153.20',
         entryClean: '153.00',
-        stopLoss: '152.50 (SL: 50 Pips)',
-        takeProfit1: '153.90 (+90 Pips)',
-        takeProfit2: '154.70 (+170 Pips)',
+        stopLoss: '152.50 (SL: 50 Pips di bawah Entry)',
+        takeProfit1: '153.90 (+90 Pips Gain)',
+        takeProfit2: '154.70 (+170 Pips Gain)',
         distanceText: '+40 Pips di atas spot saat ini (152.60)',
       },
       sell: {
-        entryArea: '152.20 - 152.00',
-        entryClean: '152.20',
-        stopLoss: '152.70 (SL: 50 Pips)',
-        takeProfit1: '151.30 (-90 Pips)',
-        takeProfit2: '150.50 (-170 Pips)',
+        entryArea: '152.00 - 152.20',
+        entryClean: '152.00',
+        stopLoss: '152.70 (SL: 50 Pips di atas Entry)',
+        takeProfit1: '151.30 (+90 Pips Drop Turun)',
+        takeProfit2: '150.50 (+170 Pips Drop Turun)',
         distanceText: '-40 Pips di bawah spot saat ini (152.60)',
       },
     };
@@ -183,17 +183,17 @@ function getDynamicSignalLevels(currency: string, title: string, liveXauSpot: nu
       buy: {
         entryArea: '0.6720 - 0.6735',
         entryClean: '0.6720',
-        stopLoss: '0.6690 (SL: 30 Pips)',
-        takeProfit1: '0.6780 (+60 Pips)',
-        takeProfit2: '0.6830 (+110 Pips)',
+        stopLoss: '0.6690 (SL: 30 Pips di bawah Entry)',
+        takeProfit1: '0.6780 (+60 Pips Gain)',
+        takeProfit2: '0.6830 (+110 Pips Gain)',
         distanceText: '+30 Pips di atas spot saat ini (0.6690)',
       },
       sell: {
-        entryArea: '0.6660 - 0.6645',
-        entryClean: '0.6660',
-        stopLoss: '0.6695 (SL: 30 Pips)',
-        takeProfit1: '0.6600 (-60 Pips)',
-        takeProfit2: '0.6550 (-110 Pips)',
+        entryArea: '0.6645 - 0.6660',
+        entryClean: '0.6645',
+        stopLoss: '0.6695 (SL: 30 Pips di atas Entry)',
+        takeProfit1: '0.6600 (+60 Pips Drop Turun)',
+        takeProfit2: '0.6550 (+110 Pips Drop Turun)',
         distanceText: '-30 Pips di bawah spot saat ini (0.6690)',
       },
     };
@@ -210,17 +210,17 @@ function getDynamicSignalLevels(currency: string, title: string, liveXauSpot: nu
     buy: {
       entryArea: '1.3850 - 1.3865',
       entryClean: '1.3850',
-      stopLoss: '1.3815 (SL: 35 Pips)',
-      takeProfit1: '1.3915 (+65 Pips)',
-      takeProfit2: '1.3975 (+125 Pips)',
+      stopLoss: '1.3815 (SL: 35 Pips di bawah Entry)',
+      takeProfit1: '1.3915 (+65 Pips Gain)',
+      takeProfit2: '1.3975 (+125 Pips Gain)',
       distanceText: '+35 Pips di atas spot saat ini (1.3815)',
     },
     sell: {
-      entryArea: '1.3780 - 1.3765',
-      entryClean: '1.3780',
-      stopLoss: '1.3820 (SL: 35 Pips)',
-      takeProfit1: '1.3715 (-65 Pips)',
-      takeProfit2: '1.3655 (-125 Pips)',
+      entryArea: '1.3765 - 1.3780',
+      entryClean: '1.3765',
+      stopLoss: '1.3820 (SL: 35 Pips di atas Entry)',
+      takeProfit1: '1.3715 (+65 Pips Drop Turun)',
+      takeProfit2: '1.3655 (+125 Pips Drop Turun)',
       distanceText: '-35 Pips di bawah spot saat ini (1.3815)',
     },
   };
@@ -981,7 +981,7 @@ export default function NewsRadarPage() {
                                       Harga Entry (Breakout):
                                     </span>
                                     <span className="font-black text-emerald-700 text-xs block">
-                                      {dynLevels.buy.entryArea}
+                                      {news.signal.buySetup.entryArea || dynLevels.buy.entryArea}
                                     </span>
                                     <span className="text-[9px] text-slate-500 block">
                                       {dynLevels.buy.distanceText}
@@ -993,9 +993,9 @@ export default function NewsRadarPage() {
                                       Stop Loss (SL):
                                     </span>
                                     <span className="font-black text-rose-600 text-xs block">
-                                      {dynLevels.buy.stopLoss}
+                                      {news.signal.buySetup.stopLoss || dynLevels.buy.stopLoss}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Proteksi Maksimal</span>
+                                    <span className="text-[9px] text-slate-500 block">Proteksi di Bawah Entry</span>
                                   </div>
 
                                   <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
@@ -1003,7 +1003,7 @@ export default function NewsRadarPage() {
                                       Target TP 1:
                                     </span>
                                     <span className="font-black text-emerald-700 text-xs block">
-                                      {dynLevels.buy.takeProfit1}
+                                      {news.signal.buySetup.takeProfit1 || dynLevels.buy.takeProfit1}
                                     </span>
                                     <span className="text-[9px] text-slate-500 block">Amankan 50% Posisi</span>
                                   </div>
@@ -1013,16 +1013,24 @@ export default function NewsRadarPage() {
                                       Target TP 2:
                                     </span>
                                     <span className="font-black text-emerald-700 text-xs block">
-                                      {dynLevels.buy.takeProfit2}
+                                      {news.signal.buySetup.takeProfit2 || dynLevels.buy.takeProfit2}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Trailing Stop</span>
+                                    <span className="text-[9px] text-slate-500 block">Trailing Stop Maksimal</span>
                                   </div>
                                 </div>
+
+                                {/* Rationale if available */}
+                                {news.signal.buySetup.rationale && (
+                                  <div className="p-2.5 rounded-xl bg-emerald-100/60 border border-emerald-200 text-emerald-900 text-[11px] leading-relaxed">
+                                    <strong className="text-emerald-950 font-bold block mb-0.5">Logika Sinyal BUY:</strong>
+                                    <span>{news.signal.buySetup.rationale}</span>
+                                  </div>
+                                )}
 
                                 {/* Copy & Rationale */}
                                 <div className="flex items-center justify-between pt-1">
                                   <span className="text-[10px] text-slate-500 font-mono">
-                                    Risk/Reward: <strong className="text-slate-800">1 : 2.5</strong>
+                                    Risk/Reward: <strong className="text-slate-800">{news.signal.buySetup.riskReward || '1 : 2.5'}</strong>
                                   </span>
 
                                   <button
@@ -1030,7 +1038,7 @@ export default function NewsRadarPage() {
                                     onClick={() =>
                                       handleCopySignal(
                                         `buy-${news.id}`,
-                                        `${dynLevels.symbol} BUY STOP | Entry: ${dynLevels.buy.entryClean} | SL: ${dynLevels.buy.stopLoss} | TP1: ${dynLevels.buy.takeProfit1} | TP2: ${dynLevels.buy.takeProfit2}`
+                                        `${news.signal.primaryPair || dynLevels.symbol} BUY STOP | Entry: ${news.signal.buySetup.entryArea || dynLevels.buy.entryClean} | SL: ${news.signal.buySetup.stopLoss || dynLevels.buy.stopLoss} | TP1: ${news.signal.buySetup.takeProfit1 || dynLevels.buy.takeProfit1} | TP2: ${news.signal.buySetup.takeProfit2 || dynLevels.buy.takeProfit2}`
                                       )
                                     }
                                     className="px-2.5 py-1 rounded-lg bg-[#00A651] hover:bg-[#008F45] text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-xs"
@@ -1084,7 +1092,7 @@ export default function NewsRadarPage() {
                                       Harga Entry (Breakdown):
                                     </span>
                                     <span className="font-black text-rose-600 text-xs block">
-                                      {dynLevels.sell.entryArea}
+                                      {news.signal.sellSetup.entryArea || dynLevels.sell.entryArea}
                                     </span>
                                     <span className="text-[9px] text-slate-500 block">
                                       {dynLevels.sell.distanceText}
@@ -1096,9 +1104,9 @@ export default function NewsRadarPage() {
                                       Stop Loss (SL):
                                     </span>
                                     <span className="font-black text-rose-600 text-xs block">
-                                      {dynLevels.sell.stopLoss}
+                                      {news.signal.sellSetup.stopLoss || dynLevels.sell.stopLoss}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Proteksi Maksimal</span>
+                                    <span className="text-[9px] text-slate-500 block">Proteksi di Atas Entry</span>
                                   </div>
 
                                   <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
@@ -1106,9 +1114,9 @@ export default function NewsRadarPage() {
                                       Target TP 1:
                                     </span>
                                     <span className="font-black text-emerald-700 text-xs block">
-                                      {dynLevels.sell.takeProfit1}
+                                      {news.signal.sellSetup.takeProfit1 || dynLevels.sell.takeProfit1}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Amankan 50% Posisi</span>
+                                    <span className="text-[9px] text-slate-500 block">Amankan 50% Posisi (Drop)</span>
                                   </div>
 
                                   <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
@@ -1116,16 +1124,24 @@ export default function NewsRadarPage() {
                                       Target TP 2:
                                     </span>
                                     <span className="font-black text-emerald-700 text-xs block">
-                                      {dynLevels.sell.takeProfit2}
+                                      {news.signal.sellSetup.takeProfit2 || dynLevels.sell.takeProfit2}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Trailing Stop</span>
+                                    <span className="text-[9px] text-slate-500 block">Trailing Stop Turun Likuiditas</span>
                                   </div>
                                 </div>
+
+                                {/* Rationale if available */}
+                                {news.signal.sellSetup.rationale && (
+                                  <div className="p-2.5 rounded-xl bg-rose-100/60 border border-rose-200 text-rose-900 text-[11px] leading-relaxed">
+                                    <strong className="text-rose-950 font-bold block mb-0.5">Logika Sinyal SELL:</strong>
+                                    <span>{news.signal.sellSetup.rationale}</span>
+                                  </div>
+                                )}
 
                                 {/* Copy & Rationale */}
                                 <div className="flex items-center justify-between pt-1">
                                   <span className="text-[10px] text-slate-500 font-mono">
-                                    Risk/Reward: <strong className="text-slate-800">1 : 2.5</strong>
+                                    Risk/Reward: <strong className="text-slate-800">{news.signal.sellSetup.riskReward || '1 : 2.8'}</strong>
                                   </span>
 
                                   <button
@@ -1133,7 +1149,7 @@ export default function NewsRadarPage() {
                                     onClick={() =>
                                       handleCopySignal(
                                         `sell-${news.id}`,
-                                        `${dynLevels.symbol} SELL STOP | Entry: ${dynLevels.sell.entryClean} | SL: ${dynLevels.sell.stopLoss} | TP1: ${dynLevels.sell.takeProfit1} | TP2: ${dynLevels.sell.takeProfit2}`
+                                        `${news.signal.primaryPair || dynLevels.symbol} SELL STOP | Entry: ${news.signal.sellSetup.entryArea || dynLevels.sell.entryClean} | SL: ${news.signal.sellSetup.stopLoss || dynLevels.sell.stopLoss} | TP1: ${news.signal.sellSetup.takeProfit1 || dynLevels.sell.takeProfit1} | TP2: ${news.signal.sellSetup.takeProfit2 || dynLevels.sell.takeProfit2}`
                                       )
                                     }
                                     className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-xs"

@@ -771,13 +771,23 @@ export default function JournalPage() {
                     <button
                       type="button"
                       onClick={() => {
+                        const offsetSL = pair === 'XAUUSD' ? 10 : pair === 'USDJPY' ? 0.50 : 0.0030;
+                        const offsetTP = pair === 'XAUUSD' ? 20 : pair === 'USDJPY' ? 1.00 : 0.0060;
+                        const newSl = Math.round((entryPrice - offsetSL) * 100) / 100;
+                        const newTp = Math.round((entryPrice + offsetTP) * 100) / 100;
                         setDirection('BUY');
+                        setStopLoss(newSl);
+                        setTakeProfit(newTp);
                         if (exitStatus === 'HIT_SL') {
-                          const newSl = Math.round((entryPrice - (pair === 'XAUUSD' ? 10 : 0.003)) * 100) / 100;
-                          setStopLoss(newSl);
                           setExitPrice(newSl);
                           const res = calculateTradePnL(pair, 'BUY', lot, entryPrice, newSl);
                           setPnl(res.pnl);
+                          setAutoPnlNotice(`✅ PnL otomatis terisi: Kena SL ($${newSl}) → -$${Math.abs(res.pnl).toFixed(2)} (${res.pips} pips)`);
+                        } else if (exitStatus === 'HIT_TP') {
+                          setExitPrice(newTp);
+                          const res = calculateTradePnL(pair, 'BUY', lot, entryPrice, newTp);
+                          setPnl(res.pnl);
+                          setAutoPnlNotice(`✅ PnL otomatis terisi: Kena TP ($${newTp}) → +$${res.pnl.toFixed(2)} (+${res.pips} pips)`);
                         }
                       }}
                       className={`p-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
@@ -791,13 +801,23 @@ export default function JournalPage() {
                     <button
                       type="button"
                       onClick={() => {
+                        const offsetSL = pair === 'XAUUSD' ? 10 : pair === 'USDJPY' ? 0.50 : 0.0030;
+                        const offsetTP = pair === 'XAUUSD' ? 20 : pair === 'USDJPY' ? 1.00 : 0.0060;
+                        const newSl = Math.round((entryPrice + offsetSL) * 100) / 100;
+                        const newTp = Math.round((entryPrice - offsetTP) * 100) / 100;
                         setDirection('SELL');
+                        setStopLoss(newSl);
+                        setTakeProfit(newTp);
                         if (exitStatus === 'HIT_SL') {
-                          const newSl = Math.round((entryPrice + (pair === 'XAUUSD' ? 10 : 0.003)) * 100) / 100;
-                          setStopLoss(newSl);
                           setExitPrice(newSl);
                           const res = calculateTradePnL(pair, 'SELL', lot, entryPrice, newSl);
                           setPnl(res.pnl);
+                          setAutoPnlNotice(`✅ PnL otomatis terisi: Kena SL ($${newSl}) → -$${Math.abs(res.pnl).toFixed(2)} (${res.pips} pips)`);
+                        } else if (exitStatus === 'HIT_TP') {
+                          setExitPrice(newTp);
+                          const res = calculateTradePnL(pair, 'SELL', lot, entryPrice, newTp);
+                          setPnl(res.pnl);
+                          setAutoPnlNotice(`✅ PnL otomatis terisi: Kena TP ($${newTp}) → +$${res.pnl.toFixed(2)} (+${res.pips} pips)`);
                         }
                       }}
                       className={`p-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${

@@ -69,8 +69,8 @@ function calculateRealTimeSignalLevels(liveSpot: number) {
   const buyTP1 = (spot + 12.00).toFixed(2);
   const buyTP2 = (spot + 24.00).toFixed(2);
 
-  const sellEntryHigh = (spot - 3.50).toFixed(2);
   const sellEntryLow = (spot - 6.00).toFixed(2);
+  const sellEntryHigh = (spot - 3.50).toFixed(2);
   const sellSL = (spot + 4.00).toFixed(2);
   const sellTP1 = (spot - 12.00).toFixed(2);
   const sellTP2 = (spot - 24.00).toFixed(2);
@@ -84,19 +84,19 @@ function calculateRealTimeSignalLevels(liveSpot: number) {
       stopLoss: `$${buySL}`,
       takeProfit1: `$${buyTP1}`,
       takeProfit2: `$${buyTP2}`,
-      pipsSL: '40 Pips',
-      pipsTP1: '+120 Pips',
-      pipsTP2: '+240 Pips',
+      pipsSL: '40 Pips di bawah Entry',
+      pipsTP1: '+120 Pips Gain',
+      pipsTP2: '+240 Pips Gain',
     },
     sell: {
-      entryArea: `$${sellEntryHigh} - $${sellEntryLow}`,
-      entryClean: `$${sellEntryHigh}`,
+      entryArea: `$${sellEntryLow} - $${sellEntryHigh}`,
+      entryClean: `$${sellEntryLow}`,
       stopLoss: `$${sellSL}`,
       takeProfit1: `$${sellTP1}`,
       takeProfit2: `$${sellTP2}`,
-      pipsSL: '40 Pips',
-      pipsTP1: '-120 Pips',
-      pipsTP2: '-240 Pips',
+      pipsSL: '40 Pips di atas Entry',
+      pipsTP1: '+120 Pips (Drop Turun)',
+      pipsTP2: '+240 Pips (Drop Turun)',
     },
   };
 }
@@ -1076,14 +1076,14 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                             <div className="relative overflow-hidden rounded-xl bg-slate-900 text-white p-3.5 border border-slate-800 shadow-inner">
                               <div className="filter blur-[3px] select-none opacity-30 space-y-2 text-xs font-mono">
                                 <div className="flex items-center justify-between">
-                                  <span className="text-emerald-400 font-bold">BUY BREAKOUT: $4,0██.██ - $4,0██.██</span>
-                                  <span className="text-rose-400">SL: $4,0██.██</span>
-                                  <span className="text-emerald-400">TP: $4,0██.██</span>
+                                  <span className="text-emerald-400 font-bold">BUY BREAKOUT: $4,4██.██ - $4,4██.██</span>
+                                  <span className="text-rose-400">SL: $4,4██.██</span>
+                                  <span className="text-emerald-400">TP: $4,5██.██</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                  <span className="text-rose-400 font-bold">SELL BREAKDOWN: $4,0██.██ - $4,0██.██</span>
-                                  <span className="text-rose-400">SL: $4,0██.██</span>
-                                  <span className="text-emerald-400">TP: $4,0██.██</span>
+                                  <span className="text-rose-400 font-bold">SELL BREAKDOWN: $4,4██.██ - $4,4██.██</span>
+                                  <span className="text-rose-400">SL: $4,4██.██</span>
+                                  <span className="text-emerald-400">TP: $4,3██.██</span>
                                 </div>
                               </div>
 
