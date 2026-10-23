@@ -81,6 +81,10 @@ model User {
   disciplineScore       Int               @default(85)
   disciplineFeedback    String?           @default("Pertahankan rasio RR minimal 1:2 dan patuhi SOP trading harian.")
   
+  // Password Reset Verification
+  resetCode             String?
+  resetCodeExpiry       DateTime?
+  
   // Relations
   subscriptions         Subscription[]
   journalEntries        JournalEntry[]

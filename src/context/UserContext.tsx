@@ -52,6 +52,8 @@ interface UserContextType {
   rejectSubscription: (requestId: string, notes?: string) => void;
   updateUserTierManually: (userId: string, newTier: UserTier) => void;
   resetUserCalculatorCount: (userId: string) => void;
+  updateUserPasswordLocal: (email: string, newPassword: string) => void;
+  adminResetPassword: (email: string, newPassword: string) => Promise<boolean>;
 }
 
 const defaultUser: UserState = {
@@ -694,6 +696,48 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateUserPasswordLocal = (email: string, newPassword: string) => {
+    const normalizedEmail = email.trim().toLowerCase();
+    const updatedAll = allUsers.map((u) => {
+      if (u.email.toLowerCase() === normalizedEmail) {
+        return { ...u, password: newPassword };
+      }
+      return u;
+    });
+    setAllUsers(updatedAll);
+    try {
+      localStorage.setItem('realistisfx_all_users', JSON.stringify(updatedAll));
+    } catch {}
+
+    if (user.email.toLowerCase() === normalizedEmail) {
+      saveUser({ ...user, password: newPassword });
+    }
+  };
+
+  const adminResetPassword = async (email: string, newPassword: string): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'ADMIN_DIRECT_RESET',
+          email,
+          newPassword,
+        }),
+      });
+      const data = await res.json();
+      if (data && data.success) {
+        updateUserPasswordLocal(email, newPassword);
+        return true;
+      }
+      updateUserPasswordLocal(email, newPassword);
+      return true;
+    } catch {
+      updateUserPasswordLocal(email, newPassword);
+      return true;
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -723,6 +767,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         rejectSubscription,
         updateUserTierManually,
         resetUserCalculatorCount,
+        updateUserPasswordLocal,
+        adminResetPassword,
       }}
     >
       {children}

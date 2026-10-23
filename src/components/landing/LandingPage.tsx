@@ -22,6 +22,9 @@ import {
   Info,
   Check,
   X,
+  Mail,
+  KeyRound,
+  RotateCcw,
   Radio,
   ExternalLink,
   MessageCircle,
@@ -102,7 +105,7 @@ function calculateRealTimeSignalLevels(liveSpot: number) {
 }
 
 export default function LandingPage({ onOpenAuth }: LandingPageProps) {
-  const { user, login, register, marketPrice, openPaymentModal } = useUser();
+  const { user, login, register, marketPrice, openPaymentModal, updateUserPasswordLocal } = useUser();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null);
 
@@ -124,15 +127,34 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
   // ROI Calculator Interactive State
   const [traderCapital, setTraderCapital] = useState<number>(1000); // in USD
 
-  // Auth Modal State for on-page login/register
+  // Auth Modal State for on-page login/register & forgot password
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
+  const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot-password'>('register');
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
   const [authName, setAuthName] = useState('');
   const [authWhatsapp, setAuthWhatsapp] = useState('');
   const [authAccountType, setAuthAccountType] = useState<'STANDARD' | 'CENT'>('STANDARD');
   const [authError, setAuthError] = useState('');
+
+  // Password Reset / Forgot Password state
+  const [resetStep, setResetStep] = useState<1 | 2 | 3>(1); // 1: Email, 2: Code, 3: New Password
+  const [resetCode, setResetCode] = useState('');
+  const [resetNewPassword, setResetNewPassword] = useState('');
+  const [resetConfirmPassword, setResetConfirmPassword] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetSuccessMsg, setResetSuccessMsg] = useState('');
+  const [resetPreviewCode, setResetPreviewCode] = useState<string | null>(null);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  // Countdown timer for OTP resend
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => setResendCooldown((prev) => prev - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
 
   // Real live spot price of Gold (XAUUSD)
   const currentLiveSpot = useMemo(() => {
@@ -197,12 +219,17 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         setAuthError('Masukkan email dan kata sandi Anda.');
         return;
       }
-      const success = login(authEmail.trim().toLowerCase(), authPassword);
+      const normalizedEmail = authEmail.trim().toLowerCase();
+      const success = login(normalizedEmail, authPassword);
       if (!success) {
         setAuthError('Email atau kata sandi tidak valid. Silakan periksa kembali.');
         return;
       }
       setShowAuthModal(false);
+      // If administrator logs in via modal, route to /admin
+      if (normalizedEmail === 'admin@realistisfx.com') {
+        window.location.href = '/admin';
+      }
     } else {
       if (!authName.trim() || !authEmail.trim() || !authWhatsapp.trim()) {
         setAuthError('Harap lengkapi semua kolom: Nama, Email, dan WhatsApp.');
@@ -221,6 +248,120 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         tier: 'FREE',
       });
       setShowAuthModal(false);
+    }
+  };
+
+  // STEP 1: Kirim Kode Verifikasi ke Email
+  const handleSendResetCode = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!authEmail.trim()) {
+      setAuthError('Masukkan alamat email akun Anda.');
+      return;
+    }
+    setAuthError('');
+    setResetLoading(true);
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'SEND_CODE', email: authEmail.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setAuthError(data.error || 'Gagal mengirim kode verifikasi.');
+        return;
+      }
+      setResetStep(2);
+      setResendCooldown(60);
+      setResetSuccessMsg(`Kode verifikasi 6-digit telah dikirim ke email ${authEmail.trim().toLowerCase()}.`);
+      if (data.verificationCodePreview) {
+        setResetPreviewCode(data.verificationCodePreview);
+      }
+    } catch {
+      setAuthError('Terjadi gangguan koneksi. Silakan periksa jaringan dan coba lagi.');
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  // STEP 2: Verifikasi 6-digit Kode OTP
+  const handleVerifyResetCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetCode.trim() || resetCode.trim().length !== 6) {
+      setAuthError('Masukkan 6 digit kode verifikasi dengan benar.');
+      return;
+    }
+    setAuthError('');
+    setResetLoading(true);
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'VERIFY_CODE',
+          email: authEmail.trim(),
+          code: resetCode.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setAuthError(data.error || 'Kode verifikasi salah atau sudah kadaluarsa (berlaku 15 menit).');
+        return;
+      }
+      setResetStep(3);
+      setResetSuccessMsg('Kode verifikasi terkonfirmasi! Silakan buat kata sandi baru Anda.');
+    } catch {
+      setAuthError('Terjadi kesalahan saat memverifikasi kode.');
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  // STEP 3: Simpan Kata Sandi Baru
+  const handleSaveNewPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetNewPassword || resetNewPassword.length < 6) {
+      setAuthError('Kata sandi baru minimal 6 karakter.');
+      return;
+    }
+    if (resetNewPassword !== resetConfirmPassword) {
+      setAuthError('Konfirmasi kata sandi tidak cocok. Silakan ketik ulang.');
+      return;
+    }
+    setAuthError('');
+    setResetLoading(true);
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'RESET_PASSWORD',
+          email: authEmail.trim(),
+          code: resetCode.trim(),
+          newPassword: resetNewPassword,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setAuthError(data.error || 'Gagal mengubah kata sandi.');
+        return;
+      }
+      // Update local storage and context
+      updateUserPasswordLocal(authEmail.trim(), resetNewPassword);
+      // Auto login user!
+      login(authEmail.trim(), resetNewPassword);
+      setShowAuthModal(false);
+      // Reset form states
+      setAuthMode('login');
+      setResetStep(1);
+      setResetCode('');
+      setResetNewPassword('');
+      setResetConfirmPassword('');
+      setResetPreviewCode(null);
+    } catch {
+      setAuthError('Gagal menyimpan kata sandi baru. Coba lagi.');
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -2034,46 +2175,54 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             {/* Modal Title */}
             <div className="text-center space-y-1">
               <h3 className="text-xl font-black text-slate-900">
-                {authMode === 'login' ? 'Masuk ke Member Area' : 'Daftar Akun RealistisFx'}
+                {authMode === 'forgot-password'
+                  ? 'Reset Kata Sandi Akun'
+                  : authMode === 'login'
+                  ? 'Masuk ke Member Area'
+                  : 'Daftar Akun RealistisFx'}
               </h3>
               <p className="text-xs text-slate-500">
-                {authMode === 'login'
+                {authMode === 'forgot-password'
+                  ? 'Verifikasi 6-digit kode OTP ke email untuk membuat kata sandi baru'
+                  : authMode === 'login'
                   ? 'Akses dashboard sinyal AI & panduan trading Anda'
                   : 'Mulai dengan Akun Gratis atau bersiap untuk VIP Member'}
               </p>
             </div>
 
-            {/* Mode Switcher Tabs */}
-            <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200">
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthMode('register');
-                  setAuthError('');
-                }}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  authMode === 'register'
-                    ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Daftar Baru
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthMode('login');
-                  setAuthError('');
-                }}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  authMode === 'login'
-                    ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Sudah Ada Akun
-              </button>
-            </div>
+            {/* Mode Switcher Tabs (Hidden when in Forgot Password) */}
+            {authMode !== 'forgot-password' ? (
+              <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthMode('register');
+                    setAuthError('');
+                  }}
+                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    authMode === 'register'
+                      ? 'bg-[#00A651] text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Daftar Baru
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthMode('login');
+                    setAuthError('');
+                  }}
+                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    authMode === 'login'
+                      ? 'bg-[#00A651] text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Sudah Ada Akun
+                </button>
+              </div>
+            ) : null}
 
             {/* Error Message */}
             {authError && (
@@ -2083,109 +2232,333 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               </div>
             )}
 
-            {/* Form Fields */}
-            <form onSubmit={handleFormSubmit} className="space-y-3.5">
-              {authMode === 'register' && (
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                    Nama Lengkap Anda
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Contoh: Budi Santoso"
-                    value={authName}
-                    onChange={(e) => setAuthName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
-                  />
-                </div>
-              )}
-
-              <div>
-                <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                  Alamat Email Aktif
-                </label>
-                <input
-                  type="email"
-                  required
-                  placeholder="nama@email.com"
-                  value={authEmail}
-                  onChange={(e) => setAuthEmail(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
-                />
+            {/* Success Message Banner */}
+            {resetSuccessMsg && authMode === 'forgot-password' && (
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span className="leading-relaxed">{resetSuccessMsg}</span>
               </div>
+            )}
 
-              {authMode === 'register' && (
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                    Nomor WhatsApp (Untuk Notifikasi VIP)
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="Contoh: 081234567890"
-                    value={authWhatsapp}
-                    onChange={(e) => setAuthWhatsapp(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
-                  />
-                </div>
-              )}
-
-              <div>
-                <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                  Kata Sandi
-                </label>
-                <input
-                  type="password"
-                  required
-                  placeholder="Minimal 6 karakter"
-                  value={authPassword}
-                  onChange={(e) => setAuthPassword(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
-                />
-              </div>
-
-              {authMode === 'register' && (
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                    Tipe Akun Trading Anda
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setAuthAccountType('STANDARD')}
-                      className={`p-2.5 rounded-xl border text-left text-xs font-semibold cursor-pointer transition-all ${
-                        authAccountType === 'STANDARD'
-                          ? 'border-[#00A651] bg-emerald-50 text-[#00A651]'
-                          : 'border-slate-200 hover:bg-slate-50 text-slate-700'
-                      }`}
-                    >
-                      <div className="font-bold">Akun Standard</div>
-                      <div className="text-[10px] text-slate-500">Modal di atas $300</div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setAuthAccountType('CENT')}
-                      className={`p-2.5 rounded-xl border text-left text-xs font-semibold cursor-pointer transition-all ${
-                        authAccountType === 'CENT'
-                          ? 'border-[#00A651] bg-emerald-50 text-[#00A651]'
-                          : 'border-slate-200 hover:bg-slate-50 text-slate-700'
-                      }`}
-                    >
-                      <div className="font-bold">Akun Cent</div>
-                      <div className="text-[10px] text-slate-500">Modal kecil ($50 - $100)</div>
-                    </button>
+            {/* FORGOT PASSWORD 3-STEP FLOW */}
+            {authMode === 'forgot-password' ? (
+              <div className="space-y-4">
+                {/* 3 Steps Progress Indicator */}
+                <div className="flex items-center justify-between px-2 pt-1 pb-3 border-b border-slate-100">
+                  <div className={`flex items-center gap-1.5 text-xs font-bold ${resetStep >= 1 ? 'text-[#00A651]' : 'text-slate-400'}`}>
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${resetStep >= 1 ? 'bg-emerald-100 text-[#00A651]' : 'bg-slate-100 text-slate-400'}`}>1</span>
+                    <span>Email</span>
+                  </div>
+                  <div className={`h-0.5 flex-1 mx-2 ${resetStep >= 2 ? 'bg-[#00A651]' : 'bg-slate-200'}`} />
+                  <div className={`flex items-center gap-1.5 text-xs font-bold ${resetStep >= 2 ? 'text-[#00A651]' : 'text-slate-400'}`}>
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${resetStep >= 2 ? 'bg-emerald-100 text-[#00A651]' : 'bg-slate-100 text-slate-400'}`}>2</span>
+                    <span>Kode OTP</span>
+                  </div>
+                  <div className={`h-0.5 flex-1 mx-2 ${resetStep >= 3 ? 'bg-[#00A651]' : 'bg-slate-200'}`} />
+                  <div className={`flex items-center gap-1.5 text-xs font-bold ${resetStep === 3 ? 'text-[#00A651]' : 'text-slate-400'}`}>
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${resetStep === 3 ? 'bg-emerald-100 text-[#00A651]' : 'bg-slate-100 text-slate-400'}`}>3</span>
+                    <span>Sandi Baru</span>
                   </div>
                 </div>
-              )}
 
-              <button
-                type="submit"
-                className="w-full py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-md shadow-[#00A651]/20 transition-all cursor-pointer mt-2"
-              >
-                {authMode === 'login' ? 'Masuk ke Dashboard' : 'Daftar Akun Sekarang'}
-              </button>
-            </form>
+                {/* Email Verification Preview Helper (For Instant Testing) */}
+                {resetPreviewCode && resetStep === 2 && (
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold flex items-center gap-1.5 text-amber-800">
+                        <Mail className="w-3.5 h-3.5 text-amber-600" />
+                        Simulasi Kode Verifikasi Email:
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setResetCode(resetPreviewCode)}
+                        className="text-[10px] font-bold text-emerald-700 bg-white border border-emerald-300 px-2 py-0.5 rounded hover:bg-emerald-50 cursor-pointer"
+                      >
+                        Tempel Kode Ini
+                      </button>
+                    </div>
+                    <div className="text-base font-black font-mono tracking-widest text-slate-900 bg-white/80 px-2 py-1 rounded border border-amber-200 text-center">
+                      {resetPreviewCode}
+                    </div>
+                    <p className="text-[10px] text-amber-700">
+                      Kode 6-digit di atas dikirimkan secara otomatis ke email Anda ({authEmail}). Berlaku 15 menit.
+                    </p>
+                  </div>
+                )}
+
+                {/* STEP 1: Masukkan Email */}
+                {resetStep === 1 && (
+                  <form onSubmit={handleSendResetCode} className="space-y-4">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        Alamat Email Akun Terdaftar
+                      </label>
+                      <div className="relative">
+                        <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                        <input
+                          type="email"
+                          required
+                          placeholder="nama@email.com"
+                          value={authEmail}
+                          onChange={(e) => setAuthEmail(e.target.value)}
+                          className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
+                        />
+                      </div>
+                      <p className="text-[10px] text-slate-500 mt-1">
+                        Sistem akan mengirimkan 6-digit kode verifikasi reset kata sandi ke email ini.
+                      </p>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={resetLoading}
+                      className="w-full py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {resetLoading ? 'Mengirim Kode...' : 'Kirim Kode Verifikasi ke Email'}
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </form>
+                )}
+
+                {/* STEP 2: Masukkan 6-Digit Kode Verifikasi */}
+                {resetStep === 2 && (
+                  <form onSubmit={handleVerifyResetCode} className="space-y-4">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-[11px] font-bold text-slate-700">
+                          Masukkan 6 Digit Kode Verifikasi
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setResetStep(1);
+                            setResetCode('');
+                          }}
+                          className="text-[10px] font-semibold text-slate-500 hover:text-slate-800 underline cursor-pointer"
+                        >
+                          Ganti Email
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        required
+                        maxLength={6}
+                        placeholder="••••••"
+                        value={resetCode}
+                        onChange={(e) => setResetCode(e.target.value.replace(/\D/g, ''))}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-300 text-center text-lg font-mono tracking-[0.35em] font-black focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all bg-slate-50 focus:bg-white"
+                      />
+                      <div className="flex items-center justify-between mt-2 text-[11px]">
+                        <span className="text-slate-500">
+                          Terkirim ke: <strong className="text-slate-700">{authEmail}</strong>
+                        </span>
+                        {resendCooldown > 0 ? (
+                          <span className="text-slate-400 font-mono">Kirim ulang ({resendCooldown}s)</span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => handleSendResetCode()}
+                            className="text-[#00A651] font-bold hover:underline cursor-pointer"
+                          >
+                            Kirim Ulang Kode
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={resetLoading || resetCode.length !== 6}
+                      className="w-full py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {resetLoading ? 'Memverifikasi...' : 'Verifikasi Kode & Lanjut'}
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </form>
+                )}
+
+                {/* STEP 3: Buat Kata Sandi Baru */}
+                {resetStep === 3 && (
+                  <form onSubmit={handleSaveNewPassword} className="space-y-3.5">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        Kata Sandi Baru
+                      </label>
+                      <input
+                        type="password"
+                        required
+                        placeholder="Minimal 6 karakter"
+                        value={resetNewPassword}
+                        onChange={(e) => setResetNewPassword(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        Konfirmasi Kata Sandi Baru
+                      </label>
+                      <input
+                        type="password"
+                        required
+                        placeholder="Ketik ulang kata sandi baru"
+                        value={resetConfirmPassword}
+                        onChange={(e) => setResetConfirmPassword(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={resetLoading}
+                      className="w-full py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-md shadow-[#00A651]/20 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 mt-2"
+                    >
+                      {resetLoading ? 'Menyimpan Kata Sandi...' : 'Simpan Kata Sandi Baru & Masuk'}
+                      <Check className="w-4 h-4" />
+                    </button>
+                  </form>
+                )}
+
+                {/* Kembali ke Login */}
+                <div className="pt-2 text-center border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMode('login');
+                      setAuthError('');
+                      setResetSuccessMsg('');
+                      setResetStep(1);
+                      setResetCode('');
+                    }}
+                    className="text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                  >
+                    Sudah ingat kata sandi? <span className="text-[#00A651] font-bold">Kembali Masuk</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* STANDARD REGISTER & LOGIN FORM */
+              <form onSubmit={handleFormSubmit} className="space-y-3.5">
+                {authMode === 'register' && (
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      Nama Lengkap Anda
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Contoh: Budi Santoso"
+                      value={authName}
+                      onChange={(e) => setAuthName(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                    Alamat Email Aktif
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="nama@email.com"
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
+                  />
+                </div>
+
+                {authMode === 'register' && (
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      Nomor WhatsApp (Untuk Notifikasi VIP)
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="Contoh: 081234567890"
+                      value={authWhatsapp}
+                      onChange={(e) => setAuthWhatsapp(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-[11px] font-bold text-slate-700">
+                      Kata Sandi
+                    </label>
+                    {authMode === 'login' && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAuthMode('forgot-password');
+                          setResetStep(1);
+                          setAuthError('');
+                          setResetSuccessMsg('');
+                          setResetCode('');
+                          setResetPreviewCode(null);
+                        }}
+                        className="text-[11px] font-bold text-[#00A651] hover:text-[#008F45] hover:underline cursor-pointer"
+                      >
+                        Lupa kata sandi?
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    type="password"
+                    required
+                    placeholder="Minimal 6 karakter"
+                    value={authPassword}
+                    onChange={(e) => setAuthPassword(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
+                  />
+                </div>
+
+                {authMode === 'register' && (
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      Tipe Akun Trading Anda
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setAuthAccountType('STANDARD')}
+                        className={`p-2.5 rounded-xl border text-left text-xs font-semibold cursor-pointer transition-all ${
+                          authAccountType === 'STANDARD'
+                            ? 'border-[#00A651] bg-emerald-50 text-[#00A651]'
+                            : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                        }`}
+                      >
+                        <div className="font-bold">Akun Standard</div>
+                        <div className="text-[10px] text-slate-500">Modal di atas $300</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAuthAccountType('CENT')}
+                        className={`p-2.5 rounded-xl border text-left text-xs font-semibold cursor-pointer transition-all ${
+                          authAccountType === 'CENT'
+                            ? 'border-[#00A651] bg-emerald-50 text-[#00A651]'
+                            : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                        }`}
+                      >
+                        <div className="font-bold">Akun Cent</div>
+                        <div className="text-[10px] text-slate-500">Modal kecil ($50 - $100)</div>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-md shadow-[#00A651]/20 transition-all cursor-pointer mt-2"
+                >
+                  {authMode === 'login' ? 'Masuk ke Dashboard' : 'Daftar Akun Sekarang'}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       )}
