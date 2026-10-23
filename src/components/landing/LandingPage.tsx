@@ -671,7 +671,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 hidden md:block font-medium">
-                Sinyal XAUUSD, Playbook Berita &amp; Private Channel VIP
+                Sinyal Harian, Sinyal Berita &amp; Tools AI Terintegrasi Website
               </p>
             </div>
           </Link>
@@ -915,7 +915,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               , Bebas dari Jebakan Margin Call.
             </h1>
             <p className="text-xs sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
-              Tinggalkan tebak-tebakan saat berita rilis. Dapatkan sinyal trading berbasis data kuantitatif multi-timeframe, panduan entry dengan batasan risiko terukur, dan edukasi eksklusif melalui Private Channel Telegram VIP 1 arah untuk membangun disiplin serta konsistensi trading tanpa distraksi atau debat.
+              Tinggalkan tebak-tebakan saat trading. Dapatkan sinyal harian dan sinyal rilis berita ekonomi (NFP, CPI, FOMC) presisi tinggi berbasis AI, peta watchlist Support &amp; Resistance, kalkulator lot aman anti-MC, serta evaluasi psikologi trading langsung di platform website RealistisFx.
             </p>
           </div>
 

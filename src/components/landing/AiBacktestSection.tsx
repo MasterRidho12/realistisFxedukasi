@@ -863,15 +863,15 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
         {/* CALL TO ACTION VIP SUBSCRIPTION BANNER                     */}
         {/* ========================================================= */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-[#00A651] to-emerald-800 text-white p-6 sm:p-10 shadow-lg flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="space-y-2.5 max-w-2xl text-center lg:text-left">
+          <div className="space-y-3 max-w-2xl text-center lg:text-left">
             <span className="px-3 py-1 rounded-full text-xs font-black uppercase bg-white/20 text-white backdrop-blur-xs">
-              Sinyal AI Real-Time + Playbook Breakout
+              Platform Sinyal Harian, Sinyal News &amp; Tools AI Terintegrasi Website
             </span>
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
-              Dapatkan Sinyal Breakout &amp; SNR AI Ini Langsung di Telegram VIP Anda
+              Dapatkan Sinyal Harian, Sinyal News &amp; Analisis SNR AI Langsung di Website Ini
             </h3>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-              Tinggalkan tebak-tebakan saat rilis pasar. Member VIP RealistisFx menerima sinyal instan 1 arah dengan level Entry, Stop Loss, dan Take Profit presisi tinggi saat AI mendeteksi konfirmasi breakout.
+              Website RealistisFx menyediakan seluruh kebutuhan trading Anda secara terintegrasi: pantau sinyal harian 5 pair, panduan sinyal berita high-impact (NFP, CPI, FOMC), peta watchlist Support &amp; Resistance realtime, kalkulator lot aman anti-MC, serta evaluasi Smart Journal AI langsung di dashboard website ini.
             </p>
           </div>
 
@@ -882,14 +882,14 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                 onClick={onOpenPayment}
                 className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-[#00A651] font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
               >
-                Langganan VIP (Rp 500.000 / bln) &rarr;
+                Akses Sinyal &amp; Fitur VIP di Website &rarr;
               </button>
             ) : (
               <a
                 href="#pricing"
                 className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-[#00A651] font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
               >
-                Langganan VIP (Rp 500.000 / bln) &rarr;
+                Akses Sinyal &amp; Fitur VIP di Website &rarr;
               </a>
             )}
 
