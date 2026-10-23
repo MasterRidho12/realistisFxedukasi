@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Shield,
@@ -18,7 +18,9 @@ import {
   RotateCcw,
   Sparkles,
   ArrowUpRight,
-  AlertTriangle
+  AlertTriangle,
+  Database,
+  Server,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
@@ -36,12 +38,37 @@ export default function AdminDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProofImg, setSelectedProofImg] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
+  const [dbStatus, setDbStatus] = useState<{ isConnected: boolean; engine: string; userCount?: number } | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const fetchDbStatus = () => {
+    setIsRefreshing(true);
+    fetch('/api/users/sync')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setDbStatus({
+            isConnected: Boolean(data.isDatabaseConnected),
+            engine: data.databaseEngine || 'Serverless Cache & In-Memory',
+            userCount: data.userCount,
+          });
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        setTimeout(() => setIsRefreshing(false), 500);
+      });
+  };
+
+  useEffect(() => {
+    fetchDbStatus();
+  }, []);
 
   const pendingRequests = subscriptionRequests.filter((r) => r.status === 'PENDING');
   const approvedRequests = subscriptionRequests.filter((r) => r.status === 'APPROVED');
 
   const totalProMembers = allUsers.filter((u) => u.tier === 'PRO').length;
-  const totalRevenue = approvedRequests.length * 50000;
+  const totalRevenue = approvedRequests.length * 500000;
 
   const showNotification = (msg: string) => {
     setNotification(msg);
@@ -99,6 +126,71 @@ export default function AdminDashboardPage() {
           <ArrowUpRight className="w-4 h-4" />
         </Link>
       </div>
+
+      {/* Vercel Cloud Database Status Banner */}
+      <div className={`p-4 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs ${
+        dbStatus?.isConnected
+          ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950'
+          : 'bg-amber-50/80 border-amber-300 text-amber-950'
+      }`}>
+        <div className="flex items-start sm:items-center gap-3">
+          <div className={`p-2.5 rounded-xl ${dbStatus?.isConnected ? 'bg-emerald-100 text-[#00A651]' : 'bg-amber-100 text-amber-700'}`}>
+            <Database className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-extrabold text-sm text-slate-900">
+                Status Penyimpanan Database Akun:
+              </span>
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                dbStatus?.isConnected
+                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                  : 'bg-amber-100 text-amber-900 border border-amber-300'
+              }`}>
+                {dbStatus?.isConnected ? '🟢 Vercel Postgres Terhubung' : '🟡 Serverless Standalone Mode'}
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 mt-0.5">
+              Tipe Mesin: <strong className="text-slate-900 font-mono">{dbStatus?.engine || 'Mengecek status cloud...'}</strong> — Semua akun yang mendaftar tersimpan dan dapat dimonitor langsung di Dashboard Vercel Storage.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 self-start md:self-auto">
+          <button
+            onClick={fetchDbStatus}
+            disabled={isRefreshing}
+            className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all active:scale-95"
+          >
+            <RotateCcw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#00A651]' : ''}`} />
+            <span>{isRefreshing ? 'Sinkronisasi...' : 'Sinkronkan Data'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Vercel Postgres Quick Activation Guide (If not connected) */}
+      {!dbStatus?.isConnected && (
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+            <Server className="w-4 h-4 text-[#00A651]" />
+            <span>Cara Mengaktifkan Database Vercel Postgres (1-Klik Tanpa Koding):</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-600">
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+              <span className="font-bold text-slate-900 block">1. Buka Vercel Storage</span>
+              <p className="text-[11px] leading-relaxed">Masuk ke project <strong className="text-slate-800">realistisfxedukasi</strong> di dashboard Vercel, lalu klik tab <strong className="text-slate-800">Storage</strong>.</p>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+              <span className="font-bold text-slate-900 block">2. Buat Database Postgres</span>
+              <p className="text-[11px] leading-relaxed">Klik tombol <strong className="text-slate-800">Create Database</strong> dan pilih <strong className="text-emerald-700">Postgres (Neon)</strong>, lalu klik Continue.</p>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+              <span className="font-bold text-slate-900 block">3. Hubungkan Project</span>
+              <p className="text-[11px] leading-relaxed">Klik <strong className="text-[#00A651]">Connect Project</strong>. Vercel otomatis mengaitkan DATABASE_URL dan seluruh pendaftaran akun akan permanen di cloud!</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 4 Summary Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -527,7 +619,7 @@ export default function AdminDashboardPage() {
               </label>
               <input
                 type="number"
-                defaultValue={50000}
+                defaultValue={500000}
                 className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:bg-white focus:border-emerald-500 focus:outline-none"
               />
             </div>

@@ -461,6 +461,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     };
     saveUser(newTrader);
 
+    // Multi-Device & Cloud Database Sync: persist new registered user
+    fetch('/api/users/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'REGISTER_USER', user: newTrader }),
+    }).catch(() => {});
+
     // Reset journals for new user
     setJournals([]);
     try {
@@ -560,6 +567,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       ...user,
       subscriptionStatus: 'PENDING',
     });
+
+    // Multi-Device & Cloud Database Sync: persist payment request
+    fetch('/api/users/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'CREATE_REQUEST', request: newRequest }),
+    }).catch(() => {});
   };
 
   // Admin approves subscription
