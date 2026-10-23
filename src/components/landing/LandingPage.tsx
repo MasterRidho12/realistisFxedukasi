@@ -1909,16 +1909,12 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <button
                 type="button"
                 onClick={() => {
-                  if (user.isAuthenticated) {
-                    openPaymentModal();
-                  } else {
-                    openAuth('register');
-                  }
+                  openPaymentModal();
                 }}
                 className="w-full py-4 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-lg shadow-[#00A651]/25 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <Crown className="w-4 h-4" />
-                <span>Langganan VIP Member (Rp 500rb) →</span>
+                <Crown className="w-4 h-4 text-amber-300" />
+                <span>Langganan VIP Member (Rp 500.000 / bln) via QRIS →</span>
               </button>
             </div>
           </div>

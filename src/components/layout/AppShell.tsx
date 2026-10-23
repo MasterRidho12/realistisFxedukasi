@@ -56,7 +56,12 @@ function ShellContent({ children }: { children: React.ReactNode }) {
 
   // 2. Standalone Landing Page Route for Visitors
   if (pathname === '/landing') {
-    return <LandingPage />;
+    return (
+      <>
+        <LandingPage />
+        <QrisPaymentModal />
+      </>
+    );
   }
 
   // 3. DEDICATED ADMIN ROUTE:
@@ -67,7 +72,12 @@ function ShellContent({ children }: { children: React.ReactNode }) {
 
   // If visitor is not authenticated, show Landing Page first (with on-page login & registration)
   if (!user.isAuthenticated) {
-    return <LandingPage />;
+    return (
+      <>
+        <LandingPage />
+        <QrisPaymentModal />
+      </>
+    );
   }
 
   // Regular Trader Layout

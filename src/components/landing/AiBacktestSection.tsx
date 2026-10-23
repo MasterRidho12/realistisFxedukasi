@@ -875,22 +875,30 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full sm:w-auto">
-            {onOpenPayment ? (
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 shrink-0 w-full sm:w-auto">
+            <a
+              href="#pricing"
+              onClick={(e) => {
+                const el = document.getElementById('pricing');
+                if (el) {
+                  e.preventDefault();
+                  el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-[#00A651] font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center flex items-center justify-center gap-1.5"
+            >
+              <Crown className="w-4 h-4 text-amber-500" />
+              <span>Akses Sinyal &amp; Fitur VIP di Website &rarr;</span>
+            </a>
+
+            {onOpenPayment && (
               <button
                 type="button"
                 onClick={onOpenPayment}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-[#00A651] font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
+                className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-emerald-950/80 hover:bg-emerald-900 text-white font-extrabold text-xs sm:text-sm border border-emerald-400/40 shadow-xs hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center flex items-center justify-center gap-1.5"
               >
-                Akses Sinyal &amp; Fitur VIP di Website &rarr;
+                <span>Bayar Langsung via QRIS</span>
               </button>
-            ) : (
-              <a
-                href="#pricing"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-[#00A651] font-black text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
-              >
-                Akses Sinyal &amp; Fitur VIP di Website &rarr;
-              </a>
             )}
 
             <a
