@@ -209,8 +209,8 @@ function generateSignalAndActual(
       }
     }
 
-    // Calibrate dynamically to real 2026 Gold spot price (~$4,056)
-    const baseGoldPrice = 4056.0;
+    // Calibrate dynamically to real 2026 Gold spot price (~$4,442)
+    const baseGoldPrice = 4442.0;
     const buySetup = {
       title: 'Setup BUY XAUUSD (Peluang Gold Terbang)',
       triggerCondition: 'Rilis Aktual < Forecast (Data AS Melemah / Dovish)',
