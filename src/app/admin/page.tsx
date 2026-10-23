@@ -87,7 +87,7 @@ export default function AdminDashboardPage() {
             </h1>
           </div>
           <p className="text-xs text-slate-600 max-w-2xl">
-            Kelola aktivasi langganan PRO Rp50.000/bln, verifikasi bukti screenshot transfer bank/QRIS, dan setting hak akses akun trader.
+            Kelola aktivasi langganan PRO VIP Rp500.000/bln, verifikasi bukti screenshot transfer bank/QRIS, dan setting hak akses akun trader.
           </p>
         </div>
 

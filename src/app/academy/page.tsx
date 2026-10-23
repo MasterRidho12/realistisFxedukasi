@@ -99,7 +99,7 @@ const MODULES: AcademyModule[] = [
 ];
 
 export default function AcademyPage() {
-  const { user, setTier } = useUser();
+  const { user, setTier, openPaymentModal } = useUser();
   const isPro = user.tier === 'PRO';
 
   const [activeModule, setActiveModule] = useState<AcademyModule>(MODULES[0]);
@@ -127,10 +127,10 @@ export default function AcademyPage() {
 
         {!isPro && (
           <button
-            onClick={() => setTier('PRO')}
+            onClick={openPaymentModal}
             className="px-3.5 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
           >
-            <Crown className="w-3.5 h-3.5" /> Buka Semua Modul (PRO Rp50k)
+            <Crown className="w-3.5 h-3.5" /> Buka Semua Modul (PRO VIP Rp500k)
           </button>
         )}
       </div>
@@ -210,7 +210,7 @@ export default function AcademyPage() {
                 {isLocked && (
                   <div className="mt-3 flex items-center gap-2 text-xs text-amber-700 font-semibold">
                     <Lock className="w-3.5 h-3.5" />
-                    <span>Terkunci untuk Akun Free (Upgrade ke Pro Rp50k)</span>
+                    <span>Terkunci untuk Akun Free (Upgrade ke PRO VIP Rp500k)</span>
                   </div>
                 )}
               </div>

@@ -199,7 +199,63 @@ function getDynamicSignalLevels(currency: string, title: string, liveXauSpot: nu
     };
   }
 
-  // 6. CAD Events -> Primary pair is USDCAD (Spot ~1.3815)
+  // 6. NZD Events -> Primary pair is NZDUSD (Spot ~0.6050)
+  if (curr === 'NZD') {
+    const spot = 0.6050;
+    return {
+      symbol: 'NZDUSD',
+      symbolLabel: 'NZD/USD',
+      liveSpot: spot,
+      spotFormatted: spot.toFixed(4),
+      pipUnit: 'Pips',
+      buy: {
+        entryArea: '0.6080 - 0.6095',
+        entryClean: '0.6080',
+        stopLoss: '0.6050 (SL: 30 Pips di bawah Entry)',
+        takeProfit1: '0.6140 (+60 Pips Gain)',
+        takeProfit2: '0.6190 (+110 Pips Gain)',
+        distanceText: '+30 Pips di atas spot saat ini (0.6050)',
+      },
+      sell: {
+        entryArea: '0.6010 - 0.6025',
+        entryClean: '0.6010',
+        stopLoss: '0.6055 (SL: 30 Pips di atas Entry)',
+        takeProfit1: '0.5960 (+60 Pips Drop Turun)',
+        takeProfit2: '0.5910 (+110 Pips Drop Turun)',
+        distanceText: '-30 Pips di bawah spot saat ini (0.6050)',
+      },
+    };
+  }
+
+  // 7. CHF Events -> Primary pair is USDCHF (Spot ~0.8650)
+  if (curr === 'CHF') {
+    const spot = 0.8650;
+    return {
+      symbol: 'USDCHF',
+      symbolLabel: 'USD/CHF',
+      liveSpot: spot,
+      spotFormatted: spot.toFixed(4),
+      pipUnit: 'Pips',
+      buy: {
+        entryArea: '0.8680 - 0.8695',
+        entryClean: '0.8680',
+        stopLoss: '0.8650 (SL: 30 Pips di bawah Entry)',
+        takeProfit1: '0.8740 (+60 Pips Gain)',
+        takeProfit2: '0.8790 (+110 Pips Gain)',
+        distanceText: '+30 Pips di atas spot saat ini (0.8650)',
+      },
+      sell: {
+        entryArea: '0.8610 - 0.8625',
+        entryClean: '0.8610',
+        stopLoss: '0.8655 (SL: 30 Pips di atas Entry)',
+        takeProfit1: '0.8560 (+60 Pips Drop Turun)',
+        takeProfit2: '0.8510 (+110 Pips Drop Turun)',
+        distanceText: '-30 Pips di bawah spot saat ini (0.8650)',
+      },
+    };
+  }
+
+  // 8. CAD Events -> Primary pair is USDCAD (Spot ~1.3815)
   const spot = 1.3815;
   return {
     symbol: 'USDCAD',
@@ -224,6 +280,24 @@ function getDynamicSignalLevels(currency: string, title: string, liveXauSpot: nu
       distanceText: '-35 Pips di bawah spot saat ini (1.3815)',
     },
   };
+}
+
+function getDisplayLevel(setupValue?: string, dynamicFallback?: string): string {
+  if (!setupValue) return dynamicFallback || '-';
+  const lower = setupValue.toLowerCase();
+  const isGenericPlaceholder =
+    lower.startsWith('level breakout') ||
+    lower.startsWith('level breakdown') ||
+    lower.startsWith('area breakout') ||
+    lower.startsWith('area breakdown') ||
+    lower.includes('pips di') ||
+    lower.includes('pips drop') ||
+    lower.includes('pips gain');
+
+  if (!isGenericPlaceholder && /\d/.test(setupValue)) {
+    return setupValue;
+  }
+  return dynamicFallback || setupValue;
 }
 
 export default function NewsRadarPage() {
@@ -630,8 +704,8 @@ export default function NewsRadarPage() {
       {/* CURRENCY SELECTOR & SEARCH BAR */}
       <div className="bg-white rounded-2xl p-4 border border-slate-200 space-y-3 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-            <span className="text-xs font-bold text-slate-500 mr-1 flex items-center gap-1">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none w-full min-w-0">
+            <span className="text-xs font-bold text-slate-500 mr-1 flex items-center gap-1 shrink-0">
               <Globe2 className="w-3.5 h-3.5 text-[#00A651]" />
               <span>Mata Uang:</span>
             </span>
@@ -644,7 +718,7 @@ export default function NewsRadarPage() {
                   key={curr}
                   type="button"
                   onClick={() => setSelectedCurrency(curr)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
                     isSelected
                       ? 'bg-[#00A651] text-white shadow-md shadow-[#00A651]/20'
                       : 'bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200'
@@ -665,7 +739,7 @@ export default function NewsRadarPage() {
             })}
           </div>
 
-          <div className="relative min-w-[240px]">
+          <div className="relative w-full md:w-auto md:min-w-[240px]">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
             <input
               type="text"
@@ -743,6 +817,15 @@ export default function NewsRadarPage() {
                 {group.items.map((news) => {
                   // Compute dynamic price levels relative to live spot price!
                   const dynLevels = getDynamicSignalLevels(news.currency, news.title, liveGoldPrice);
+                  const buyEntryDisplay = getDisplayLevel(news.signal?.buySetup?.entryArea, dynLevels.buy.entryArea);
+                  const buySlDisplay = getDisplayLevel(news.signal?.buySetup?.stopLoss, dynLevels.buy.stopLoss);
+                  const buyTp1Display = getDisplayLevel(news.signal?.buySetup?.takeProfit1, dynLevels.buy.takeProfit1);
+                  const buyTp2Display = getDisplayLevel(news.signal?.buySetup?.takeProfit2, dynLevels.buy.takeProfit2);
+
+                  const sellEntryDisplay = getDisplayLevel(news.signal?.sellSetup?.entryArea, dynLevels.sell.entryArea);
+                  const sellSlDisplay = getDisplayLevel(news.signal?.sellSetup?.stopLoss, dynLevels.sell.stopLoss);
+                  const sellTp1Display = getDisplayLevel(news.signal?.sellSetup?.takeProfit1, dynLevels.sell.takeProfit1);
+                  const sellTp2Display = getDisplayLevel(news.signal?.sellSetup?.takeProfit2, dynLevels.sell.takeProfit2);
 
                   return (
                     <div
@@ -976,46 +1059,46 @@ export default function NewsRadarPage() {
 
                                 {/* Real-Time Price Levels Box */}
                                 <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-[11px]">
-                                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
-                                    <span className="text-slate-500 block text-[9px] uppercase font-bold tracking-wider">
+                                  <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5 min-w-0">
+                                    <span className="text-slate-500 block text-[9px] uppercase font-bold tracking-wider truncate">
                                       Harga Entry (Breakout):
                                     </span>
-                                    <span className="font-black text-emerald-700 text-xs block">
-                                      {news.signal.buySetup.entryArea || dynLevels.buy.entryArea}
+                                    <span className="font-black text-emerald-700 text-[11px] sm:text-xs block break-words">
+                                      {buyEntryDisplay}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">
+                                    <span className="text-[9px] text-slate-500 block line-clamp-2">
                                       {dynLevels.buy.distanceText}
                                     </span>
                                   </div>
 
-                                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
-                                    <span className="text-rose-600 block text-[9px] uppercase font-bold tracking-wider">
+                                  <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5 min-w-0">
+                                    <span className="text-rose-600 block text-[9px] uppercase font-bold tracking-wider truncate">
                                       Stop Loss (SL):
                                     </span>
-                                    <span className="font-black text-rose-600 text-xs block">
-                                      {news.signal.buySetup.stopLoss || dynLevels.buy.stopLoss}
+                                    <span className="font-black text-rose-600 text-[11px] sm:text-xs block break-words">
+                                      {buySlDisplay}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Proteksi di Bawah Entry</span>
+                                    <span className="text-[9px] text-slate-500 block truncate">Proteksi di Bawah Entry</span>
                                   </div>
 
-                                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
-                                    <span className="text-emerald-700 block text-[9px] uppercase font-bold tracking-wider">
+                                  <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5 min-w-0">
+                                    <span className="text-emerald-700 block text-[9px] uppercase font-bold tracking-wider truncate">
                                       Target TP 1:
                                     </span>
-                                    <span className="font-black text-emerald-700 text-xs block">
-                                      {news.signal.buySetup.takeProfit1 || dynLevels.buy.takeProfit1}
+                                    <span className="font-black text-emerald-700 text-[11px] sm:text-xs block break-words">
+                                      {buyTp1Display}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Amankan 50% Posisi</span>
+                                    <span className="text-[9px] text-slate-500 block truncate">Amankan 50% Posisi</span>
                                   </div>
 
-                                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
-                                    <span className="text-emerald-700 block text-[9px] uppercase font-bold tracking-wider">
+                                  <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5 min-w-0">
+                                    <span className="text-emerald-700 block text-[9px] uppercase font-bold tracking-wider truncate">
                                       Target TP 2:
                                     </span>
-                                    <span className="font-black text-emerald-700 text-xs block">
-                                      {news.signal.buySetup.takeProfit2 || dynLevels.buy.takeProfit2}
+                                    <span className="font-black text-emerald-700 text-[11px] sm:text-xs block break-words">
+                                      {buyTp2Display}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Trailing Stop Maksimal</span>
+                                    <span className="text-[9px] text-slate-500 block truncate">Trailing Stop Maksimal</span>
                                   </div>
                                 </div>
 
@@ -1038,7 +1121,7 @@ export default function NewsRadarPage() {
                                     onClick={() =>
                                       handleCopySignal(
                                         `buy-${news.id}`,
-                                        `${news.signal.primaryPair || dynLevels.symbol} BUY STOP | Entry: ${news.signal.buySetup.entryArea || dynLevels.buy.entryClean} | SL: ${news.signal.buySetup.stopLoss || dynLevels.buy.stopLoss} | TP1: ${news.signal.buySetup.takeProfit1 || dynLevels.buy.takeProfit1} | TP2: ${news.signal.buySetup.takeProfit2 || dynLevels.buy.takeProfit2}`
+                                        `${news.signal.primaryPair || dynLevels.symbol} BUY STOP | Entry: ${buyEntryDisplay} | SL: ${buySlDisplay} | TP1: ${buyTp1Display} | TP2: ${buyTp2Display}`
                                       )
                                     }
                                     className="px-2.5 py-1 rounded-lg bg-[#00A651] hover:bg-[#008F45] text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-xs"
@@ -1087,46 +1170,46 @@ export default function NewsRadarPage() {
 
                                 {/* Real-Time Price Levels Box */}
                                 <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-[11px]">
-                                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
-                                    <span className="text-slate-500 block text-[9px] uppercase font-bold tracking-wider">
+                                  <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5 min-w-0">
+                                    <span className="text-slate-500 block text-[9px] uppercase font-bold tracking-wider truncate">
                                       Harga Entry (Breakdown):
                                     </span>
-                                    <span className="font-black text-rose-600 text-xs block">
-                                      {news.signal.sellSetup.entryArea || dynLevels.sell.entryArea}
+                                    <span className="font-black text-rose-600 text-[11px] sm:text-xs block break-words">
+                                      {sellEntryDisplay}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">
+                                    <span className="text-[9px] text-slate-500 block line-clamp-2">
                                       {dynLevels.sell.distanceText}
                                     </span>
                                   </div>
 
-                                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
-                                    <span className="text-rose-600 block text-[9px] uppercase font-bold tracking-wider">
+                                  <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5 min-w-0">
+                                    <span className="text-rose-600 block text-[9px] uppercase font-bold tracking-wider truncate">
                                       Stop Loss (SL):
                                     </span>
-                                    <span className="font-black text-rose-600 text-xs block">
-                                      {news.signal.sellSetup.stopLoss || dynLevels.sell.stopLoss}
+                                    <span className="font-black text-rose-600 text-[11px] sm:text-xs block break-words">
+                                      {sellSlDisplay}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Proteksi di Atas Entry</span>
+                                    <span className="text-[9px] text-slate-500 block truncate">Proteksi di Atas Entry</span>
                                   </div>
 
-                                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
-                                    <span className="text-emerald-700 block text-[9px] uppercase font-bold tracking-wider">
+                                  <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5 min-w-0">
+                                    <span className="text-emerald-700 block text-[9px] uppercase font-bold tracking-wider truncate">
                                       Target TP 1:
                                     </span>
-                                    <span className="font-black text-emerald-700 text-xs block">
-                                      {news.signal.sellSetup.takeProfit1 || dynLevels.sell.takeProfit1}
+                                    <span className="font-black text-emerald-700 text-[11px] sm:text-xs block break-words">
+                                      {sellTp1Display}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Amankan 50% Posisi (Drop)</span>
+                                    <span className="text-[9px] text-slate-500 block truncate">Amankan 50% Posisi (Drop)</span>
                                   </div>
 
-                                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5">
-                                    <span className="text-emerald-700 block text-[9px] uppercase font-bold tracking-wider">
+                                  <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-0.5 min-w-0">
+                                    <span className="text-emerald-700 block text-[9px] uppercase font-bold tracking-wider truncate">
                                       Target TP 2:
                                     </span>
-                                    <span className="font-black text-emerald-700 text-xs block">
-                                      {news.signal.sellSetup.takeProfit2 || dynLevels.sell.takeProfit2}
+                                    <span className="font-black text-emerald-700 text-[11px] sm:text-xs block break-words">
+                                      {sellTp2Display}
                                     </span>
-                                    <span className="text-[9px] text-slate-500 block">Trailing Stop Turun Likuiditas</span>
+                                    <span className="text-[9px] text-slate-500 block truncate">Trailing Stop Turun Likuiditas</span>
                                   </div>
                                 </div>
 
@@ -1149,7 +1232,7 @@ export default function NewsRadarPage() {
                                     onClick={() =>
                                       handleCopySignal(
                                         `sell-${news.id}`,
-                                        `${news.signal.primaryPair || dynLevels.symbol} SELL STOP | Entry: ${news.signal.sellSetup.entryArea || dynLevels.sell.entryClean} | SL: ${news.signal.sellSetup.stopLoss || dynLevels.sell.stopLoss} | TP1: ${news.signal.sellSetup.takeProfit1 || dynLevels.sell.takeProfit1} | TP2: ${news.signal.sellSetup.takeProfit2 || dynLevels.sell.takeProfit2}`
+                                        `${news.signal.primaryPair || dynLevels.symbol} SELL STOP | Entry: ${sellEntryDisplay} | SL: ${sellSlDisplay} | TP1: ${sellTp1Display} | TP2: ${sellTp2Display}`
                                       )
                                     }
                                     className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-all active:scale-95 shadow-xs"
@@ -1207,7 +1290,7 @@ export default function NewsRadarPage() {
                                 className="px-6 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
                               >
                                 <Crown className="w-4 h-4" />
-                                <span>Buka Kunci Prediksi &amp; Sinyal PRO (Rp50.000 / Bulan)</span>
+                                <span>Buka Kunci Prediksi &amp; Sinyal VIP PRO (Rp500.000 / Bulan)</span>
                               </button>
                             </div>
                           </div>

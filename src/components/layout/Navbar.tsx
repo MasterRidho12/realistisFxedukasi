@@ -65,7 +65,7 @@ export default function Navbar() {
               src="/images/logo.png"
             />
           </div>
-          <span className="font-extrabold text-xs sm:text-sm tracking-wider text-slate-900 hidden xs:inline">
+          <span className="font-extrabold text-xs sm:text-sm tracking-wider text-slate-900">
             REALISTIS<span className="text-[#00A651]"> FX</span>
           </span>
         </Link>
@@ -122,19 +122,19 @@ export default function Navbar() {
             {isPending ? (
               <>
                 <CreditCard className="w-3.5 h-3.5" />
-                <span className="hidden xs:inline">QRIS </span><span>Pending</span>
+                <span>Pending</span>
               </>
             ) : (
               <>
                 <Crown className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Upgrade </span>VIP <span>Rp500k</span>
+                <span>Upgrade VIP</span>
               </>
             )}
           </button>
         ) : (
           <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-bold">
             <Crown className="w-3.5 h-3.5 text-[#00A651]" />
-            <span>PRO</span><span className="hidden xs:inline"> VIP</span>
+            <span>PRO VIP</span>
           </div>
         )}
 

@@ -103,14 +103,14 @@ export default function WatchlistPage() {
           <div className="flex items-center gap-2.5">
             <Lock className="w-5 h-5 text-amber-600 flex-shrink-0" />
             <p className="text-xs text-slate-700">
-              Anda berada di <span className="font-bold text-slate-900">Free Tier</span> (hanya menampilkan 1 pair acak AUDUSD). Upgrade ke Pro Rp50k untuk membuka analisa lengkap <span className="text-amber-800 font-bold">XAUUSD, EURUSD, dan GBPUSD</span>.
+              Anda berada di <span className="font-bold text-slate-900">Free Tier</span> (hanya menampilkan 1 pair acak AUDUSD). Upgrade ke PRO VIP Rp500k untuk membuka analisa lengkap <span className="text-amber-800 font-bold">XAUUSD, EURUSD, dan GBPUSD</span>.
             </p>
           </div>
           <button
             onClick={openPaymentModal}
             className="px-3.5 py-1.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-bold whitespace-nowrap cursor-pointer shadow-sm shadow-[#00A651]/20"
           >
-            Upgrade Pro Rp50k
+            Upgrade VIP Rp500k
           </button>
         </div>
       )}
@@ -138,7 +138,7 @@ export default function WatchlistPage() {
                     Analisa Zona {item.pair} Terkunci
                   </h3>
                   <p className="text-xs text-slate-600 max-w-xs leading-relaxed">
-                    Khusus member PRO RealistisFx Rp50.000/bln untuk mendapatkan Buy/Sell Zone presisi.
+                    Khusus member PRO VIP RealistisFx Rp500.000/bln untuk mendapatkan Buy/Sell Zone presisi.
                   </p>
                   <button
                     onClick={openPaymentModal}

@@ -16,7 +16,7 @@ import {
 import { useUser } from '@/context/UserContext';
 
 export default function BotAssistantPage() {
-  const { user, setTier, toggleTelegramLink } = useUser();
+  const { user, setTier, toggleTelegramLink, openPaymentModal } = useUser();
   const isPro = user.tier === 'PRO';
 
   const [chatId, setChatId] = useState(user.telegramChatId || '@trader_budi');
@@ -50,10 +50,10 @@ export default function BotAssistantPage() {
 
         {!isPro ? (
           <button
-            onClick={() => setTier('PRO')}
+            onClick={openPaymentModal}
             className="px-3.5 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
           >
-            <Crown className="w-3.5 h-3.5" /> Buka Fitur Bot PRO (Rp50k)
+            <Crown className="w-3.5 h-3.5" /> Buka Fitur Bot VIP (Rp500k)
           </button>
         ) : (
           <div className="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1.5">
@@ -75,10 +75,10 @@ export default function BotAssistantPage() {
             Jangan sampai lupa ada jadwal rilis berita NFP atau CPI saat sedang floating posisi. Bot Telegram kami akan mengingatkan Anda tepat 30 menit sebelumnya langsung di smartphone Anda.
           </p>
           <button
-            onClick={() => setTier('PRO')}
+            onClick={openPaymentModal}
             className="px-5 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-sm hover:shadow transition-all cursor-pointer"
           >
-            Upgrade ke PRO Rp50k Sekarang
+            Upgrade ke PRO VIP Rp500k Sekarang
           </button>
         </div>
       ) : (

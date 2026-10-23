@@ -591,7 +591,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
 
         {/* 2b. Mobile Slide-Down Menu Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-slate-200 bg-white/98 backdrop-blur-lg px-4 pt-4 pb-6 space-y-4 shadow-xl animate-in slide-in-from-top-4 duration-200">
+          <div className="lg:hidden border-t border-slate-200 bg-white/98 backdrop-blur-lg px-4 pt-4 pb-8 space-y-4 shadow-xl animate-in slide-in-from-top-4 duration-200 max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain">
             {/* Navigation Links */}
             <nav className="grid grid-cols-1 gap-1 text-xs font-bold text-slate-700">
               <a
@@ -866,7 +866,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
       </section>
 
       {/* 4. VERIFIED HISTORICAL NEWS SIGNALS & TRACK RECORD (Real Official BLS/Fed Data) */}
-      <section id="track-record" className="py-16 sm:py-20 bg-slate-50 border-b border-slate-200 scroll-mt-14">
+      <section id="track-record" className="py-16 sm:py-20 bg-slate-50 border-b border-slate-200 scroll-mt-20 sm:scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="px-3 py-1 rounded-full bg-emerald-50 text-[#00A651] border border-emerald-200 text-xs font-black uppercase tracking-wider flex items-center gap-1.5 w-fit mx-auto">
@@ -1249,18 +1249,18 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                       </div>
 
                       {/* Exact Levels on That Specific Date */}
-                      <div className="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-2xl text-center">
-                        <div>
-                          <span className="text-[10px] text-slate-400 font-bold block uppercase">ENTRY RIIL</span>
-                          <span className="font-mono text-xs font-black text-slate-900">{sig.entry}</span>
+                      <div className="grid grid-cols-3 gap-1.5 sm:gap-2 bg-slate-50 p-2.5 sm:p-3 rounded-2xl text-center">
+                        <div className="p-1 sm:p-1.5">
+                          <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold block uppercase tracking-wider">ENTRY RIIL</span>
+                          <span className="font-mono text-[11px] sm:text-xs font-black text-slate-900 block truncate">{sig.entry}</span>
                         </div>
-                        <div>
-                          <span className="text-[10px] text-rose-500 font-bold block uppercase">STOP LOSS</span>
-                          <span className="font-mono text-xs font-black text-rose-600">{sig.sl}</span>
+                        <div className="p-1 sm:p-1.5">
+                          <span className="text-[9px] sm:text-[10px] text-rose-500 font-bold block uppercase tracking-wider">STOP LOSS</span>
+                          <span className="font-mono text-[11px] sm:text-xs font-black text-rose-600 block">{sig.sl}</span>
                         </div>
-                        <div>
-                          <span className="text-[10px] text-[#00A651] font-bold block uppercase">TARGET TP</span>
-                          <span className="font-mono text-xs font-black text-[#00A651]">{sig.tp2}</span>
+                        <div className="p-1 sm:p-1.5">
+                          <span className="text-[9px] sm:text-[10px] text-[#00A651] font-bold block uppercase tracking-wider">TARGET TP</span>
+                          <span className="font-mono text-[11px] sm:text-xs font-black text-[#00A651] block">{sig.tp2}</span>
                         </div>
                       </div>
 

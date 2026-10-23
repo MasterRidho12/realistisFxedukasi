@@ -194,7 +194,7 @@ export default function Sidebar() {
               <p className="text-[10px] text-slate-500">
                 {isPending
                   ? 'Bukti bayar sedang diverifikasi admin via WA'
-                  : 'Upgrade Rp50.000/bln untuk akses tanpa batas'}
+                  : 'Upgrade VIP Rp500.000/bln untuk akses tanpa batas'}
               </p>
             </div>
           ) : (

@@ -629,6 +629,54 @@ function generateSignalAndActual(
     };
   }
 
+  // Specific for NZD (New Zealand Dollar)
+  if (curr === 'NZD') {
+    primaryAffectedPair = 'NZDUSD';
+    affectedPairs = ['NZDUSD', 'NZDJPY', 'AUDNZD', 'EURNZD', 'GBPNZD'];
+    const buySetup = {
+      title: 'Setup BUY NZDUSD (Kiwi Menguat)',
+      triggerCondition: 'Rilis Aktual > Forecast (Positif untuk NZD)',
+      actionType: 'BUY STOP' as const,
+      entryArea: '0.6080 - 0.6095',
+      stopLoss: '0.6050 (SL: 30 Pips)',
+      takeProfit1: '0.6140 (+60 Pips)',
+      takeProfit2: '0.6190 (+110 Pips)',
+      riskReward: '1 : 2.2',
+      rationale: 'Kekuatan fundamental ekonomi Selandia Baru menopang penguatan mata uang Kiwi.',
+    };
+
+    const sellSetup = {
+      title: 'Setup SELL NZDUSD (Kiwi Melemah)',
+      triggerCondition: 'Rilis Aktual < Forecast (Negatif untuk NZD)',
+      actionType: 'SELL STOP' as const,
+      entryArea: '0.6010 - 0.6025',
+      stopLoss: '0.6055 (SL: 30 Pips)',
+      takeProfit1: '0.5960 (+60 Pips)',
+      takeProfit2: '0.5910 (+110 Pips)',
+      riskReward: '1 : 2.2',
+      rationale: 'Pelemahan data ekonomi Selandia Baru menekan nilai tukar Kiwi terhadap USD.',
+    };
+
+    return {
+      actualData: { actual: actualValue, hasReleased, status, statusLabel, statusColor, impactVerdict },
+      signal: {
+        primaryPair: primaryAffectedPair,
+        winRate,
+        averagePipMove,
+        reliabilityScore,
+        historicalSample: 'Berdasarkan konsistensi reaksi volatilitas rilis Forex Factory',
+        buySetup,
+        sellSetup,
+        activeTrigger,
+        triggerBadgeText,
+        triggerExplanation,
+      },
+      primaryAffectedPair,
+      affectedPairs,
+      impactExplanation,
+    };
+  }
+
   // Generic
   primaryAffectedPair = `${curr}USD`;
   affectedPairs = [`${curr}USD`, `${curr}JPY`];
@@ -637,7 +685,7 @@ function generateSignalAndActual(
     title: `Setup BUY ${curr}USD`,
     triggerCondition: `Rilis Aktual > Forecast (Positif untuk ${curr})`,
     actionType: 'BUY STOP' as const,
-    entryArea: 'Area Breakout High',
+    entryArea: 'Level Breakout High Resisten',
     stopLoss: '30 Pips di bawah Entry',
     takeProfit1: '60 Pips di atas Entry',
     takeProfit2: '120 Pips di atas Entry',
@@ -649,7 +697,7 @@ function generateSignalAndActual(
     title: `Setup SELL ${curr}USD`,
     triggerCondition: `Rilis Aktual < Forecast (Negatif untuk ${curr})`,
     actionType: 'SELL STOP' as const,
-    entryArea: 'Area Breakdown Low',
+    entryArea: 'Level Breakdown Low Support',
     stopLoss: '30 Pips di atas Entry',
     takeProfit1: '60 Pips di bawah Entry',
     takeProfit2: '120 Pips di bawah Entry',

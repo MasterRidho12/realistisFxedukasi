@@ -84,7 +84,7 @@ const DEFAULT_QUOTES: Record<string, PairQuote> = {
 };
 
 export default function JournalPage() {
-  const { user, journals, addJournalEntry, deleteJournalEntry, setTier, marketPrice } = useUser();
+  const { user, journals, addJournalEntry, deleteJournalEntry, setTier, marketPrice, openPaymentModal } = useUser();
   const isPro = user.tier === 'PRO';
 
   // Live Multi-Currency TradingView Quotes
@@ -429,10 +429,10 @@ export default function JournalPage() {
             </div>
           </div>
           <button
-            onClick={() => setTier('PRO')}
+            onClick={openPaymentModal}
             className="text-xs text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1 cursor-pointer"
           >
-            <Crown className="w-3.5 h-3.5" /> Buka Akses Unlimited Jurnal (PRO Rp50k)
+            <Crown className="w-3.5 h-3.5" /> Buka Akses Unlimited Jurnal (PRO VIP Rp500k)
           </button>
         </div>
       ) : (
@@ -540,7 +540,7 @@ export default function JournalPage() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto -mx-2 sm:mx-0">
+          <div className="overflow-x-auto w-full rounded-xl border border-slate-200">
             <table className="min-w-[850px] w-full text-left text-xs">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-600 bg-slate-50 font-mono font-semibold">

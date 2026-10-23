@@ -220,7 +220,7 @@ export default function CalculatorPage() {
                 <span className="font-bold text-slate-900">Status Kuota Harian Free:</span> Tersisa {Math.max(0, 3 - user.dailyCalculatorCount)} dari 3 kalkulasi hari ini.
               </p>
               <p className="text-[11px] text-slate-500">
-                Upgrade ke PRO Rp50.000/bln untuk hitung tanpa batas + buka akses kalkulasi Emas (XAUUSD) &amp; Akun Cent.
+                Upgrade ke PRO VIP Rp500.000/bln untuk hitung tanpa batas + buka akses kalkulasi Emas (XAUUSD) &amp; Akun Cent.
               </p>
             </div>
           </div>
@@ -228,14 +228,14 @@ export default function CalculatorPage() {
             onClick={openPaymentModal}
             className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs whitespace-nowrap shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
           >
-            Upgrade PRO Rp50k via QRIS
+            Upgrade VIP Rp500k via QRIS
           </button>
         </div>
       ) : (
         <div className="px-4 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-bold flex items-center justify-between">
           <span className="flex items-center gap-2">
             <Crown className="w-4 h-4 text-[#00A651]" />
-            <span>Akun PRO Aktif: Akses Kalkulator Unlimited, Pair Emas (XAUUSD), dan Akun Cent Terbuka.</span>
+            <span>Akun PRO VIP Aktif: Akses Kalkulator Unlimited, Pair Emas (XAUUSD), dan Akun Cent Terbuka.</span>
           </span>
           <span className="font-bold text-[#00A651]">VIP</span>
         </div>
@@ -272,7 +272,7 @@ export default function CalculatorPage() {
             <div>
               <h4 className="text-xs font-bold text-slate-900">Kuota Harian (3x) Telah Habis!</h4>
               <p className="text-[11px] text-slate-600">
-                Tingkatkan ke Pro hanya Rp50.000/bulan untuk kalkulasi unlimited + pair XAUUSD &amp; akun Cent.
+                Tingkatkan ke PRO VIP hanya Rp500.000/bulan untuk kalkulasi unlimited + pair XAUUSD &amp; akun Cent.
               </p>
             </div>
           </div>
@@ -280,7 +280,7 @@ export default function CalculatorPage() {
             onClick={openPaymentModal}
             className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs cursor-pointer shadow-xs"
           >
-            Bayar Langganan via QRIS
+            Bayar Langganan VIP via QRIS
           </button>
         </div>
       )}
