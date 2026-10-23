@@ -34,13 +34,6 @@ const navigationItems = [
     badgeColor: 'blue',
   },
   {
-    name: 'Landing Page Website',
-    href: '/landing',
-    icon: Globe,
-    badge: 'Info',
-    badgeColor: 'green',
-  },
-  {
     name: 'Risk & Lot Calculator',
     href: '/calculator',
     icon: Calculator,

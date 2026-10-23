@@ -22,11 +22,23 @@ import {
   Info,
   Sliders,
   Check,
+  User,
+  KeyRound,
+  ShieldCheck,
+  Smartphone,
+  Mail,
+  Server,
+  Activity,
+  MessageCircle,
+  Copy,
+  X,
+  CreditCard,
+  Zap,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
 export default function DashboardOverviewPage() {
-  const { user, journals, openPaymentModal } = useUser();
+  const { user, journals, openPaymentModal, updateUserPasswordLocal, siteSettings } = useUser();
   const isPro = user.tier === 'PRO';
 
   // Dynamic statistics from user's real journals
@@ -39,6 +51,14 @@ export default function DashboardOverviewPage() {
   const totalPnL = journals.reduce((acc, curr) => acc + curr.pnl, 0);
   const winPct = totalTrades > 0 ? Math.round((winningTrades / totalTrades) * 100) : 0;
   const lossPct = totalTrades > 0 ? Math.round((losingTrades / totalTrades) * 100) : 0;
+
+  // Password Change Modal State
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [pwSuccessMsg, setPwSuccessMsg] = useState('');
+  const [pwErrorMsg, setPwErrorMsg] = useState('');
+  const [copiedId, setCopiedId] = useState(false);
 
   // Anti-FOMO Checklist state on Dashboard Overview
   const [sopChecks, setSopChecks] = useState({
@@ -56,13 +76,43 @@ export default function DashboardOverviewPage() {
   const completedChecksCount = Object.values(sopChecks).filter(Boolean).length;
   const isSopReady = completedChecksCount === 5;
 
+  const handleCopyAccountId = () => {
+    navigator.clipboard.writeText(user.id);
+    setCopiedId(true);
+    setTimeout(() => setCopiedId(false), 2000);
+  };
+
+  const handleChangePassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwErrorMsg('');
+    setPwSuccessMsg('');
+
+    if (newPassword.length < 6) {
+      setPwErrorMsg('Kata sandi baru minimal 6 karakter.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPwErrorMsg('Konfirmasi kata sandi tidak cocok.');
+      return;
+    }
+
+    updateUserPasswordLocal(user.email, newPassword);
+    setPwSuccessMsg('✅ Kata sandi berhasil diperbarui!');
+    setTimeout(() => {
+      setShowPasswordModal(false);
+      setNewPassword('');
+      setConfirmPassword('');
+      setPwSuccessMsg('');
+    }, 1500);
+  };
+
   const coreFeatures = [
     {
       title: 'Risk & Lot Calculator',
       description: 'Hitung lot aman otomatis berdasarkan toleransi risiko 1-2% modal dan jarak SL pips.',
       href: '/calculator',
       icon: Calculator,
-      freeStatus: 'Standar (Max 3x/hari)',
+      freeStatus: `Standar (Max ${siteSettings?.freeDailyCalculatorLimit ?? 3}x/hari)`,
       proStatus: 'Unlimited + Akun Cent (IDRC) + XAUUSD',
       isProFeature: false,
       badge: 'Core SOP',
@@ -170,9 +220,199 @@ export default function DashboardOverviewPage() {
   ];
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* Top Welcome / Commitment Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-200/90 p-4 sm:p-6 md:p-8 shadow-xs border-l-4 border-l-[#00A651]">
+    <div className="space-y-6 sm:space-y-8 pb-12">
+      {/* ======================================================== */}
+      {/* 1. DEDICATED TRADING ACCOUNT PROFILE TERMINAL (NEW)       */}
+      {/* ======================================================== */}
+      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden">
+        {/* Profile Card Terminal Top Header */}
+        <div className="px-4 sm:px-6 py-3.5 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white flex flex-wrap items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00A651] animate-pulse ring-4 ring-[#00A651]/20" />
+            <span className="font-mono text-xs font-bold tracking-wider uppercase text-slate-200">
+              Terminal Trading Profile &amp; Account Status
+            </span>
+            <span className="text-slate-500 hidden sm:inline">|</span>
+            <span className="text-[11px] text-slate-400 hidden sm:inline font-mono">
+              Server: RealistisFx Gateway MT5
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-emerald-300 border border-white/10">
+              Low Latency 14ms
+            </span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              SOP Realistis
+            </span>
+          </div>
+        </div>
+
+        {/* Profile Card Body: 3 Responsive Columns */}
+        <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+          {/* Column 1: Trader Identity & License */}
+          <div className="space-y-3 pt-2 md:pt-0">
+            <div className="flex items-center gap-3">
+              <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00A651] to-emerald-800 text-white flex items-center justify-center font-black text-base shadow-md shadow-[#00A651]/20 flex-shrink-0">
+                {user.name ? user.name.slice(0, 2).toUpperCase() : 'TR'}
+                <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 ring-2 ring-white" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight truncate">
+                    {user.name}
+                  </h2>
+                </div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                    {user.id}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyAccountId}
+                    className="p-1 text-slate-400 hover:text-slate-700 rounded cursor-pointer"
+                    title="Salin ID Akun"
+                  >
+                    {copiedId ? <Check className="w-3.5 h-3.5 text-[#00A651]" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-1.5 text-xs text-slate-600 pt-1">
+              <div className="flex items-center gap-2">
+                <Mail className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                <span className="truncate">{user.email}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Smartphone className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                <span className="font-mono">{user.whatsapp || '-'}</span>
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center gap-2 flex-wrap">
+              {isPro ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-xs">
+                  <Crown className="w-3.5 h-3.5 text-[#00A651]" />
+                  <span>VIP PRO ACTIVE</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                  <Zap className="w-3.5 h-3.5 text-blue-600" />
+                  <span>FREE TIER</span>
+                </span>
+              )}
+
+              <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                Akun: {user.accountType}
+              </span>
+            </div>
+          </div>
+
+          {/* Column 2: Account Specifications & Limits */}
+          <div className="space-y-2.5 pt-4 md:pt-0 md:pl-6 text-xs text-slate-700">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+              Spesifikasi Akun &amp; Batasan SOP
+            </span>
+
+            <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-[10px] text-slate-400 block">Tipe Akun</span>
+                <span className="font-bold text-slate-900 mt-0.5 block">{user.accountType} (USD/IDRC)</span>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-[10px] text-slate-400 block">Masa Aktif Lisensi</span>
+                <span className="font-bold text-[#00A651] mt-0.5 block">
+                  {isPro ? user.proExpiryDate || '30 Hari Aktif' : 'Permanen Free'}
+                </span>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-[10px] text-slate-400 block">Leverage Maks</span>
+                <span className="font-bold text-slate-900 mt-0.5 block font-mono">1:500 (Dinamis)</span>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-[10px] text-slate-400 block">Kuota Kalkulator</span>
+                <span className="font-bold text-slate-900 mt-0.5 block font-mono">
+                  {isPro ? 'Unlimited' : `${user.dailyCalculatorCount}/${siteSettings?.freeDailyCalculatorLimit ?? 3} Hari Ini`}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-2 rounded-xl bg-emerald-50/70 border border-emerald-200 text-[11px] text-emerald-900">
+              <span className="flex items-center gap-1.5 font-semibold">
+                <ShieldCheck className="w-4 h-4 text-[#00A651]" />
+                Strict Mode SOP:
+              </span>
+              <span className="font-bold text-[#00A651]">Aktif (Proteksi Over-Risk)</span>
+            </div>
+          </div>
+
+          {/* Column 3: Live Performance Metrics & Quick Action Buttons */}
+          <div className="space-y-3 pt-4 md:pt-0 md:pl-6">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+              Ringkasan Performa Trader
+            </span>
+
+            <div className="grid grid-cols-2 gap-2 text-center">
+              <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-[10px] text-slate-400 block">Skor Disiplin AI</span>
+                <span className="text-base font-black font-mono text-[#00A651]">{disciplineScore}/100</span>
+              </div>
+
+              <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-[10px] text-slate-400 block">Win Rate Jurnal</span>
+                <span className="text-base font-black font-mono text-slate-900">{winRate}%</span>
+              </div>
+            </div>
+
+            {/* Quick Action Profile Buttons */}
+            <div className="space-y-1.5 pt-1">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordModal(true)}
+                  className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 border border-slate-200 transition-colors cursor-pointer"
+                >
+                  <KeyRound className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Ganti Password</span>
+                </button>
+
+                <a
+                  href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
+                    `Halo Admin RealistisFx, saya ${user.name} (ID: ${user.id}). Saya ingin konsultasi seputar akun saya.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#00A651] text-xs font-bold flex items-center justify-center gap-1.5 border border-emerald-200 transition-colors cursor-pointer"
+                  title="Hubungi Admin / CS via WhatsApp"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  <span>CS WA</span>
+                </a>
+              </div>
+
+              {!isPro && (
+                <button
+                  type="button"
+                  onClick={openPaymentModal}
+                  className="w-full py-2.5 px-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-extrabold shadow-md shadow-[#00A651]/20 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+                >
+                  <Crown className="w-3.5 h-3.5" />
+                  <span>Upgrade VIP PRO (Rp 500.000 / Bln)</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ======================================================== */}
+      {/* 2. TOP COMMITMENT & MOTIVATION BANNER                     */}
+      {/* ======================================================== */}
+      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200/90 p-4 sm:p-6 md:p-8 shadow-xs border-l-4 border-l-[#00A651]">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 relative z-10">
           <div className="space-y-2 max-w-3xl">
             <div className="flex items-center gap-2 flex-wrap">
@@ -200,7 +440,7 @@ export default function DashboardOverviewPage() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 shrink-0">
             <Link
               href="/calculator"
-              className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer text-center"
             >
               <Calculator className="w-4 h-4" />
               <span>Hitung Lot Aman Sekarang</span>
@@ -209,7 +449,7 @@ export default function DashboardOverviewPage() {
             {!isPro && (
               <button
                 onClick={openPaymentModal}
-                className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs border border-slate-300 transition-all flex items-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs border border-slate-300 transition-all flex items-center gap-2 cursor-pointer text-center"
               >
                 <Crown className="w-4 h-4 text-amber-500" />
                 <span>Upgrade VIP (Rp500k/bln)</span>
@@ -219,7 +459,9 @@ export default function DashboardOverviewPage() {
         </div>
       </div>
 
-      {/* 4 Key Real-Time Metrics Cards */}
+      {/* ======================================================== */}
+      {/* 3. 4 KEY REAL-TIME METRICS CARDS                          */}
+      {/* ======================================================== */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1: Skor Disiplin AI */}
         <div className="rounded-2xl p-5 bg-white border border-slate-200/90 shadow-xs hover:shadow-md transition-all">
@@ -408,7 +650,7 @@ export default function DashboardOverviewPage() {
           <div className="mt-3 flex items-center justify-between text-[11px] text-slate-600">
             <span>Kuota Lot Harian</span>
             <span className="text-slate-900 font-bold">
-              {isPro ? 'Tanpa Batas' : `${user.dailyCalculatorCount}/3 Terpakai`}
+              {isPro ? 'Tanpa Batas' : `${user.dailyCalculatorCount}/${siteSettings?.freeDailyCalculatorLimit ?? 3} Terpakai`}
             </span>
           </div>
 
@@ -418,10 +660,12 @@ export default function DashboardOverviewPage() {
         </div>
       </div>
 
-      {/* Middle Grid: News Radar & Anti-FOMO Daily Checklist */}
+      {/* ======================================================== */}
+      {/* 4. MIDDLE GRID: NEWS RADAR & ANTI-FOMO CHECKLIST          */}
+      {/* ======================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* News Sentiment Radar Preview Widget (2 Columns) */}
-        <div className="lg:col-span-2 rounded-2xl p-6 bg-white border border-slate-200/90 shadow-xs space-y-4">
+        <div className="lg:col-span-2 rounded-3xl p-4 sm:p-6 bg-white border border-slate-200/90 shadow-xs space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-emerald-50 text-[#00A651] border border-emerald-100">
@@ -432,7 +676,7 @@ export default function DashboardOverviewPage() {
                   News Sentiment Radar (High-Impact)
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Peringatan rilis data ekonomi berdampak tinggi & skenario 2 arah
+                  Peringatan rilis data ekonomi berdampak tinggi &amp; skenario 2 arah
                 </p>
               </div>
             </div>
@@ -445,7 +689,7 @@ export default function DashboardOverviewPage() {
           </div>
 
           {/* Featured Upcoming News Alert */}
-          <div className="p-4 rounded-xl bg-rose-50/70 border border-rose-200">
+          <div className="p-4 rounded-2xl bg-rose-50/70 border border-rose-200">
             <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
               <div className="flex items-center gap-2">
                 <span className="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-rose-100 text-rose-800 border border-rose-200 flex items-center gap-1">
@@ -463,7 +707,7 @@ export default function DashboardOverviewPage() {
 
             <p className="text-xs text-slate-700 leading-relaxed">
               Perkiraan: <strong>175K</strong> | Sebelumnya: <strong>142K</strong>. Berpotensi memicu
-              volatilitas tajam pada pair <strong>XAUUSD</strong> & mayor pair USD.
+              volatilitas tajam pada pair <strong>XAUUSD</strong> &amp; mayor pair USD.
             </p>
 
             {/* Pro 2-Way Prediction Scenario Box */}
@@ -539,7 +783,7 @@ export default function DashboardOverviewPage() {
         </div>
 
         {/* Anti-FOMO Daily Checklist Widget (1 Column) */}
-        <div className="rounded-2xl p-6 bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
+        <div className="rounded-3xl p-4 sm:p-6 bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
@@ -607,7 +851,9 @@ export default function DashboardOverviewPage() {
         </div>
       </div>
 
-      {/* 10 Core Features Hub Grid */}
+      {/* ======================================================== */}
+      {/* 5. 10 CORE FEATURES HUB GRID                             */}
+      {/* ======================================================== */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
@@ -615,11 +861,11 @@ export default function DashboardOverviewPage() {
               10 Fitur Unggulan RealistisFx Edukasi
             </h2>
             <p className="text-xs text-slate-500">
-              Alat bantu komprehensif dari kalkulasi risiko, peta S&R, hingga evaluasi psikologis trading
+              Alat bantu komprehensif dari kalkulasi risiko, peta S&amp;R, hingga evaluasi psikologis trading
             </p>
           </div>
-          <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-            Freemium (Free & PRO VIP Rp500.000/bln)
+          <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200 self-start sm:self-auto">
+            Freemium (Free &amp; PRO VIP Rp500.000/bln)
           </span>
         </div>
 
@@ -701,8 +947,10 @@ export default function DashboardOverviewPage() {
         </div>
       </div>
 
-      {/* Recent Trading Journal Entries Teaser */}
-      <div className="rounded-2xl p-6 bg-white border border-slate-200/90 shadow-xs space-y-4">
+      {/* ======================================================== */}
+      {/* 6. RECENT TRADING JOURNAL ENTRIES                         */}
+      {/* ======================================================== */}
+      <div className="rounded-3xl p-4 sm:p-6 bg-white border border-slate-200/90 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
           <div>
             <h2 className="text-base font-bold text-slate-900">Catatan Jurnal Trading Terakhir</h2>
@@ -717,7 +965,7 @@ export default function DashboardOverviewPage() {
         </div>
 
         {journals.length === 0 ? (
-          <div className="p-8 text-center rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="p-6 sm:p-8 text-center rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
             <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#00A651] border border-emerald-200 flex items-center justify-center mx-auto">
               <BookOpenCheck className="w-6 h-6" />
             </div>
@@ -738,26 +986,26 @@ export default function DashboardOverviewPage() {
             </div>
           </div>
         ) : (
-          <div className="overflow-x-auto w-full rounded-xl border border-slate-200">
+          <div className="overflow-x-auto w-full rounded-2xl border border-slate-200">
             <table className="min-w-[650px] w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-200 text-slate-500">
-                  <th className="pb-3 font-semibold">Tanggal</th>
-                  <th className="pb-3 font-semibold">Pair</th>
-                  <th className="pb-3 font-semibold">Arah</th>
-                  <th className="pb-3 font-semibold">Lot</th>
-                  <th className="pb-3 font-semibold">Harga Masuk</th>
-                  <th className="pb-3 font-semibold">Hasil PnL</th>
-                  <th className="pb-3 font-semibold">Emosi Trader</th>
-                  <th className="pb-3 font-semibold">SOP</th>
+                <tr className="border-b border-slate-200 text-slate-500 bg-slate-50">
+                  <th className="p-3 font-semibold">Tanggal</th>
+                  <th className="p-3 font-semibold">Pair</th>
+                  <th className="p-3 font-semibold">Arah</th>
+                  <th className="p-3 font-semibold">Lot</th>
+                  <th className="p-3 font-semibold">Harga Masuk</th>
+                  <th className="p-3 font-semibold">Hasil PnL</th>
+                  <th className="p-3 font-semibold">Emosi Trader</th>
+                  <th className="p-3 font-semibold">SOP</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {journals.slice(0, 5).map((j) => (
                   <tr key={j.id} className="hover:bg-slate-50/60 transition-colors">
-                    <td className="py-3 font-mono text-slate-600">{j.date}</td>
-                    <td className="py-3 font-bold text-slate-900">{j.pair}</td>
-                    <td className="py-3">
+                    <td className="p-3 font-mono text-slate-600">{j.date}</td>
+                    <td className="p-3 font-bold text-slate-900">{j.pair}</td>
+                    <td className="p-3">
                       <span
                         className={`px-2 py-0.5 rounded font-bold ${
                           j.direction === 'BUY'
@@ -768,16 +1016,16 @@ export default function DashboardOverviewPage() {
                         {j.direction}
                       </span>
                     </td>
-                    <td className="py-3 font-mono text-slate-800">{j.lot}</td>
-                    <td className="py-3 font-mono text-slate-600">
+                    <td className="p-3 font-mono text-slate-800">{j.lot}</td>
+                    <td className="p-3 font-mono text-slate-600">
                       {j.entryPrice} → {j.exitPrice}
                     </td>
-                    <td className="py-3 font-mono font-bold">
+                    <td className="p-3 font-mono font-bold">
                       <span className={j.pnl >= 0 ? 'text-[#00A651]' : 'text-rose-600'}>
                         {j.pnl >= 0 ? `+ $${j.pnl.toFixed(2)}` : `- $${Math.abs(j.pnl).toFixed(2)}`}
                       </span>
                     </td>
-                    <td className="py-3 text-slate-700">
+                    <td className="p-3 text-slate-700">
                       {j.emotion === 'DISCIPLINED'
                         ? '🎯 Disiplin'
                         : j.emotion === 'CALM_CONFIDENT'
@@ -788,7 +1036,7 @@ export default function DashboardOverviewPage() {
                         ? '😬 Cemas'
                         : '😡 Balas Dendam'}
                     </td>
-                    <td className="py-3">
+                    <td className="p-3">
                       {j.adheredToPlan ? (
                         <span className="text-[#00A651] flex items-center gap-1 font-bold">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Patuh
@@ -806,6 +1054,102 @@ export default function DashboardOverviewPage() {
           </div>
         )}
       </div>
+
+      {/* ======================================================== */}
+      {/* MODAL: UBAH KATA SANDI TRADER                            */}
+      {/* ======================================================== */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="relative w-full max-w-sm bg-white rounded-3xl p-6 border border-slate-200 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-emerald-50 text-[#00A651] border border-emerald-200">
+                  <KeyRound className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-sm text-slate-900">Ubah Kata Sandi Akun</h3>
+                  <p className="text-[10px] text-slate-500 font-mono truncate">{user.email}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPasswordModal(false);
+                  setNewPassword('');
+                  setConfirmPassword('');
+                  setPwErrorMsg('');
+                  setPwSuccessMsg('');
+                }}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {pwErrorMsg && (
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+                {pwErrorMsg}
+              </div>
+            )}
+
+            {pwSuccessMsg && (
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-bold">
+                {pwSuccessMsg}
+              </div>
+            )}
+
+            <form onSubmit={handleChangePassword} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Kata Sandi Baru (Min. 6 Karakter)
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Ketik kata sandi baru"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:border-[#00A651] outline-hidden bg-slate-50 focus:bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Konfirmasi Kata Sandi Baru
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Ulangi kata sandi baru"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:border-[#00A651] outline-hidden bg-slate-50 focus:bg-white"
+                />
+              </div>
+
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-xs cursor-pointer active:scale-95 transition-all"
+                >
+                  Simpan Kata Sandi
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPasswordModal(false);
+                    setNewPassword('');
+                    setConfirmPassword('');
+                  }}
+                  className="px-3.5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs cursor-pointer hover:bg-slate-200"
+                >
+                  Batal
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

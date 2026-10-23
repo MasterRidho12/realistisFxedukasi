@@ -446,7 +446,7 @@ export default function JournalPage() {
       )}
 
       {/* AI Discipline & Trading Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-1.5">
           <div className="flex items-center justify-between text-xs text-slate-500 font-semibold">
             <span>Skor Disiplin AI</span>
@@ -499,8 +499,10 @@ export default function JournalPage() {
             <span>Statistik Stop Loss (SL)</span>
             <ShieldAlert className="w-4 h-4 text-rose-600" />
           </div>
-          <div className="text-2xl font-extrabold font-mono text-slate-900">
-            {hitSlTrades} <span className="text-xs text-rose-600 font-normal">Kena SL</span> / {hitTpTrades} <span className="text-xs text-emerald-700 font-normal">Kena TP</span>
+          <div className="text-xl sm:text-2xl font-extrabold font-mono text-slate-900 flex items-center gap-1.5 flex-wrap">
+            <span className="whitespace-nowrap text-rose-600 font-bold">{hitSlTrades} Kena SL</span>
+            <span className="text-slate-300">/</span>
+            <span className="whitespace-nowrap text-emerald-700 font-bold">{hitTpTrades} Kena TP</span>
           </div>
           <p className="text-[11px] text-slate-500">
             {hitSlTrades > 0
