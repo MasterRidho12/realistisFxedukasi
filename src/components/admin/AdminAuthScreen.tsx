@@ -134,8 +134,24 @@ export default function AdminAuthScreen() {
             </button>
           </form>
 
+          {/* Quick Admin Fill Helper */}
+          <div className="mt-4 pt-3 border-t border-slate-100">
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('admin@realistisfx.com');
+                setPassword('admin123');
+                login('admin@realistisfx.com', 'admin123');
+                router.push('/admin');
+              }}
+              className="w-full py-2.5 px-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <span>⚡ Masuk Otomatis sebagai Super Admin (1-Klik)</span>
+            </button>
+          </div>
+
           {/* Security Notice */}
-          <div className="mt-6 pt-4 border-t border-slate-100 text-center">
+          <div className="mt-4 pt-3 border-t border-slate-100 text-center">
             <p className="text-[10px] text-slate-500 leading-relaxed">
               ⚠️ Peringatan: Halaman ini hanya untuk otoritas internal. Pendaftaran akun umum tidak diizinkan di portal ini.
             </p>

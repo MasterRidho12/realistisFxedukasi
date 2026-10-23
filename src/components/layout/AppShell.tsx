@@ -11,6 +11,7 @@ import LandingPage from '@/components/landing/LandingPage';
 import QrisPaymentModal from '@/components/subscription/QrisPaymentModal';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminAuthScreen from '@/components/admin/AdminAuthScreen';
+import AdminDashboardPage from '@/app/admin/page';
 
 function ShellContent({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
@@ -27,56 +28,41 @@ function ShellContent({ children }: { children: React.ReactNode }) {
     }
   }, [pathname]);
 
-  // Standalone Landing Page Route
+  // 1. IF AUTHENTICATED USER IS AN ADMINISTRATOR:
+  // ALWAYS render the dedicated Admin Control Center Dashboard!
+  if (user.isAuthenticated && user.role === 'ADMIN') {
+    if (pathname === '/landing') {
+      return (
+        <div className="relative">
+          <div className="sticky top-0 z-50 bg-amber-500 text-slate-950 px-4 py-2 text-xs font-black flex items-center justify-between shadow-md">
+            <span>👁️ Mode Pratinjau Admin: Sedang Memeriksa Tampilan Landing Page untuk Pengunjung</span>
+            <Link
+              href="/admin"
+              className="px-3 py-1 bg-slate-950 text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+            >
+              Kembali ke Panel Kontrol Admin &rarr;
+            </Link>
+          </div>
+          <LandingPage />
+        </div>
+      );
+    }
+    return (
+      <AdminLayout>
+        <AdminDashboardPage />
+      </AdminLayout>
+    );
+  }
+
+  // 2. Standalone Landing Page Route for Visitors
   if (pathname === '/landing') {
     return <LandingPage />;
   }
 
-  // STEALTH CLOAKED ADMIN ROUTE:
-  // Normal users & visitors see standard 404 (Page Not Found).
-  // Only authenticated ADMIN or authorized personnel with secret key gateway can access.
+  // 3. DEDICATED ADMIN ROUTE:
+  // When visiting /admin: If not yet authenticated as ADMIN, render the dedicated Admin Login Portal directly.
   if (pathname.startsWith('/admin')) {
-    // 1. Authorized logged-in ADMIN has full access
-    if (user.isAuthenticated && user.role === 'ADMIN') {
-      return <AdminLayout>{children}</AdminLayout>;
-    }
-
-    // 2. Secret Gateway key unlocks the dedicated Admin Authentication Portal
-    if (hasSecretAdminKey) {
-      return <AdminAuthScreen />;
-    }
-
-    // 3. For all normal users & unauthorized visitors: Show completely generic 404
-    // User has zero indication that an admin route even exists!
-    return (
-      <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex items-center justify-center p-4">
-        <div className="p-8 sm:p-10 rounded-3xl max-w-md w-full text-center border border-slate-200 space-y-5 shadow-xl bg-white">
-          <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-500 border border-slate-200 flex items-center justify-center mx-auto shadow-xs">
-            <FileQuestion className="w-8 h-8" />
-          </div>
-          <div>
-            <span className="text-[11px] font-black tracking-widest text-slate-400 uppercase bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-              Error 404
-            </span>
-            <h2 className="text-xl font-extrabold text-slate-900 mt-2">
-              Halaman Tidak Ditemukan
-            </h2>
-          </div>
-          <p className="text-xs text-slate-500 leading-relaxed">
-            Halaman yang Anda tuju tidak tersedia, telah dihapus, atau alamat URL yang Anda masukkan salah. Silakan periksa kembali tautan Anda.
-          </p>
-          <div className="pt-2">
-            <Link
-              href="/"
-              className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Kembali ke Beranda Utama</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <AdminAuthScreen />;
   }
 
   // If visitor is not authenticated, show Landing Page first (with on-page login & registration)

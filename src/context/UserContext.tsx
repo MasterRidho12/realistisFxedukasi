@@ -54,7 +54,43 @@ interface UserContextType {
   resetUserCalculatorCount: (userId: string) => void;
   updateUserPasswordLocal: (email: string, newPassword: string) => void;
   adminResetPassword: (email: string, newPassword: string) => Promise<boolean>;
+
+  // Site Wide Admin Controls (Landing Page & Menu VIP/Free)
+  siteSettings: AdminSiteSettings;
+  updateSiteSettings: (newSettings: Partial<AdminSiteSettings>) => void;
 }
+
+export interface AdminSiteSettings {
+  freeDailyCalculatorLimit: number;
+  vipMonthlyPrice: number;
+  landingAnnouncement: string;
+  isAnnouncementActive: boolean;
+  adminWhatsAppNumber: string;
+  vipRegistrationOpen: boolean;
+  botAssistantVipOnly: boolean;
+  newsScenarioVipOnly: boolean;
+  marginResistanceVipOnly: boolean;
+  compoundingVipOnly: boolean;
+  copyTradeWaMessage?: string;
+  qrisMerchantName?: string;
+  qrisNmid?: string;
+}
+
+const defaultSiteSettings: AdminSiteSettings = {
+  freeDailyCalculatorLimit: 3,
+  vipMonthlyPrice: 500000,
+  landingAnnouncement: '🔥 Pendaftaran VIP PRO Edukasi RealistisFx Dibuka — Dapatkan Akses Sinyal AI & SOP Anti Margin Call',
+  isAnnouncementActive: true,
+  adminWhatsAppNumber: '6287774229255',
+  vipRegistrationOpen: true,
+  botAssistantVipOnly: true,
+  newsScenarioVipOnly: true,
+  marginResistanceVipOnly: true,
+  compoundingVipOnly: true,
+  copyTradeWaMessage: 'Halo Admin RealistisFx, saya tertarik untuk aktivasi VIP Member Area & Sinyal AI XAUUSD. Mohon panduannya.',
+  qrisMerchantName: 'REALISTISFX EDUKASI SAAS',
+  qrisNmid: 'ID102439281729',
+};
 
 const defaultUser: UserState = {
   id: 'usr-trader-01',
@@ -177,9 +213,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const prevPriceRef = useRef<number>(4176.50);
 
   const [journals, setJournals] = useState<JournalRecord[]>([]);
+  const [siteSettings, setSiteSettings] = useState<AdminSiteSettings>(defaultSiteSettings);
 
   // Load from localStorage
   useEffect(() => {
+    const savedSettings = localStorage.getItem('realistisfx_site_settings');
+    if (savedSettings) {
+      try {
+        setSiteSettings(JSON.parse(savedSettings));
+      } catch {}
+    }
+
     const savedUser = localStorage.getItem('realistisfx_user');
     if (savedUser) {
       try {
@@ -515,7 +559,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   const incrementCalculatorUsage = (): boolean => {
     if (user.tier === 'PRO') return true;
-    if (user.dailyCalculatorCount >= 3) {
+    const limit = siteSettings?.freeDailyCalculatorLimit ?? 3;
+    if (user.dailyCalculatorCount >= limit) {
       return false;
     }
     saveUser({
@@ -738,6 +783,16 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateSiteSettings = (newSettings: Partial<AdminSiteSettings>) => {
+    setSiteSettings((prev) => {
+      const merged = { ...prev, ...newSettings };
+      try {
+        localStorage.setItem('realistisfx_site_settings', JSON.stringify(merged));
+      } catch {}
+      return merged;
+    });
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -769,6 +824,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         resetUserCalculatorCount,
         updateUserPasswordLocal,
         adminResetPassword,
+        siteSettings,
+        updateSiteSettings,
       }}
     >
       {children}

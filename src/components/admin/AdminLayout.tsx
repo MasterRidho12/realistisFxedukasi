@@ -74,58 +74,64 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             Menu Manajemen Admin
           </div>
 
+          {/* Admin Navigation to 4 Core Tabs */}
           <Link
-            href="/admin"
-            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-              pathname === '/admin'
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-lg shadow-amber-500/10'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-            }`}
+            href="/admin?tab=users"
+            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all"
           >
             <div className="flex items-center gap-2.5">
-              <Clock className="w-4 h-4 text-amber-400" />
+              <Users className="w-4 h-4 text-emerald-400" />
+              <span>Pantau Akun VIP &amp; FREE</span>
+            </div>
+            <span className="text-[10px] text-emerald-400 font-mono font-bold">
+              {allUsers.length} Akun
+            </span>
+          </Link>
+
+          <Link
+            href="/admin?tab=vip-free"
+            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all"
+          >
+            <div className="flex items-center gap-2.5">
+              <Zap className="w-4 h-4 text-amber-400" />
+              <span>Kontrol Menu VIP &amp; Gratis</span>
+            </div>
+          </Link>
+
+          <Link
+            href="/admin?tab=landing"
+            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all"
+          >
+            <div className="flex items-center gap-2.5">
+              <ExternalLink className="w-4 h-4 text-sky-400" />
+              <span>Kontrol Landing Page</span>
+            </div>
+          </Link>
+
+          <Link
+            href="/admin?tab=requests"
+            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all"
+          >
+            <div className="flex items-center gap-2.5">
+              <Clock className="w-4 h-4 text-rose-400" />
               <span>Verifikasi Bukti QRIS</span>
             </div>
             {pendingCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950 animate-pulse">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white animate-pulse">
                 {pendingCount}
               </span>
             )}
           </Link>
 
-          <Link
-            href="/admin#users"
-            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all"
-          >
-            <div className="flex items-center gap-2.5">
-              <Users className="w-4 h-4 text-blue-400" />
-              <span>Kelola Akun Trader</span>
-            </div>
-            <span className="text-[10px] text-slate-400 font-mono">
-              {allUsers.length} User
-            </span>
-          </Link>
-
-          <Link
-            href="/admin#settings"
-            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all"
-          >
-            <div className="flex items-center gap-2.5">
-              <CreditCard className="w-4 h-4 text-emerald-400" />
-              <span>Pengaturan QRIS & WA</span>
-            </div>
-          </Link>
-
           <div className="pt-4 border-t border-white/10 mt-4">
             <Link
-              href="/"
+              href="/landing"
               className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-white/10 transition-all"
             >
               <div className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4 text-emerald-400" />
-                <span>Ke Halaman Web Trader</span>
+                <ExternalLink className="w-4 h-4 text-emerald-400" />
+                <span>Pratinjau Landing Page</span>
               </div>
-              <ExternalLink className="w-3 h-3 text-slate-500" />
             </Link>
           </div>
         </div>

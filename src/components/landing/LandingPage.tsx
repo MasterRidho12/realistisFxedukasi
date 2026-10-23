@@ -105,7 +105,7 @@ function calculateRealTimeSignalLevels(liveSpot: number) {
 }
 
 export default function LandingPage({ onOpenAuth }: LandingPageProps) {
-  const { user, login, register, marketPrice, openPaymentModal, updateUserPasswordLocal } = useUser();
+  const { user, login, register, marketPrice, openPaymentModal, updateUserPasswordLocal, siteSettings } = useUser();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null);
 
@@ -627,23 +627,26 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 selection:bg-[#00A651] selection:text-white">
-      {/* 1. Top High-Ticket Announcement Bar (Responsive Mobile Optimized) */}
-      <div className="bg-gradient-to-r from-[#008F45] via-[#00A651] to-[#046132] text-white py-2 px-3 sm:px-4 text-center text-xs font-semibold tracking-wide border-b border-emerald-400/20 shadow-xs">
-        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 flex-wrap">
-          <span className="inline-flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold">
-            <Sparkles className="w-3 h-3 text-amber-300" />
-            AI SIGNAL ENGINE v4.2
-          </span>
-          <span className="text-[11px] sm:text-xs">
-            Riwayat Sinyal Terverifikasi | Win Rate AI <strong className="font-extrabold text-white">84.6%</strong> di XAUUSD &amp; Rilis Berita NFP/CPI
-          </span>
-          <span className="hidden lg:inline text-emerald-200">|</span>
-          <span className="hidden lg:inline-flex items-center gap-1 text-emerald-100 font-medium text-xs">
-            <Users className="w-3.5 h-3.5" />
-            1,480+ Member VIP Aktif
-          </span>
+      {/* 1. Top Announcement Bar (Dynamically Controlled by Admin siteSettings) */}
+      {siteSettings?.isAnnouncementActive !== false && (
+        <div className="bg-gradient-to-r from-[#008F45] via-[#00A651] to-[#046132] text-white py-2 px-3 sm:px-4 text-center text-xs font-semibold tracking-wide border-b border-emerald-400/20 shadow-xs">
+          <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 flex-wrap">
+            <span className="inline-flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold">
+              <Sparkles className="w-3 h-3 text-amber-300" />
+              PENGUMUMAN RESMI
+            </span>
+            <span className="text-[11px] sm:text-xs">
+              {siteSettings?.landingAnnouncement ||
+                'Riwayat Sinyal Terverifikasi | Win Rate AI 84.6% di XAUUSD & Rilis Berita NFP/CPI'}
+            </span>
+            <span className="hidden lg:inline text-emerald-200">|</span>
+            <span className="hidden lg:inline-flex items-center gap-1 text-emerald-100 font-medium text-xs">
+              <Users className="w-3.5 h-3.5" />
+              1,480+ Member VIP Aktif
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 2. Main Sticky Navigation Header with Mobile Drawer */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 transition-all">
@@ -856,7 +859,9 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
 
             {/* Admin WhatsApp Direct Link */}
             <a
-              href="https://wa.me/6287774229255?text=Halo%20Admin%20RealistisFx%2C%20saya%20ingin%20konsultasi%20mengenai%20langganan%20VIP%20Sinyal%20AI."
+              href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
+                siteSettings?.copyTradeWaMessage || 'Halo Admin RealistisFx, saya ingin konsultasi mengenai langganan VIP Sinyal AI.'
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full py-2.5 rounded-xl bg-emerald-50 text-[#00A651] border border-emerald-200 font-bold text-xs flex items-center justify-center gap-2 hover:bg-emerald-100 transition-colors"
@@ -2136,7 +2141,9 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <a href="#pricing" className="hover:text-white transition-colors">Paket VIP Rp 500k</a>
               <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
               <a
-                href="https://wa.me/6287774229255?text=Halo%20Admin%20RealistisFx%2C%20saya%20ingin%20konsultasi%20mengenai%20langganan%20VIP."
+                href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
+                  siteSettings?.copyTradeWaMessage || 'Halo Admin RealistisFx, saya ingin konsultasi mengenai langganan VIP.'
+                )}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-emerald-400 transition-colors flex items-center gap-1"
