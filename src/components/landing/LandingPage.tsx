@@ -526,7 +526,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 hidden md:block font-medium">
-                Sinyal XAUUSD, Playbook Berita &amp; Komunitas
+                Sinyal XAUUSD, Playbook Berita &amp; Private Channel VIP
               </p>
             </div>
           </Link>
@@ -541,9 +541,9 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <Radar className="w-3.5 h-3.5 text-sky-600" />
               <span>Playbook NFP/CPI</span>
             </a>
-            <a href="#community" className="hover:text-[#00A651] transition-colors flex items-center gap-1">
-              <Users className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Komunitas VIP</span>
+            <a href="#channel" className="hover:text-[#00A651] transition-colors flex items-center gap-1">
+              <Send className="w-3.5 h-3.5 text-sky-600" />
+              <span>Channel VIP</span>
             </a>
             <a href="#pricing" className="hover:text-[#00A651] transition-colors flex items-center gap-1">
               <Crown className="w-3.5 h-3.5 text-amber-500" />
@@ -637,16 +637,16 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               </a>
 
               <a
-                href="#community"
+                href="#channel"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors"
               >
-                <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200">
-                  <Users className="w-4 h-4" />
+                <div className="p-1.5 rounded-lg bg-sky-50 text-sky-600 border border-sky-200">
+                  <Send className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-900 font-extrabold">Komunitas VIP Telegram</div>
-                  <div className="text-[10px] text-slate-400 font-normal">Private signal channel &amp; group diskusi</div>
+                  <div className="text-slate-900 font-extrabold">Private Channel Telegram VIP</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Sinyal real-time 1 arah (Bebas Drama &amp; Anti-Debat)</div>
                 </div>
               </a>
 
@@ -660,7 +660,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 </div>
                 <div>
                   <div className="text-slate-900 font-extrabold">Paket VIP (Rp 500.000 / bln)</div>
-                  <div className="text-[10px] text-slate-400 font-normal">Akses penuh sinyal, playbook &amp; komunitas</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Akses penuh sinyal, playbook &amp; private channel</div>
                 </div>
               </a>
 
@@ -750,7 +750,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               , Bebas dari Jebakan Margin Call.
             </h1>
             <p className="text-xs sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
-              Tinggalkan tebak-tebakan saat berita rilis. Dapatkan sinyal trading berbasis data kuantitatif multi-timeframe, panduan entry dengan batasan risiko terukur, dan bimbingan komunitas VIP eksklusif untuk membangun disiplin serta konsistensi trading jangka panjang tanpa janji muluk cepat kaya.
+              Tinggalkan tebak-tebakan saat berita rilis. Dapatkan sinyal trading berbasis data kuantitatif multi-timeframe, panduan entry dengan batasan risiko terukur, dan edukasi eksklusif melalui Private Channel Telegram VIP 1 arah untuk membangun disiplin serta konsistensi trading tanpa distraksi atau debat.
             </p>
           </div>
 
@@ -805,11 +805,11 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
 
             <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
               <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">KOMUNITAS VIP</span>
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">MEMBER VIP AKTIF</span>
                 <Users className="w-3.5 h-3.5 text-indigo-500" />
               </div>
               <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">1,480+</p>
-              <p className="text-[10px] sm:text-[11px] text-[#00A651] font-semibold mt-0.5">Trader Indonesia Aktif</p>
+              <p className="text-[10px] sm:text-[11px] text-[#00A651] font-semibold mt-0.5">Trader Indonesia Terdaftar</p>
             </div>
           </div>
 
@@ -1423,20 +1423,20 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         </div>
       </section>
 
-      {/* 6. Ekosistem Komunitas VIP (Member Area & Telegram Private) */}
-      <section id="community" className="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden scroll-mt-14">
+      {/* 6. Akses Private Channel Edukasi & Sinyal Telegram VIP (1 Arah Bebas Drama) */}
+      <section id="channel" className="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden scroll-mt-14">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#00A651]/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-black uppercase tracking-wider">
-              EKOSISTEM VIP TELEGRAM &amp; MENTORSHIP
+              PRIVATE CHANNEL TELEGRAM VIP (1 ARAH)
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-              Bukan Sekadar Sinyal, Tapi Lingkungan Belajar &amp; Tumbuh Bersama
+              Murni Edukasi &amp; Sinyal Presisi: Bebas Drama, Tanpa Debat Pro-Kontra
             </h2>
             <p className="text-xs sm:text-sm text-slate-300">
-              Trading sendirian sering memicu stres, over-trade, dan revenge trading. Di RealistisFx VIP, Anda didampingi komunitas trader suportif dan mentor berpengalaman.
+              Kami secara tegas <strong className="text-emerald-400">TIDAK menyediakan grup obrolan Telegram maupun grup WhatsApp</strong>. Tujuannya murni untuk menghindari debat kusir, kebisingan opini (noise), dan pro-kontra yang merusak psikologi trading Anda. Seluruh sinyal valid, chart setup, dan panduan edukasi disiarkan secara tertib melalui <strong>Private Channel Telegram 1 Arah</strong>.
             </p>
           </div>
 
@@ -1445,19 +1445,19 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <div className="w-10 h-10 rounded-2xl bg-[#00A651]/20 text-[#00A651] flex items-center justify-center font-bold">
                 <Send className="w-5 h-5" />
               </div>
-              <h3 className="font-extrabold text-sm text-white">Private Channel Telegram</h3>
+              <h3 className="font-extrabold text-sm text-white">Private Channel 1 Arah</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Notifikasi sinyal real-time langsung ke ponsel Anda dengan parameter lengkap: Pair, Action, Entry, SL, TP1, TP2, dan chart setup.
+                Notifikasi sinyal real-time langsung ke ponsel Anda dengan parameter lengkap: Pair, Action, Entry, SL, TP1, TP2, dan chart setup tanpa gangguan obrolan.
               </p>
             </div>
 
             <div className="p-5 rounded-3xl bg-slate-800/80 border border-slate-700/80 space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
-                <Users className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold">
+                <ShieldCheck className="w-5 h-5" />
               </div>
-              <h3 className="font-extrabold text-sm text-white">Group Diskusi Interaktif</h3>
+              <h3 className="font-extrabold text-sm text-white">Anti-Drama &amp; Bebas Noise</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Ruang tukar pandangan setup trading, evaluasi chart harian, dan tanya jawab langsung tanpa toxic flexing atau spam.
+                Tanpa grup chat publik, Anda terlindungi dari opini spekulatif yang berlawanan, rasa ragu (second-guessing), atau kepanikan massal saat berita rilis.
               </p>
             </div>
 
@@ -1465,19 +1465,19 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
                 <Clock className="w-5 h-5" />
               </div>
-              <h3 className="font-extrabold text-sm text-white">Live Voice Briefing NFP</h3>
+              <h3 className="font-extrabold text-sm text-white">Edukasi &amp; Briefing Berita</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Sesi audio live 15 menit menjelang rilis berita besar untuk memandu mental dan memastikan member mematuhi batas lot aman.
+                Analisa teknikal XAUUSD harian, bedah setup NFP/CPI, dan panduan money management disiarkan secara terstruktur di channel untuk pembelajaran mandiri.
               </p>
             </div>
 
             <div className="p-5 rounded-3xl bg-slate-800/80 border border-slate-700/80 space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold">
-                <ShieldAlert className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-2xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
+                <MessageCircle className="w-5 h-5" />
               </div>
-              <h3 className="font-extrabold text-sm text-white">Bimbingan Anti-FOMO</h3>
+              <h3 className="font-extrabold text-sm text-white">Admin Support 1-on-1</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Audit psikologi trading dan panduan money management agar Anda tetap tenang dan konsisten dalam jangka panjang.
+                Bantuan aktivasi VIP, integrasi bot notifikasi, atau pertanyaan akun dilayani secara personal 1-on-1 via WhatsApp Admin Resmi (bukan grup publik).
               </p>
             </div>
           </div>
@@ -1563,7 +1563,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#00A651] font-bold">✓</span>
-                  <span><strong>Bimbingan Disiplin &amp; Evaluasi:</strong> Komunitas VIP berorientasi pada evaluasi jurnal trading, ketenangan mental, dan eksekusi sesuai rencana (trading plan).</span>
+                  <span><strong>Disiplin &amp; Evaluasi Edukatif:</strong> Private Channel VIP berorientasi pada evaluasi jurnal trading, ketenangan mental, dan eksekusi sesuai rencana (trading plan).</span>
                 </li>
               </ul>
 
@@ -1593,7 +1593,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               Pilih Akses Anda: Edukasi Dasar Gratis atau VIP Member Area
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
-              Mulai gratis untuk mempelajari fondasi manajemen risiko, atau upgrade ke VIP Member Area untuk mendapatkan sinyal AI real-time &amp; bimbingan komunitas eksklusif.
+              Mulai gratis untuk mempelajari fondasi manajemen risiko, atau upgrade ke VIP Member Area untuk mendapatkan sinyal AI real-time &amp; akses Private Channel Telegram eksklusif.
             </p>
           </div>
 
@@ -1669,7 +1669,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-black">
                   <Crown className="w-3.5 h-3.5" />
-                  VIP MEMBER AREA &amp; KOMUNITAS
+                  VIP MEMBER AREA &amp; PRIVATE CHANNEL
                 </div>
                 <div>
                   <div className="flex items-baseline gap-2">
@@ -1677,7 +1677,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                     <span className="text-xs text-slate-500 font-semibold">/ Bulan</span>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">
-                    Akses lengkap sinyal presisi AI, playbook berita NFP/CPI, dan komunitas VIP private Telegram.
+                    Akses lengkap sinyal presisi AI, playbook berita NFP/CPI, dan Private Channel Telegram VIP 1 arah.
                   </p>
                 </div>
 
@@ -1692,11 +1692,11 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Akses Private Channel Telegram VIP</strong> (Alert Instan ke HP)</span>
+                    <span><strong>Akses Private Channel Telegram VIP</strong> (Alert Real-Time ke HP)</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Grup Komunitas Diskusi Eksklusif</strong> &amp; Tanya Jawab Mentor</span>
+                    <span><strong>Sistem 1 Arah (Bebas Drama)</strong> — Tanpa Grup Chat &amp; Anti-Debat</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
@@ -1712,7 +1712,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Konsultasi &amp; Support Prioritas 1-on-1 via WhatsApp</strong></span>
+                    <span><strong>Customer Support Resmi 1-on-1 via WhatsApp</strong> (Bukan Grup)</span>
                   </div>
                 </div>
 
@@ -1829,7 +1829,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 ★★★★★
               </div>
               <p className="text-xs text-slate-600 leading-relaxed italic">
-                &ldquo;Yang paling saya suka dari sinyal AI ini adalah adanya Stop Loss ketat dan alasan teknikalnya jelas. Bukan sekadar buy/sell buta. Komunitas Telegram VIP-nya juga adem, saling menyemangati untuk disiplin money management.&rdquo;
+                &ldquo;Yang paling saya suka dari sinyal AI ini adalah adanya Stop Loss ketat dan alasan teknikalnya jelas. Bukan sekadar buy/sell buta. Private Channel Telegram VIP-nya juga sangat tertib—sinyal satu arah tanpa obrolan yang membingungkan atau debat pro-kontra.&rdquo;
               </p>
               <div className="border-t border-slate-100 pt-3">
                 <p className="text-xs font-bold text-slate-900">Denny Kurniawan</p>
@@ -1861,12 +1861,16 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               PERTANYAAN UMUM
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              Semua yang Perlu Anda Ketahui Tentang Sinyal &amp; Komunitas VIP
+              Semua yang Perlu Anda Ketahui Tentang Sinyal &amp; Private Channel VIP
             </h2>
           </div>
 
           <div className="space-y-3">
             {[
+              {
+                q: 'Apakah ada grup obrolan atau grup diskusi di Telegram / WhatsApp?',
+                a: 'TIDAK ADA grup obrolan publik (baik di Telegram maupun WhatsApp). Kami sengaja meniadakan grup obrolan untuk menghindari perdebatan pro-kontra, opini spekulatif yang berlawanan, dan kebisingan (noise) yang sering merusak psikologi serta objektivitas trading Anda. Di RealistisFx, Anda menerima sinyal presisi dan materi edukasi langsung di Private Channel Telegram 1 Arah. Bantuan teknis dan verifikasi langganan dilayani secara personal 1-on-1 via WhatsApp Admin Resmi.',
+              },
               {
                 q: 'Apakah saya wajib pindah atau daftar broker tertentu?',
                 a: 'Sama sekali TIDAK. Anda bebas menggunakan broker lokal (Bappebti) maupun internasional mana pun yang sudah Anda percayai. Sinyal kami berbasis harga spot pasar global yang dapat diaplikasikan di MetaTrader 4, MetaTrader 5, maupun TradingView.',
@@ -1928,11 +1932,11 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           </div>
 
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
-            Tinggalkan Tebak-tebakan. Bergabunglah dengan Komunitas VIP RealistisFx Hari Ini.
+            Tinggalkan Tebak-tebakan. Dapatkan Akses ke Private Channel VIP RealistisFx Hari Ini.
           </h2>
 
           <p className="text-xs sm:text-base text-emerald-100 max-w-2xl mx-auto font-normal">
-            Dapatkan akses langsung ke Sinyal Presisi AI XAUUSD, Playbook Berita NFP/CPI, dan panduan mentor untuk menguasai manajemen risiko dan membangun konsistensi trading yang realistis.
+            Dapatkan akses langsung ke Sinyal Presisi AI XAUUSD, Playbook Berita NFP/CPI, dan Private Channel Telegram 1 arah untuk menguasai manajemen risiko dan membangun konsistensi trading yang realistis.
           </p>
 
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">

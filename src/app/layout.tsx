@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'RealistisFx — Platform Edukasi & Sinyal Trading AI XAUUSD Premium Indonesia',
   description:
-    'Platform edukasi dan penyedia sinyal trading AI presisi tinggi untuk XAUUSD & rilis berita ekonomi NFP/CPI dengan komunitas VIP private Telegram dan playbook anti-fakeout terverifikasi.',
+    'Platform edukasi dan penyedia sinyal trading AI presisi tinggi untuk XAUUSD & rilis berita ekonomi NFP/CPI dengan private channel Telegram VIP dan playbook anti-fakeout terverifikasi.',
 };
 
 export default function RootLayout({
