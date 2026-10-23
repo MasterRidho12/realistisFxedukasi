@@ -224,6 +224,16 @@ export default function CompoundingPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Disclaimer & Compliance Notice */}
+        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 space-y-1">
+          <p className="font-bold text-slate-800">
+            ⚖️ Disclaimer &amp; Prinsip Edukasi Realistis:
+          </p>
+          <p className="leading-relaxed">
+            Tabel dan kalkulator di atas adalah simulasi matematis untuk memahami konsep pertumbuhan modal secara disiplin dan batas risiko terukur. RealistisFx <strong>TIDAK PERNAH menjanjikan keuntungan pasti, pendapatan tetap, ataupun pelipatgandakan saldo</strong>. Perdagangan pasar forex dan emas memiliki risiko dinamis; hasil sebenarnya bergantung penuh pada kepatuhan rencana trading dan pengelolaan risiko mandiri Anda.
+          </p>
+        </div>
       </div>
     </div>
   );

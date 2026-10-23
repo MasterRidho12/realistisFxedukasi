@@ -476,16 +476,13 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
     return historicalSignals.filter((s) => s.category === signalCategory);
   }, [historicalSignals, signalCategory]);
 
-  // Dynamic ROI calculation based on trader's capital
+  // Dynamic Risk & Lot calculation based on trader's capital
   const safeRiskPct = 0.015; // 1.5% risk
   const stopLossPips = 45; // average SL
   const calculatedRiskUsd = traderCapital * safeRiskPct;
   const recommendedLot = Number((calculatedRiskUsd / (stopLossPips * 10)).toFixed(2));
-  const estimatedMonthlyPips = 350; // conservative monthly target from AI signals
-  const estimatedProfitUsd = Number((recommendedLot * estimatedMonthlyPips * 10).toFixed(0));
-  const estimatedProfitIdr = estimatedProfitUsd * 15500;
-  const vipCostIdr = 500000;
-  const roiMultiplier = (estimatedProfitIdr / vipCostIdr).toFixed(1);
+  const maxRiskUsd = Math.round(calculatedRiskUsd);
+  const maxRiskIdr = Math.round(calculatedRiskUsd * 15500);
 
   return (
     <div className="min-h-screen bg-white text-slate-900 selection:bg-[#00A651] selection:text-white">
@@ -691,7 +688,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 </div>
                 <div>
                   <div className="text-slate-900 font-extrabold">Pertanyaan Umum (FAQ)</div>
-                  <div className="text-[10px] text-slate-400 font-normal">Info broker, modal awal, &amp; garansi</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Info broker, modal awal, &amp; disclaimer risiko</div>
                 </div>
               </a>
             </nav>
@@ -753,7 +750,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               , Bebas dari Jebakan Margin Call.
             </h1>
             <p className="text-xs sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
-              Tinggalkan tebak-tebakan saat berita rilis. Dapatkan sinyal trading berbasis data kuantitatif multi-timeframe, panduan entry terukur, dan bimbingan komunitas VIP eksklusif untuk melipatgandakan konsistensi profit Anda.
+              Tinggalkan tebak-tebakan saat berita rilis. Dapatkan sinyal trading berbasis data kuantitatif multi-timeframe, panduan entry dengan batasan risiko terukur, dan bimbingan komunitas VIP eksklusif untuk membangun disiplin serta konsistensi trading jangka panjang tanpa janji muluk cepat kaya.
             </p>
           </div>
 
@@ -1487,18 +1484,18 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         </div>
       </section>
 
-      {/* 7. Interactive ROI Simulator (Menjustifikasi Investasi Rp 500.000/bln) */}
+      {/* 7. Interactive Risk Management & Capital Protection Simulator */}
       <section className="py-16 sm:py-20 bg-white border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
           <div className="text-center space-y-3">
             <span className="px-3 py-1 rounded-full bg-emerald-100 text-[#00A651] text-xs font-black uppercase tracking-wider">
-              SIMULASI RETURN OF INVESTMENT (ROI)
+              SIMULASI MANAJEMEN RISIKO &amp; PROTEKSI MODAL
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              Kenapa Rp 500.000 / Bulan Sangat Murah Dibandingkan Manfaatnya?
+              Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto">
-              Hanya dengan menang 1 trade sinyal AI (+70 pips di XAUUSD dengan lot 0.05 = $35 / ~Rp 540.000), biaya langganan bulanan Anda sudah kembali modal (BEP).
+              RealistisFx tidak pernah menjanjikan keuntungan pasti atau melipatgandakan saldo secara instan. Keberhasilan trading jangka panjang dibangun dari disiplin membatasi risiko maksimal 1% - 2% per transaksi dengan rasio Risk to Reward yang sehat.
             </p>
           </div>
 
@@ -1507,7 +1504,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             <div className="space-y-5 sm:space-y-6">
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                  <span>Modal Trading Akun Anda:</span>
+                  <span>Modal Akun Trading Anda:</span>
                   <span className="text-base font-black text-[#00A651]">${traderCapital.toLocaleString()} USD</span>
                 </div>
                 <input
@@ -1520,51 +1517,65 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#00A651]"
                 />
                 <div className="flex justify-between text-[10px] text-slate-400 font-bold">
-                  <span>$200 (Cent)</span>
+                  <span>$200 (Akun Cent)</span>
                   <span>$2,500</span>
-                  <span>$10,000</span>
+                  <span>$10,000 (Standard)</span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2 text-xs">
+              <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2.5 text-xs">
                 <div className="flex justify-between text-slate-600">
-                  <span>Ukuran Lot Aman (Risk 1.5%):</span>
-                  <span className="font-mono font-bold text-slate-900">{recommendedLot} Lot</span>
+                  <span>Rekomendasi Lot Disiplin (Risk 1.5%):</span>
+                  <span className="font-mono font-black text-slate-900">{recommendedLot} Lot</span>
                 </div>
                 <div className="flex justify-between text-slate-600">
-                  <span>Estimasi Pips Gain AI per Bulan:</span>
-                  <span className="font-mono font-bold text-[#00A651]">+{estimatedMonthlyPips} Pips</span>
+                  <span>Batas Toleransi Risiko per Trade:</span>
+                  <span className="font-mono font-bold text-rose-600">${maxRiskUsd} USD (~Rp {maxRiskIdr.toLocaleString('id-ID')})</span>
+                </div>
+                <div className="flex justify-between text-slate-600">
+                  <span>Target Minimum Risk-to-Reward (RR):</span>
+                  <span className="font-mono font-bold text-[#00A651]">1 : 2.0 s/d 1 : 3.0</span>
                 </div>
                 <div className="flex justify-between text-slate-600 border-t border-slate-100 pt-2">
-                  <span>Biaya Langganan VIP:</span>
-                  <span className="font-mono font-bold text-slate-900">Rp 500.000 / bln</span>
+                  <span>Prinsip Perlindungan Akun:</span>
+                  <span className="font-bold text-slate-800">Stop Loss Fixed (Anti-Margin Call)</span>
                 </div>
               </div>
             </div>
 
             {/* Calculated Output Highlight */}
-            <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-4">
-              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-800">
-                POTENSI PROFIT BERSIH BULANAN
-              </span>
-              <div className="space-y-1">
-                <div className="text-2xl sm:text-4xl font-black text-[#00A651]">
-                  Rp {estimatedProfitIdr.toLocaleString('id-ID')}
-                </div>
-                <p className="text-xs text-slate-600 font-semibold">
-                  (Setara dengan ~${estimatedProfitUsd} USD)
-                </p>
+            <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-left space-y-4">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-[#00A651]" />
+                <span className="text-[11px] font-black uppercase tracking-wider text-emerald-900">
+                  KOMITMEN TRADING REALISTIS
+                </span>
               </div>
+              
+              <ul className="space-y-2.5 text-xs text-slate-700">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00A651] font-bold">✓</span>
+                  <span><strong>Tanpa Janji Penggandaan Modal:</strong> Kami mengedukasi fakta bahwa trading memiliki risiko nyata; fokus utama adalah konsistensi rasio menang-kalah terukur.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00A651] font-bold">✓</span>
+                  <span><strong>Anti-Martingale &amp; Anti-Overlot:</strong> Setiap setup wajib memiliki batasan risiko terukur sehingga modal tidak pernah terancam oleh 1 kali rilis berita.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00A651] font-bold">✓</span>
+                  <span><strong>Bimbingan Disiplin &amp; Evaluasi:</strong> Komunitas VIP berorientasi pada evaluasi jurnal trading, ketenangan mental, dan eksekusi sesuai rencana (trading plan).</span>
+                </li>
+              </ul>
 
-              <div className="p-2.5 rounded-xl bg-white border border-emerald-200 text-xs font-bold text-slate-800">
-                🚀 Potensi ROI: <span className="text-[#00A651]">{roiMultiplier}x lipat</span> dari biaya VIP Rp500.000
+              <div className="p-2.5 rounded-xl bg-white border border-emerald-200 text-xs font-semibold text-slate-800 text-center">
+                Investasi Edukasi &amp; Sinyal: <strong className="text-[#00A651]">Rp 500.000 / bulan</strong>
               </div>
 
               <a
                 href="#pricing"
-                className="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs shadow-md shadow-[#00A651]/20 transition-all cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs shadow-md shadow-[#00A651]/20 transition-all cursor-pointer text-center"
               >
-                Kunci Akses VIP Sekarang →
+                Gabung Member VIP RealistisFx Sekarang →
               </a>
             </div>
           </div>
@@ -1873,6 +1884,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 a: 'TIDAK ADA. Kami sangat menentang Martingale. Seluruh sinyal kami memiliki Stop Loss fixed yang terukur (30-50 pips di XAUUSD) dengan Risk-to-Reward minimum 1:2 hingga 1:3. Prioritas nomor 1 kami adalah proteksi modal.',
               },
               {
+                q: 'Apakah RealistisFx menjamin profit pasti atau melipatgandakan modal?',
+                a: 'Sama sekali TIDAK ADA jaminan profit pasti atau penggandaan modal. Nama kami "RealistisFx" karena kami menjunjung tinggi kejujuran dan edukasi realistis: pasar finansial selalu memiliki risiko fluktuasi harga. Layanan kami adalah alat bantu analisis probabilitas statistik, edukasi money management ketat (risk 1-2% per trade), dan sinyal dengan Stop Loss terukur demi melindungi modal Anda dari kehancuran Margin Call.',
+              },
+              {
                 q: 'Bagaimana cara pembayaran langganan VIP Rp 500.000?',
                 a: 'Pembayaran sangat mudah dan instan menggunakan QRIS (BCA, Mandiri, BRI, BNI, GoPay, OVO, Dana) melalui halaman pendaftaran. Akun VIP Anda akan aktif dalam hitungan menit.',
               },
@@ -1917,7 +1932,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           </h2>
 
           <p className="text-xs sm:text-base text-emerald-100 max-w-2xl mx-auto font-normal">
-            Dapatkan akses langsung ke Sinyal Presisi AI XAUUSD, Playbook Berita NFP/CPI, dan panduan mentor untuk mencapai konsistensi profit jangka panjang.
+            Dapatkan akses langsung ke Sinyal Presisi AI XAUUSD, Playbook Berita NFP/CPI, dan panduan mentor untuk menguasai manajemen risiko dan membangun konsistensi trading yang realistis.
           </p>
 
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
