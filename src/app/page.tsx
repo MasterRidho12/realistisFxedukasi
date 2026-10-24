@@ -113,7 +113,7 @@ export default function DashboardOverviewPage() {
       href: '/calculator',
       icon: Calculator,
       freeStatus: `Standar (Max ${siteSettings?.freeDailyCalculatorLimit ?? 3}x/hari)`,
-      proStatus: 'Unlimited + Akun Cent (IDRC) + XAUUSD',
+      proStatus: 'Unlimited + Pair Emas (XAUUSD) & Forex',
       isProFeature: false,
       badge: 'Core SOP',
       badgeColor: 'green',

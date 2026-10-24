@@ -519,7 +519,7 @@ export default function AdminDashboardPage() {
                       const isProUser = u.tier === 'PRO';
                       const cleanPhone = u.whatsapp ? u.whatsapp.replace(/^0/, '62') : '';
                       const waChatUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(
-                        `Halo ${u.name}! 👋\nSaya Admin RealistisFx Edukasi. Apakah ada yang bisa kami bantu terkait akun ${u.accountType} Anda?`
+                        `Halo ${u.name}! 👋\nSaya Admin RealistisFx Edukasi. Apakah ada yang bisa kami bantu terkait akun Anda?`
                       )}`;
 
                       return (

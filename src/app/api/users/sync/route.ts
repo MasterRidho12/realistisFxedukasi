@@ -30,7 +30,7 @@ let serverUsers: UserState[] = [
     email: 'siti.trader@gmail.com',
     password: 'trader123',
     whatsapp: '081399887766',
-    accountType: 'CENT',
+    accountType: 'STANDARD',
     tier: 'PRO',
     role: 'USER',
     isAuthenticated: false,

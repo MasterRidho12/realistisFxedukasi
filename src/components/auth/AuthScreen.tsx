@@ -509,36 +509,6 @@ export default function AuthScreen() {
                 </div>
               </div>
 
-              {/* Account Type Selection */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Tipe Akun Trading Broker
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setAccountType('STANDARD')}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
-                      accountType === 'STANDARD'
-                        ? 'bg-emerald-50 border-[#00A651] text-[#00A651] shadow-xs'
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    Akun Standard (USD)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setAccountType('CENT')}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
-                      accountType === 'CENT'
-                        ? 'bg-emerald-50 border-[#00A651] text-[#00A651] shadow-xs'
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    Akun Cent (IDRC)
-                  </button>
-                </div>
-              </div>
 
               <button
                 type="submit"

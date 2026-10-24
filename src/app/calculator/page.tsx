@@ -220,7 +220,7 @@ export default function CalculatorPage() {
                 <span className="font-bold text-slate-900">Status Kuota Harian Free:</span> Tersisa {Math.max(0, 3 - user.dailyCalculatorCount)} dari 3 kalkulasi hari ini.
               </p>
               <p className="text-[11px] text-slate-500">
-                Upgrade ke PRO VIP Rp500.000/bln untuk hitung tanpa batas + buka akses kalkulasi Emas (XAUUSD) &amp; Akun Cent.
+                Upgrade ke PRO VIP Rp500.000/bln untuk hitung tanpa batas + buka akses penuh kalkulasi Emas (XAUUSD) &amp; Seluruh Pair.
               </p>
             </div>
           </div>
@@ -235,7 +235,7 @@ export default function CalculatorPage() {
         <div className="px-4 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-bold flex items-center justify-between">
           <span className="flex items-center gap-2">
             <Crown className="w-4 h-4 text-[#00A651]" />
-            <span>Akun PRO VIP Aktif: Akses Kalkulator Unlimited, Pair Emas (XAUUSD), dan Akun Cent Terbuka.</span>
+            <span>Akun PRO VIP Aktif: Akses Kalkulator Unlimited, Pair Emas (XAUUSD), dan Seluruh Pair Forex Terbuka.</span>
           </span>
           <span className="font-bold text-[#00A651]">VIP</span>
         </div>
@@ -272,7 +272,7 @@ export default function CalculatorPage() {
             <div>
               <h4 className="text-xs font-bold text-slate-900">Kuota Harian (3x) Telah Habis!</h4>
               <p className="text-[11px] text-slate-600">
-                Tingkatkan ke PRO VIP hanya Rp500.000/bulan untuk kalkulasi unlimited + pair XAUUSD &amp; akun Cent.
+                Tingkatkan ke PRO VIP hanya Rp500.000/bulan untuk kalkulasi unlimited + pair XAUUSD &amp; seluruh pair forex.
               </p>
             </div>
           </div>
@@ -311,38 +311,8 @@ export default function CalculatorPage() {
                 <span>Modal Trading Anda di Broker</span>
               </label>
               <span className="text-xs text-slate-500 font-mono">
-                Estimasi: <strong className="text-[#00A651]">Rp {(balance * (accountType === 'STANDARD' ? 16200 : 162)).toLocaleString('id-ID')}</strong>
+                Estimasi: <strong className="text-[#00A651]">Rp {(balance * 16200).toLocaleString('id-ID')}</strong>
               </span>
-            </div>
-
-            {/* Account Type Selector */}
-            <div className="grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={() => setAccountType('STANDARD')}
-                className={`py-2 px-3 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
-                  accountType === 'STANDARD'
-                    ? 'bg-emerald-50 border-[#00A651] text-[#00A651] shadow-xs'
-                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Akun Standard (USD $)
-              </button>
-              <button
-                type="button"
-                disabled={!isPro}
-                onClick={() => isPro && setAccountType('CENT')}
-                className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                  accountType === 'CENT'
-                    ? 'bg-emerald-50 border-[#00A651] text-[#00A651] shadow-xs'
-                    : !isPro
-                    ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
-                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 cursor-pointer'
-                }`}
-              >
-                {!isPro && <Lock className="w-3 h-3 text-amber-600" />}
-                Akun Cent (IDRC) {!isPro && '(PRO)'}
-              </button>
             </div>
 
             {/* Balance Input & Quick Buttons */}
@@ -641,7 +611,7 @@ export default function CalculatorPage() {
                 </div>
 
                 <p className="text-xs text-slate-600 font-medium">
-                  {calculationResult.accountType === 'STANDARD' ? 'Ketik angka ini di kolom Volume Standard MetaTrader' : 'Ketik angka ini di kolom Volume Cent MetaTrader'}
+                  Ketik angka ini di kolom Volume MetaTrader (MT4 / MT5)
                 </p>
 
                 <button

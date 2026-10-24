@@ -837,7 +837,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 </div>
                 <div>
                   <div className="text-slate-900 font-extrabold">Edukasi Dasar (Free)</div>
-                  <div className="text-[10px] text-slate-400 font-normal">Panduan akun Cent, margin, &amp; leverage</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Panduan manajemen lot, margin, &amp; leverage</div>
                 </div>
               </a>
 
@@ -1693,7 +1693,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#00A651]"
                 />
                 <div className="flex justify-between text-[10px] text-slate-400 font-bold">
-                  <span>$200 (Akun Cent)</span>
+                  <span>$200 (Modal Awal)</span>
                   <span>$2,500</span>
                   <span>$10,000 (Standard)</span>
                 </div>
@@ -1797,7 +1797,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span>Panduan Akun Cent vs Akun Standard</span>
+                    <span>Panduan Manajemen Risiko &amp; Ukuran Lot Aman</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#00A651] shrink-0" />
@@ -1941,9 +1941,9 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center font-bold">
                 <Coins className="w-5 h-5" />
               </div>
-              <h3 className="font-extrabold text-sm text-slate-900">Akun Cent vs Akun Standard</h3>
+              <h3 className="font-extrabold text-sm text-slate-900">Manajemen Modal &amp; Ukuran Lot Aman</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Pelajari kenapa trader dengan modal di bawah $100 wajib memulai dengan akun Cent agar bisa membuka lot 0.01 dengan risiko mikro tanpa ancaman Margin Call.
+                Pelajari cara mengelola modal mulai dari $100 dengan membuka lot 0.01 secara disiplin, menjaga margin level di atas 500% tanpa ancaman Margin Call.
               </p>
             </div>
 
@@ -2014,7 +2014,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 ★★★★★
               </div>
               <p className="text-xs text-slate-600 leading-relaxed italic">
-                &ldquo;Materi edukasi akun Cent di member area sangat membuka mata saya. Dulu deposit $200 di akun standar sering MC. Sekarang di akun Cent dengan sinyal AI, akun saya tumbuh stabil 18% bulan ini tanpa deg-degan.&rdquo;
+                &ldquo;Materi edukasi manajemen lot di member area sangat membuka mata saya. Dulu deposit sering MC karena overtrade. Sekarang dengan sinyal AI RealistisFx dan lot disiplin, akun saya tumbuh stabil 18% bulan ini tanpa deg-degan.&rdquo;
               </p>
               <div className="border-t border-slate-100 pt-3">
                 <p className="text-xs font-bold text-slate-900">Hendra Saputra</p>
@@ -2049,7 +2049,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               },
               {
                 q: 'Berapa modal minimum yang dibutuhkan untuk mengikuti sinyal AI?',
-                a: 'Anda bisa memulai dari modal $50 s/d $100 menggunakan Akun Cent (dimana risiko per trade hanya beberapa sen dolar), atau modal $300 s/d $500 untuk Akun Standard dengan lot 0.01-0.02. Panduan pemilihan ukuran lot sudah terintegrasi di sistem.',
+                a: 'Anda bisa memulai dari modal terjangkau mulai dari $100 s/d $500 untuk Akun Standard dengan lot aman 0.01-0.02. Panduan pemilihan ukuran lot dan kalkulator risiko sudah terintegrasi di sistem.',
               },
               {
                 q: 'Bagaimana cara sinyal dikirimkan ke saya?',
@@ -2550,39 +2550,6 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   />
                 </div>
 
-                {authMode === 'register' && (
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                      Tipe Akun Trading Anda
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setAuthAccountType('STANDARD')}
-                        className={`p-2.5 rounded-xl border text-left text-xs font-semibold cursor-pointer transition-all ${
-                          authAccountType === 'STANDARD'
-                            ? 'border-[#00A651] bg-emerald-50 text-[#00A651]'
-                            : 'border-slate-200 hover:bg-slate-50 text-slate-700'
-                        }`}
-                      >
-                        <div className="font-bold">Akun Standard</div>
-                        <div className="text-[10px] text-slate-500">Modal di atas $300</div>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setAuthAccountType('CENT')}
-                        className={`p-2.5 rounded-xl border text-left text-xs font-semibold cursor-pointer transition-all ${
-                          authAccountType === 'CENT'
-                            ? 'border-[#00A651] bg-emerald-50 text-[#00A651]'
-                            : 'border-slate-200 hover:bg-slate-50 text-slate-700'
-                        }`}
-                      >
-                        <div className="font-bold">Akun Cent</div>
-                        <div className="text-[10px] text-slate-500">Modal kecil ($50 - $100)</div>
-                      </button>
-                    </div>
-                  </div>
-                )}
 
                 <button
                   type="submit"
