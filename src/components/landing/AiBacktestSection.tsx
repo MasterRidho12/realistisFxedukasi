@@ -89,27 +89,99 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
       <div className="absolute top-0 left-1/3 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-emerald-50/50 rounded-full blur-3xl pointer-events-none -z-10" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-7 sm:space-y-9 relative z-10">
         {/* ========================================================= */}
         {/* SECTION HEADER                                            */}
         {/* ========================================================= */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-black uppercase tracking-wider shadow-xs">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-black uppercase tracking-wider shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-[#00A651]" />
-            <span>Audit Backtest AI Kuantitatif 2020 – 2026 (Data Nyata)</span>
+            <span>Audit Backtest AI Kuantitatif 2020 – 2026 (Metode Baku)</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-snug">
-            Hasil Backtest AI: Strategi Key{' '}
-            <span className="text-[#00A651]">Support &amp; Resistance (SNR)</span> +{' '}
-            <span className="text-emerald-700">Breakout Momentum</span>
+            Hasil Backtest AI: Strategi{' '}
+            <span className="text-[#00A651]">Metode Baku Breakout &amp; SnR</span>
           </h2>
 
           <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
             Dianalisis secara objektif oleh algoritma AI RealistisFx merujuk langsung ke harga historis riil{' '}
-            <strong className="text-slate-900 font-bold underline decoration-[#00A651]">TradingView</strong> dari{' '}
-            <span className="text-[#00A651] font-extrabold">Januari 2020 hingga Oktober 2026</span> di 5 pair utama, dengan kalkulasi pips harian, bulanan, dan tahunan.
+            <strong className="text-slate-900 font-bold underline decoration-[#00A651]">TradingView (2020 – 2026)</strong> di 5 pair utama dengan formula parameter baku: <strong>Timeframe H1 &amp; H4</strong>, <strong>Stop Loss 200 Pips</strong>, <strong>Take Profit 400 Pips</strong>, dan <strong>Risk-to-Reward 1 : 2</strong>.
           </p>
+        </div>
+
+        {/* ========================================================= */}
+        {/* FORMULA PARAMETER METODE BAKU (HIGHLIGHT BAR)             */}
+        {/* ========================================================= */}
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs p-3.5 sm:p-5">
+          <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100 flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#00A651] animate-pulse" />
+              <span className="text-xs font-black text-slate-900 uppercase tracking-wide">
+                Konfigurasi Parameter Metode Baku (Disiplin Tanpa Emosi)
+              </span>
+            </div>
+            <span className="text-[11px] font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+              Formula Baku • Fixed RR 1 : 2
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
+            {/* Box 1: Metode Baku */}
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Metode Baku</span>
+              <div className="text-xs sm:text-sm font-black text-slate-900 mt-1">
+                Breakout &amp; SnR
+              </div>
+              <span className="text-[10px] text-slate-500 mt-1">
+                Support &amp; Resistance
+              </span>
+            </div>
+
+            {/* Box 2: Timeframe */}
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Timeframe (TF)</span>
+              <div className="text-xs sm:text-sm font-black text-[#00A651] font-mono mt-1">
+                H1 &amp; H4
+              </div>
+              <span className="text-[10px] text-slate-500 mt-1">
+                Struktur &amp; Eksekusi
+              </span>
+            </div>
+
+            {/* Box 3: Stop Loss */}
+            <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-200 flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-rose-600 uppercase tracking-wider">Stop Loss (SL)</span>
+              <div className="text-xs sm:text-sm font-black text-rose-700 font-mono mt-1">
+                Baku 200 Pips
+              </div>
+              <span className="text-[10px] text-rose-600/80 mt-1">
+                Batas Proteksi Modal
+              </span>
+            </div>
+
+            {/* Box 4: Take Profit */}
+            <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Take Profit (TP)</span>
+              <div className="text-xs sm:text-sm font-black text-[#00A651] font-mono mt-1">
+                Baku 400 Pips
+              </div>
+              <span className="text-[10px] text-emerald-700/80 mt-1">
+                Sasaran Target Profit
+              </span>
+            </div>
+
+            {/* Box 5: Risk to Reward */}
+            <div className="col-span-2 sm:col-span-1 p-3 rounded-xl bg-amber-50/70 border border-amber-200 flex flex-col justify-between">
+              <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider">Risk : Reward (RR)</span>
+              <div className="text-xs sm:text-sm font-black text-amber-800 font-mono mt-1">
+                1 : 2.0 (Tetap)
+              </div>
+              <span className="text-[10px] text-amber-700/80 mt-1">
+                Positive Mathematical Edge
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* ========================================================= */}
@@ -156,6 +228,24 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                 </button>
               );
             })}
+          </div>
+        </div>
+
+        {/* Active Pair SOP Strategy Banner */}
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex items-start gap-3">
+          <div className="p-2 rounded-xl bg-emerald-50 text-[#00A651] border border-emerald-200 shrink-0 mt-0.5">
+            <ShieldCheck className="w-4 h-4" />
+          </div>
+          <div className="min-w-0 text-xs">
+            <div className="font-bold text-slate-900 flex items-center gap-2 flex-wrap">
+              <span>SOP Metode Baku {pairData.name} ({pairData.symbol})</span>
+              <span className="text-[10px] font-mono font-bold text-[#00A651] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                TF: H1 &amp; H4 • SL: 200 Pips • TP: 400 Pips (RR 1 : 2)
+              </span>
+            </div>
+            <p className="text-slate-600 mt-1 leading-relaxed">
+              {pairData.strategySummary}
+            </p>
           </div>
         </div>
 
@@ -239,22 +329,22 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
             </span>
           </div>
 
-          {/* Card 5: Profit Factor */}
+          {/* Card 5: Risk to Reward & Profit Factor */}
           <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between min-w-0">
             <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-              <span className="font-semibold truncate">Profit Factor</span>
+              <span className="font-semibold truncate">Risk : Reward (Baku)</span>
               <Zap className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             </div>
             <div>
               <div className="text-xl sm:text-2xl lg:text-3xl font-black font-mono text-[#00A651] truncate">
-                {pairData.profitFactor}
+                1 : 2.0
               </div>
-              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">
-                Sharpe: {pairData.sharpeRatio}
+              <div className="text-[10px] sm:text-[11px] text-slate-600 font-bold mt-0.5 truncate">
+                SL 200 / TP 400 Pips
               </div>
             </div>
             <span className="text-[10px] text-slate-600 font-mono font-bold mt-2 truncate">
-              RR: {pairData.avgRiskReward}
+              PF: {pairData.profitFactor} • Sharpe {pairData.sharpeRatio}
             </span>
           </div>
 
@@ -514,77 +604,135 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
 
           {/* VIEW 2: SNR & BREAKOUT ANATOMY SIMULATOR (LIGHT THEME) */}
           {chartMode === 'CANDLE_SIMULATOR' && (
-            <div className="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-200 space-y-5">
-              <div className="max-w-2xl">
+            <div className="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-200 space-y-6">
+              <div className="max-w-3xl">
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00A651] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  Playbook Algoritma AI RealistisFx
+                  Playbook SOP Metode Baku RealistisFx
                 </span>
                 <h4 className="text-sm sm:text-base font-black text-slate-900 mt-1">
-                  Bagaimana AI Memvalidasi Level Kunci SNR &amp; Menghindari False Breakout
+                  Anatomi Setup Metode Baku: Breakout &amp; Key SnR (TF H1 &amp; H4 • SL 200 Pips • TP 400 Pips)
                 </h4>
                 <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                  Algoritma tidak pernah entry saat harga menyentuh garis resistensi pertama kali. AI menunggu 3 konfirmasi: Breakout Candle Close di atas Key Level, Volume Spike 1.5x ATR, dan Retest konfirmasi rejection (RBS).
+                  Metode baku tanpa keraguan emosional: Algoritma AI memetakan area Support &amp; Resistance pada <strong>Timeframe H4</strong> (struktur mayor) dan <strong>H1</strong> (konfirmasi), menunggu Candle Close Breakout di luar zona, entry saat Retest (RBS / SBR), dengan batasan risiko baku <strong>Stop Loss 200 Pips</strong> dan target pasti <strong>Take Profit 400 Pips (Rasio 1 : 2)</strong>.
                 </p>
               </div>
 
               {/* Visual Interactive Diagram in Light Theme */}
-              <div className="relative p-4 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs overflow-hidden font-mono text-xs">
+              <div className="p-4 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-5">
+                {/* Visual Target TP Line */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-50 border border-emerald-300">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#00A651] animate-pulse" />
+                    <span className="text-[#00A651] font-mono font-black text-xs sm:text-sm">
+                      🎯 TARGET TAKE PROFIT (TP) BAKU: +400 PIPS
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                    Rasio 1 : 2 Penuh (+400 Pips)
+                  </span>
+                </div>
+
                 {/* Resistance Level Line */}
-                <div className="relative flex items-center justify-between pb-8 border-b-2 border-dashed border-rose-400">
+                <div className="relative flex items-center justify-between py-2 border-b-2 border-dashed border-rose-400">
                   <span className="text-rose-700 font-bold bg-rose-50 px-2.5 py-1 rounded-md border border-rose-200 text-[11px] sm:text-xs">
-                    🔴 KEY RESISTANCE LEVEL (Contoh: $2,075.00 ATH / Paritas 1.0000)
+                    🔴 KEY RESISTANCE LEVEL (TF H1 &amp; H4)
                   </span>
                   <span className="text-[10px] text-rose-600 font-bold hidden sm:inline">
-                    Zona Plafon Kuat (Sell Liquidity Pool)
+                    Plafon Likuiditas Penjual (Sebelum Breakout)
                   </span>
                 </div>
 
-                {/* Simulated Candle Sequence */}
-                <div className="my-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                  {/* Step 1: Accumulation */}
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                    <span className="text-[10px] font-bold text-slate-400 block mb-0.5">TAHAP 1</span>
-                    <div className="font-bold text-slate-900 text-xs">Konsolidasi SNR</div>
-                    <p className="text-[10px] text-slate-500 mt-1 font-sans leading-snug">
-                      Harga menguji level resistensi 2-3x membentuk higher lows.
-                    </p>
+                {/* 4 Step Workflow Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-center">
+                  {/* Step 1 */}
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-left flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-mono font-bold text-slate-500">TAHAP 1</span>
+                        <span className="text-[10px] font-mono font-bold bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">TF H4 &amp; H1</span>
+                      </div>
+                      <div className="font-black text-slate-900 text-xs">Pemetaan Level SnR</div>
+                      <p className="text-[11px] text-slate-600 mt-1 leading-snug">
+                        AI mendeteksi level Support &amp; Resistance horizontal kunci yang diuji berulang kali pada timeframe H4 &amp; H1.
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-slate-500 mt-2 block">
+                      Validasi Key Zone
+                    </span>
                   </div>
 
-                  {/* Step 2: Breakout with Volume */}
-                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-300 ring-1 ring-emerald-200">
-                    <span className="text-[10px] font-bold text-[#00A651] block mb-0.5">TAHAP 2: TRIGGER</span>
-                    <div className="font-bold text-emerald-900 text-xs">Breakout Candle H1</div>
-                    <p className="text-[10px] text-emerald-700 mt-1 font-sans leading-snug">
-                      Candle menutup penuh di atas resistensi dengan volume &gt; 150% ATR.
-                    </p>
+                  {/* Step 2 */}
+                  <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-300 ring-1 ring-emerald-200 text-left flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-mono font-bold text-[#00A651]">TAHAP 2: TRIGGER</span>
+                        <span className="text-[10px] font-mono font-bold bg-emerald-200 text-emerald-900 px-1.5 py-0.5 rounded">Candle Close</span>
+                      </div>
+                      <div className="font-black text-emerald-950 text-xs">Breakout Candle H1/H4</div>
+                      <p className="text-[11px] text-emerald-800 mt-1 leading-snug">
+                        Body candle H1 / H4 ditutup penuh menembus level SnR dengan momentum kuat. Bukan sekadar ekor/shadow tipuan (anti-fakeout).
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-[#00A651] mt-2 block">
+                      Konfirmasi Breakout
+                    </span>
                   </div>
 
-                  {/* Step 3: Retest Confirmation */}
-                  <div className="p-3 rounded-xl bg-sky-50 border border-sky-300">
-                    <span className="text-[10px] font-bold text-sky-700 block mb-0.5">TAHAP 3: ENTRY</span>
-                    <div className="font-bold text-sky-900 text-xs">Retest RBS (Pullback)</div>
-                    <p className="text-[10px] text-sky-700 mt-1 font-sans leading-snug">
-                      Harga pullback menguji garis tertembus, wick rejection memicu order buy.
-                    </p>
+                  {/* Step 3 */}
+                  <div className="p-3.5 rounded-xl bg-sky-50/70 border border-sky-300 text-left flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-mono font-bold text-sky-700">TAHAP 3: ENTRY</span>
+                        <span className="text-[10px] font-mono font-bold bg-sky-200 text-sky-900 px-1.5 py-0.5 rounded">RBS / SBR</span>
+                      </div>
+                      <div className="font-black text-sky-950 text-xs">Retest Pullback SnR</div>
+                      <p className="text-[11px] text-sky-800 mt-1 leading-snug">
+                        Harga koreksi pullback menguji kembali garis SnR tertembus (Resistance Become Support). Konfirmasi rejection memicu entry order.
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-sky-700 mt-2 block">
+                      Eksekusi Order Masuk
+                    </span>
                   </div>
 
-                  {/* Step 4: Exit TP1 / TP2 */}
-                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-300">
-                    <span className="text-[10px] font-bold text-amber-700 block mb-0.5">TAHAP 4: RESULT</span>
-                    <div className="font-bold text-amber-900 text-xs">Hit TP1 &amp; Trailing TP2</div>
-                    <p className="text-[10px] text-amber-700 mt-1 font-sans leading-snug">
-                      Kunci 50% lot di TP1 (1:1.5 RR), biarkan sisa runner capai TP2 (+1:3.0 RR).
-                    </p>
+                  {/* Step 4 */}
+                  <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-300 text-left flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-mono font-bold text-amber-800">TAHAP 4: RESULT</span>
+                        <span className="text-[10px] font-mono font-bold bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded">RR 1 : 2</span>
+                      </div>
+                      <div className="font-black text-amber-950 text-xs">SL 200 &amp; TP 400 Pips</div>
+                      <p className="text-[11px] text-amber-800 mt-1 leading-snug">
+                        Batas baku otomatis: Stop Loss 200 pips terkunci aman dan Take Profit 400 pips dieksekusi tanpa gangguan psikologis trader.
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-amber-800 mt-2 block">
+                      Disiplin Baku 1 : 2
+                    </span>
                   </div>
                 </div>
 
-                {/* Support Level Line */}
-                <div className="relative flex items-center justify-between pt-8 border-t-2 border-dashed border-emerald-400">
+                {/* Visual Support Level Line */}
+                <div className="relative flex items-center justify-between py-2 border-t-2 border-dashed border-emerald-400">
                   <span className="text-[#00A651] font-bold bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 text-[11px] sm:text-xs">
-                    🟢 KEY SUPPORT LEVEL (Contoh: $1,616.00 / 0.9535 Parity Low)
+                    🟢 KEY SUPPORT LEVEL (TF H1 &amp; H4)
                   </span>
                   <span className="text-[10px] text-[#00A651] font-bold hidden sm:inline">
-                    Lantai Demand Institusional (Buy Liquidity Zone)
+                    Lantai Likuiditas Pembeli (Demand Base)
+                  </span>
+                </div>
+
+                {/* Visual Protective Stop Loss Line */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-rose-50 border border-rose-300">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                    <span className="text-rose-700 font-mono font-black text-xs sm:text-sm">
+                      🛑 BATAS STOP LOSS (SL) BAKU: -200 PIPS
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-rose-800 bg-rose-100 px-2.5 py-0.5 rounded-full border border-rose-200">
+                    Batas Risiko Baku Anti-Floating
                   </span>
                 </div>
               </div>
@@ -728,7 +876,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
 
               <div className="flex items-center justify-between text-xs text-slate-500 flex-wrap gap-2 pt-1">
                 <span>
-                  🟢 Hijau: Bulan profit neto | 🔴 Merah: Bulan drawdown terkendali (SL ketat 1-2%).
+                  🟢 Hijau: Bulan profit neto | 🔴 Merah: Bulan drawdown terkendali (SOP SL baku 200 pips).
                 </span>
                 <span className="text-[#00A651] font-mono font-bold">
                   Konsistensi: &gt;96% bulan profit positif
@@ -778,7 +926,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                       {pairData.dailyStats.maxDailyLossPips} Pips
                     </span>
                     <span className="text-[10px] text-slate-400 block mt-0.5">
-                      Terkunci SOP ketat
+                      Terkunci SOP baku SL 200 pips
                     </span>
                   </div>
                 </div>
