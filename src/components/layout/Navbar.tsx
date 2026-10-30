@@ -10,6 +10,8 @@ import {
   CreditCard,
   ExternalLink,
   MessageCircle,
+  Sparkles,
+  GraduationCap,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
@@ -115,7 +117,7 @@ export default function Navbar() {
         {/* Upgrade / Active Badge */}
         {!isPro ? (
           <button
-            onClick={openPaymentModal}
+            onClick={() => openPaymentModal('EDUKASI')}
             className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               isPending
                 ? 'bg-amber-50 border border-amber-300 text-amber-800'
@@ -125,19 +127,19 @@ export default function Navbar() {
             {isPending ? (
               <>
                 <CreditCard className="w-3.5 h-3.5" />
-                <span>Pending</span>
+                <span>Pending QRIS</span>
               </>
             ) : (
               <>
-                <Crown className="w-3.5 h-3.5" />
-                <span>Upgrade VIP</span>
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Buka Edukasi (Rp100k)</span>
               </>
             )}
           </button>
         ) : (
           <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-bold">
-            <Crown className="w-3.5 h-3.5 text-[#00A651]" />
-            <span>PRO VIP</span>
+            <GraduationCap className="w-3.5 h-3.5 text-[#00A651]" />
+            <span>EDUKASI LENGKAP</span>
           </div>
         )}
 

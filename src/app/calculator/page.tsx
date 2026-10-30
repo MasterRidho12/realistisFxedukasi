@@ -220,24 +220,24 @@ export default function CalculatorPage() {
                 <span className="font-bold text-slate-900">Status Kuota Harian Free:</span> Tersisa {Math.max(0, 3 - user.dailyCalculatorCount)} dari 3 kalkulasi hari ini.
               </p>
               <p className="text-[11px] text-slate-500">
-                Upgrade ke PRO VIP Rp500.000/bln untuk hitung tanpa batas + buka akses penuh kalkulasi Emas (XAUUSD) &amp; Seluruh Pair.
+                Aktivasi Paket Edukasi Realistis Rp 100.000 sekali bayar untuk kalkulasi tanpa batas + buka seluruh modul SOP Anti-MC.
               </p>
             </div>
           </div>
           <button
-            onClick={openPaymentModal}
+            onClick={() => openPaymentModal('EDUKASI')}
             className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs whitespace-nowrap shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
           >
-            Upgrade VIP Rp500k via QRIS
+            Aktivasi Edukasi Rp 100k
           </button>
         </div>
       ) : (
         <div className="px-4 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-bold flex items-center justify-between">
           <span className="flex items-center gap-2">
-            <Crown className="w-4 h-4 text-[#00A651]" />
-            <span>Akun PRO VIP Aktif: Akses Kalkulator Unlimited, Pair Emas (XAUUSD), dan Seluruh Pair Forex Terbuka.</span>
+            <Sparkles className="w-4 h-4 text-[#00A651]" />
+            <span>Akses Edukasi Lengkap Aktif: Kalkulator Unlimited, Pair Emas (XAUUSD), dan Seluruh Modul Terbuka.</span>
           </span>
-          <span className="font-bold text-[#00A651]">VIP</span>
+          <span className="font-bold text-[#00A651]">EDUKASI PRO</span>
         </div>
       )}
 
@@ -272,15 +272,15 @@ export default function CalculatorPage() {
             <div>
               <h4 className="text-xs font-bold text-slate-900">Kuota Harian (3x) Telah Habis!</h4>
               <p className="text-[11px] text-slate-600">
-                Tingkatkan ke PRO VIP hanya Rp500.000/bulan untuk kalkulasi unlimited + pair XAUUSD &amp; seluruh pair forex.
+                Aktivasi Paket Edukasi hanya Rp 100.000 sekali bayar untuk kalkulasi tanpa batas + modul SOP Anti-MC.
               </p>
             </div>
           </div>
           <button
-            onClick={openPaymentModal}
+            onClick={() => openPaymentModal('EDUKASI')}
             className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs cursor-pointer shadow-xs"
           >
-            Bayar Langganan VIP via QRIS
+            Aktivasi Edukasi via QRIS (Rp 100k)
           </button>
         </div>
       )}

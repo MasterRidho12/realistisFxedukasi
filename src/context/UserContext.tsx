@@ -92,17 +92,17 @@ export interface AdminSiteSettings {
 
 const defaultSiteSettings: AdminSiteSettings = {
   freeDailyCalculatorLimit: 3,
-  vipMonthlyPrice: 500000,
+  vipMonthlyPrice: 100000,
   academyPrice: 100000,
-  landingAnnouncement: '🔥 Pendaftaran VIP PRO Edukasi RealistisFx Dibuka — Dapatkan Akses Sinyal AI & SOP Anti Margin Call',
+  landingAnnouncement: '🔥 Paket Edukasi RealistisFx (Rp 100.000 Sekali Bayar) — Akses Modul Lengkap & SOP Anti Margin Call',
   isAnnouncementActive: true,
   adminWhatsAppNumber: '6287774229255',
   vipRegistrationOpen: true,
-  botAssistantVipOnly: true,
-  newsScenarioVipOnly: true,
-  marginResistanceVipOnly: true,
-  compoundingVipOnly: true,
-  copyTradeWaMessage: 'Halo Admin RealistisFx, saya tertarik untuk aktivasi VIP Member Area & Sinyal AI XAUUSD. Mohon panduannya.',
+  botAssistantVipOnly: false,
+  newsScenarioVipOnly: false,
+  marginResistanceVipOnly: false,
+  compoundingVipOnly: false,
+  copyTradeWaMessage: 'Halo Admin RealistisFx, saya tertarik aktivasi Paket Edukasi Realistis (Rp 100.000 sekali bayar). Mohon panduan konfirmasi pembayaran QRIS.',
   qrisMerchantName: 'REALISTISFX EDUKASI SAAS',
   qrisNmid: 'ID102439281729',
 };
@@ -203,13 +203,13 @@ const initialRequests: SubscriptionRequest[] = [
     userName: 'Budi Santoso (Trader)',
     userEmail: 'trader@realistisfx.com',
     userPhone: '081234567890',
-    planName: '1 Bulan PRO',
-    amount: 50000,
+    planName: 'Paket Edukasi Realistis',
+    amount: 100000,
     paymentMethod: 'QRIS',
     proofScreenshot: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
     status: 'APPROVED',
     createdAt: '16 Okt 2026, 18.39 WIB',
-    notes: 'Disetujui Admin - Status PRO Aktif',
+    notes: 'Disetujui Admin - Status Edukasi Lengkap Aktif',
   },
   {
     id: 'sub-req-101',
@@ -217,8 +217,8 @@ const initialRequests: SubscriptionRequest[] = [
     userName: 'Dimas Wahyu',
     userEmail: 'dimas.forex@gmail.com',
     userPhone: '081234567899',
-    planName: '1 Bulan PRO',
-    amount: 50000,
+    planName: 'Paket Edukasi Realistis',
+    amount: 100000,
     paymentMethod: 'QRIS',
     proofScreenshot: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
     status: 'PENDING',
@@ -248,7 +248,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [subscriptionRequests, setSubscriptionRequests] = useState<SubscriptionRequest[]>(initialRequests);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedPaymentPlan, setSelectedPaymentPlan] = useState<PaymentPlanKey>('1_MONTH');
+  const [selectedPaymentPlan, setSelectedPaymentPlan] = useState<PaymentPlanKey>('EDUKASI');
   const [pendingCheckoutPlan, setPendingCheckoutPlan] = useState<PaymentPlanKey | null>(null);
   const [marketPrice, setMarketPrice] = useState<MarketPrice>(defaultMarket);
   const [priceTickDirection, setPriceTickDirection] = useState<'up' | 'down' | 'neutral'>('neutral');
@@ -450,11 +450,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   const openPaymentModal = (plan?: PaymentPlanKey | unknown) => {
-    let chosenPlan: PaymentPlanKey = selectedPaymentPlan || '1_MONTH';
+    let chosenPlan: PaymentPlanKey = 'EDUKASI';
     if (typeof plan === 'string') {
       chosenPlan = plan as PaymentPlanKey;
-      setSelectedPaymentPlan(chosenPlan);
     }
+    setSelectedPaymentPlan(chosenPlan);
     if (!user.isAuthenticated) {
       setPendingCheckoutPlan(chosenPlan);
     }
@@ -782,10 +782,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       if (u.id === req.userId || u.email === req.userEmail) {
         return {
           ...u,
-          tier: isEdukasiOnly ? u.tier : ('PRO' as UserTier),
+          tier: 'PRO' as UserTier,
           hasAcademyAccess: true,
           subscriptionStatus: 'ACTIVE' as const,
-          proExpiryDate: isEdukasiOnly ? (u.proExpiryDate || 'Lifetime Edukasi') : expiryStr,
+          proExpiryDate: 'Akses Permanen (Lifetime)',
         };
       }
       return u;
@@ -804,10 +804,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     if (user.id === req.userId || user.email === req.userEmail) {
       saveUser({
         ...user,
-        tier: isEdukasiOnly ? user.tier : 'PRO',
+        tier: 'PRO',
         hasAcademyAccess: true,
         subscriptionStatus: 'ACTIVE',
-        proExpiryDate: isEdukasiOnly ? (user.proExpiryDate || 'Lifetime Edukasi') : expiryStr,
+        proExpiryDate: 'Akses Permanen (Lifetime)',
       });
     }
   };

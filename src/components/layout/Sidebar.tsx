@@ -160,7 +160,7 @@ export default function Sidebar() {
             <span className="text-xs font-medium text-slate-500">Status Akun:</span>
             {isPro ? (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-[#00A651] border border-emerald-200">
-                <Crown className="w-3 h-3 text-[#00A651]" /> PRO MEMBER
+                <GraduationCap className="w-3 h-3 text-[#00A651]" /> EDUKASI PRO
               </span>
             ) : isPending ? (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
@@ -168,7 +168,7 @@ export default function Sidebar() {
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-700 border border-slate-300">
-                FREE TIER
+                EDUKASI DASAR (FREE)
               </span>
             )}
           </div>
@@ -188,14 +188,14 @@ export default function Sidebar() {
               <p className="text-[10px] text-slate-500">
                 {isPending
                   ? 'Bukti bayar sedang diverifikasi admin via WA'
-                  : 'Upgrade VIP Rp500.000/bln untuk akses tanpa batas'}
+                  : 'Aktivasi Paket Edukasi Rp 100.000 sekali bayar untuk akses materi & tools tanpa batas'}
               </p>
             </div>
           ) : (
             <div className="flex items-center justify-between text-[11px] text-emerald-800 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-200">
               <span className="flex items-center gap-1.5 font-medium">
                 <Sparkles className="w-3.5 h-3.5 text-[#00A651]" />
-                Semua Fitur Terbuka
+                Seluruh Materi &amp; Tools Terbuka
               </span>
               <span className="font-bold text-[#00A651]">Aktif</span>
             </div>
@@ -273,27 +273,27 @@ export default function Sidebar() {
             <div className="relative z-10 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="p-1 rounded-md bg-emerald-100 text-[#00A651]">
-                  <Crown className="w-4 h-4" />
+                  <Sparkles className="w-4 h-4" />
                 </div>
-                <span className="text-xs font-bold text-slate-900 tracking-wide">RealistisFx VIP</span>
+                <span className="text-xs font-bold text-slate-900 tracking-wide">Edukasi RealistisFx</span>
               </div>
               <p className="text-[11px] text-slate-600 leading-relaxed">
-                Hanya <span className="text-[#00A651] font-bold">Rp500.000</span>/bln via QRIS. Buka Sinyal AI XAUUSD, Playbook Berita, &amp; VIP Telegram.
+                Hanya <span className="text-[#00A651] font-bold">Rp100.000</span> sekali bayar seumur hidup via QRIS. Buka Modul Lvl 1-5, Kalkulator Unlimited, &amp; SOP Anti-MC.
               </p>
               <button
                 type="button"
-                onClick={openPaymentModal}
+                onClick={() => openPaymentModal('EDUKASI')}
                 className="w-full py-2 px-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                {isPending ? 'Lihat Bukti QRIS' : 'Aktivasi VIP (Rp500k)'}
+                {isPending ? 'Lihat Bukti QRIS' : 'Aktivasi Edukasi (Rp100k)'}
               </button>
             </div>
           </div>
         ) : (
           <div className="p-3 m-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
-            <p className="text-xs font-bold text-emerald-800">Akun Anda: PRO ACTIVE</p>
-            <p className="text-[11px] text-slate-600 mt-0.5">Semua kalkulator &amp; bot aktif</p>
+            <p className="text-xs font-bold text-emerald-800">Akun Anda: EDUKASI LENGKAP AKTIF</p>
+            <p className="text-[11px] text-slate-600 mt-0.5">Semua modul &amp; kalkulator terbuka selamanya</p>
           </div>
         )}
 

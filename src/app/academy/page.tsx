@@ -29,13 +29,28 @@ interface AcademyModule {
 
 const MODULES: AcademyModule[] = [
   {
+    id: 'm0',
+    level: 0,
+    title: 'Dasar-Dasar Forex untuk Pemula',
+    duration: '35 Menit',
+    summary: 'Pengenalan pasar forex, cara kerja transaksi mata uang, istilah pips, lot, leverage, dan membaca candlestick.',
+    isCompleted: false,
+    proOnly: false, // GRATIS UNTUK SEMUA TRADER
+    lessons: [
+      'Pelajaran 1: Apa itu Pasar Forex & Cara Kerja Transaksi Pasangan Mata Uang',
+      'Pelajaran 2: Memahami Istilah Wajib (Pips, Spread, Lot, dan Leverage)',
+      'Pelajaran 3: Cara Membaca Candlestick, Trend Bullish & Bearish',
+      'Pelajaran 4: Manajemen Akun & Mengenal Software Trading (MT5 & TradingView)',
+    ],
+  },
+  {
     id: 'm1',
     level: 1,
     title: 'Fondasi Money Management & Aturan 1-2% Modal',
     duration: '45 Menit',
     summary: 'Memahami cara kerja leverage broker, margin, dan kenapa 90% retail trader bangkrut karena over-lot.',
     isCompleted: false,
-    proOnly: true, // Now paid (100k) — No free modules
+    proOnly: true, // Paket Edukasi 100k
     lessons: [
       'Pelajaran 1: Mengapa Over-lot Membunuh Akun Anda',
       'Pelajaran 2: Menghitung Nilai Pips dan Leverage Nyata',
@@ -112,7 +127,8 @@ export default function AcademyPage() {
   const progressPercent = Math.round((completedCount / MODULES.length) * 100);
 
   const handleToggleComplete = (modId: string) => {
-    if (!hasAcademyAccess) {
+    const mod = MODULES.find((m) => m.id === modId);
+    if (mod?.proOnly && !hasAcademyAccess) {
       openPaymentModal('EDUKASI');
       return;
     }
@@ -135,7 +151,7 @@ export default function AcademyPage() {
             </h1>
           </div>
           <p className="text-xs text-slate-600 max-w-2xl">
-            Modul edukasi terstruktur Level 1 sampai 5 untuk membentuk pola pikir trader mandiri bebas Margin Call.
+            Modul Dasar-Dasar Forex Gratis untuk pemula &amp; Modul Lanjutan Level 1-5 SOP Anti-MC untuk trader mandiri.
           </p>
         </div>
 
@@ -143,15 +159,9 @@ export default function AcademyPage() {
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => openPaymentModal('EDUKASI')}
-              className="px-3.5 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+              className="px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
             >
-              <Sparkles className="w-3.5 h-3.5" /> Beli Paket Edukasi (Rp 100.000)
-            </button>
-            <button
-              onClick={() => openPaymentModal('1_MONTH')}
-              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
-            >
-              <Crown className="w-3.5 h-3.5" /> VIP PRO Lengkap (Rp 500k)
+              <Sparkles className="w-3.5 h-3.5" /> Beli Paket Edukasi Lengkap (Rp 100.000)
             </button>
           </div>
         ) : (
@@ -162,7 +172,7 @@ export default function AcademyPage() {
         )}
       </div>
 
-      {/* Paid Notice Banner if Not Unlocked */}
+      {/* Notice Banner */}
       {!hasAcademyAccess && (
         <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
           <div className="flex items-start gap-3">
@@ -172,14 +182,14 @@ export default function AcademyPage() {
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-black uppercase text-emerald-950 tracking-wider">
-                  Kurikulum Edukasi Berbayar (Rp 100.000)
+                  Modul Dasar Forex Gratis • Modul Lanjutan Level 1-5 (Rp 100.000)
                 </span>
                 <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-300">
-                  TIDAK ADA MODUL GRATIS
+                  SEKALI BAYAR SEUMUR HIDUP
                 </span>
               </div>
               <p className="text-xs text-slate-700 mt-1 max-w-2xl leading-relaxed">
-                Seluruh 5 modul kurikulum trading realistis dipersiapkan secara komprehensif berbayar Rp 100.000 sekali bayar (lifetime access). Buka akses instan melalui QRIS untuk mempelajari SOP Money Management &amp; ujian sertifikasi.
+                Anda dapat mempelajari materi <strong>Dasar-Dasar Forex gratis</strong>. Untuk membuka seluruh 5 modul lanjutan (SOP Money Management 1%, Fixed SL 30 Pips, Supply-Demand Zone, dan Ujian Sertifikasi), aktifkan Paket Edukasi Realistis hanya Rp 100.000 via QRIS.
               </p>
             </div>
           </div>
@@ -219,7 +229,7 @@ export default function AcademyPage() {
         {/* Module Nav Cards (7 Cols) */}
         <div className="lg:col-span-7 space-y-3">
           {MODULES.map((mod) => {
-            const isLocked = !hasAcademyAccess;
+            const isLocked = mod.proOnly && !hasAcademyAccess;
             const isSelected = activeModule.id === mod.id;
             const isDone = completedModules.includes(mod.id);
 
@@ -252,9 +262,13 @@ export default function AcademyPage() {
                     <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Selesai
                     </span>
+                  ) : !mod.proOnly ? (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      GRATIS (TERBUKA)
+                    </span>
                   ) : isLocked ? (
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1">
-                      <Lock className="w-3 h-3" /> BERBAYAR (Rp 100K)
+                      <Lock className="w-3 h-3" /> EDUKASI (Rp 100K)
                     </span>
                   ) : (
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase bg-emerald-100 text-emerald-800 border border-emerald-200">
@@ -269,7 +283,7 @@ export default function AcademyPage() {
                 {isLocked && (
                   <div className="mt-3 flex items-center gap-1.5 text-xs text-amber-700 font-semibold">
                     <Lock className="w-3.5 h-3.5 shrink-0" />
-                    <span>Terkunci — Butuh Paket Edukasi Rp 100.000 atau VIP PRO</span>
+                    <span>Terkunci — Butuh Paket Edukasi Rp 100.000 (Sekali Bayar)</span>
                   </div>
                 )}
               </div>
@@ -288,29 +302,23 @@ export default function AcademyPage() {
             <p className="text-xs text-slate-600 leading-relaxed">{activeModule.summary}</p>
 
             {/* Paywall Container if Locked */}
-            {!hasAcademyAccess ? (
+            {activeModule.proOnly && !hasAcademyAccess ? (
               <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-center space-y-3">
                 <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto">
                   <Lock className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-slate-900">Materi Edukasi Terkunci</h4>
+                  <h4 className="text-sm font-black text-slate-900">Materi Edukasi Lanjutan Terkunci</h4>
                   <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                    Edukasi RealistisFx kini berbayar <strong className="text-slate-900">Rp 100.000</strong> (sekali bayar seumur hidup). Tidak ada materi gratis. Buka akses untuk menonton video materi &amp; ujian sertifikasi.
+                    Modul Level 1 sampai 5 (SOP Anti-Margin Call &amp; Ujian Sertifikasi) memerlukan <strong className="text-slate-900">Paket Edukasi Realistis (Rp 100.000 sekali bayar seumur hidup)</strong>. Buka akses instan melalui QRIS.
                   </p>
                 </div>
-                <div className="space-y-2 pt-1">
+                <div className="pt-1">
                   <button
                     onClick={() => openPaymentModal('EDUKASI')}
                     className="w-full py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-[#00A651]/20 cursor-pointer transition-all"
                   >
                     <Sparkles className="w-4 h-4" /> Buka Akses Edukasi (Rp 100.000)
-                  </button>
-                  <button
-                    onClick={() => openPaymentModal('1_MONTH')}
-                    className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all"
-                  >
-                    <Crown className="w-3.5 h-3.5" /> Atau Upgrade VIP PRO (Rp 500k)
                   </button>
                 </div>
               </div>
@@ -319,23 +327,26 @@ export default function AcademyPage() {
             {/* Lesson list */}
             <div className="border-t border-slate-100 pt-4 space-y-2.5">
               <span className="text-xs font-semibold text-slate-500 block">Daftar Materi:</span>
-              {activeModule.lessons.map((lesson, idx) => (
-                <div
-                  key={idx}
-                  className={`p-3 rounded-xl border flex items-center gap-2.5 text-xs transition-colors ${
-                    !hasAcademyAccess
-                      ? 'bg-slate-50 border-slate-200 text-slate-500'
-                      : 'bg-slate-50 hover:bg-emerald-50/50 border-slate-200 text-slate-800'
-                  }`}
-                >
-                  {!hasAcademyAccess ? (
-                    <Lock className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                  ) : (
-                    <PlayCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  )}
-                  <span className="flex-1">{lesson}</span>
-                </div>
-              ))}
+              {activeModule.lessons.map((lesson, idx) => {
+                const isLessonLocked = activeModule.proOnly && !hasAcademyAccess;
+                return (
+                  <div
+                    key={idx}
+                    className={`p-3 rounded-xl border flex items-center gap-2.5 text-xs transition-colors ${
+                      isLessonLocked
+                        ? 'bg-slate-50 border-slate-200 text-slate-500'
+                        : 'bg-slate-50 hover:bg-emerald-50/50 border-slate-200 text-slate-800'
+                    }`}
+                  >
+                    {isLessonLocked ? (
+                      <Lock className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                    ) : (
+                      <PlayCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                    )}
+                    <span className="flex-1">{lesson}</span>
+                  </div>
+                );
+              })}
             </div>
 
             {hasAcademyAccess && (

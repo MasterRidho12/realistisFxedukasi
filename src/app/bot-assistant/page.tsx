@@ -50,14 +50,14 @@ export default function BotAssistantPage() {
 
         {!isPro ? (
           <button
-            onClick={openPaymentModal}
+            onClick={() => openPaymentModal('EDUKASI')}
             className="px-3.5 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
           >
-            <Crown className="w-3.5 h-3.5" /> Buka Fitur Bot VIP (Rp500k)
+            <Sparkles className="w-3.5 h-3.5" /> Buka Akses Edukasi (Rp 100k)
           </button>
         ) : (
           <div className="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1.5">
-            <Crown className="w-4 h-4 text-emerald-600" /> BOT WEBHOOK PRO AKTIF
+            <Sparkles className="w-4 h-4 text-emerald-600" /> BOT WEBHOOK EDUKASI PRO AKTIF
           </div>
         )}
       </div>
@@ -69,16 +69,16 @@ export default function BotAssistantPage() {
             <Lock className="w-8 h-8" />
           </div>
           <h2 className="text-lg font-bold text-slate-900">
-            Fitur Bot Notifikasi Otomatis Khusus Member PRO
+            Fitur Bot Notifikasi Otomatis Khusus Member Edukasi Realistis
           </h2>
           <p className="text-xs text-slate-600 leading-relaxed">
             Jangan sampai lupa ada jadwal rilis berita NFP atau CPI saat sedang floating posisi. Bot Telegram kami akan mengingatkan Anda tepat 30 menit sebelumnya langsung di smartphone Anda.
           </p>
           <button
-            onClick={openPaymentModal}
+            onClick={() => openPaymentModal('EDUKASI')}
             className="px-5 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-sm hover:shadow transition-all cursor-pointer"
           >
-            Upgrade ke PRO VIP Rp500k Sekarang
+            Aktivasi Paket Edukasi Rp 100k Sekarang
           </button>
         </div>
       ) : (

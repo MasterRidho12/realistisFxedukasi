@@ -111,62 +111,52 @@ export default function QrisPaymentModal() {
     }
   > = {
     EDUKASI: {
-      name: 'Paket Edukasi Trader Realistis (Lvl 1-5)',
+      name: 'Paket Edukasi Trader Realistis (Modul Lengkap Lvl 1-5)',
       amount: 100000,
       label: 'Rp 100.000',
       badge: 'Sekali Bayar • Akses Selamanya',
       desc: 'Akses penuh selamanya ke seluruh 5 modul Gamified Academy, SOP Money Management 1%, dan Ujian Sertifikasi.',
       features: [
-        '5 Modul Gamified Academy (Pondasi, MM, Margin, Sinyal, Ujian Akhir)',
-        'SOP Baku Money Management 1% & Aturan Ketat Anti-MC',
+        '5 Modul Edukasi Lengkap (Pondasi MM 1%, Key Level S&R, Anti-FOMO, News, Sertifikasi)',
+        'SOP Baku Money Management 1% & Aturan Ketat Anti-Margin Call',
+        'Metode Baku Fixed Stop Loss 30 Pips & Risk Reward 1:2',
+        'Kalkulator Lot Unlimited (Semua Pair Forex & XAUUSD Gold)',
+        'Checklist SOP Anti-FOMO & Jurnal Trading Interaktif',
         'Ujian Sertifikasi Kelulusan Trader Realistis & Digital Badge',
-        'Akses materi selamanya tanpa biaya bulanan',
+        'Akses materi selamanya tanpa biaya bulanan (Lifetime)',
       ],
     },
     '1_MONTH': {
-      name: '1 Bulan VIP Member Area + Edukasi',
-      amount: 500000,
-      label: 'Rp 500.000 / bln',
-      badge: 'Paling Populer ★ VIP Bulanan',
-      desc: 'Sinyal AI XAUUSD real-time, Playbook Berita NFP/CPI, Private Telegram VIP, dan Seluruh Modul Edukasi.',
+      name: 'Paket Edukasi Trader Realistis (Modul Lengkap Lvl 1-5)',
+      amount: 100000,
+      label: 'Rp 100.000',
+      badge: 'Sekali Bayar • Akses Selamanya',
+      desc: 'Akses penuh ke seluruh modul edukasi dan kalkulator.',
       features: [
-        'Termasuk Semua Akses Modul Edukasi Lvl 1-5',
-        'Sinyal Trading AI Real-Time XAUUSD (Buy/Sell, TP1, TP2, Stop Loss Baku)',
-        'Playbook Rilis Berita NFP & CPI Real-Time',
-        'Private Telegram VIP Member & Notifikasi Cepat',
+        '5 Modul Edukasi Lengkap (Lvl 1-5)',
+        'SOP Baku Anti-Margin Call',
+        'Kalkulator Lot Unlimited Seluruh Pair',
       ],
     },
     '3_MONTHS': {
-      name: '3 Bulan VIP Member Area + Edukasi',
-      amount: 1275000,
-      label: 'Rp 1.275.000 / 3 bln',
-      badge: 'Hemat 15%',
-      savings: 'Hemat Rp 225.000',
-      desc: 'Akses VIP 3 Bulan penuh + Sinyal AI + Private Telegram VIP + Konsultasi Analisa + Modul Edukasi.',
-      features: [
-        'Semua Fasilitas VIP selama 3 Bulan Penuh (Hemat Rp 225.000)',
-        'Termasuk Seluruh Modul Edukasi Lvl 1-5',
-        'Sinyal AI XAUUSD Real-Time & Private Telegram VIP',
-        'Konsultasi Evaluasi Portofolio Trading',
-      ],
+      name: 'Paket Edukasi Trader Realistis',
+      amount: 100000,
+      label: 'Rp 100.000',
+      badge: 'Sekali Bayar',
+      desc: 'Akses seluruh modul edukasi.',
+      features: ['5 Modul Edukasi Lengkap'],
     },
     '1_YEAR': {
-      name: '1 Tahun VIP Member Area + Edukasi',
-      amount: 3900000,
-      label: 'Rp 3.900.000 / thn',
-      badge: 'Nilai Terbaik • Hemat 35%',
-      savings: 'Hemat Rp 2.100.000',
-      desc: 'Akses VIP 1 Tahun penuh + Sinyal AI + Private Telegram VIP + Bot Assistant Unlimited + Modul Edukasi.',
-      features: [
-        'Akses VIP Penuh 1 Tahun Tanpa Hambatan (Hemat Rp 2.100.000)',
-        'Bot Assistant AI Unlimited untuk Analisa Pasar',
-        'Termasuk Seluruh Modul Edukasi Lvl 1-5 Selamanya',
-        'Prioritas Konsultasi & Mentoring Khusus Admin',
-      ],
+      name: 'Paket Edukasi Trader Realistis',
+      amount: 100000,
+      label: 'Rp 100.000',
+      badge: 'Sekali Bayar',
+      desc: 'Akses seluruh modul edukasi.',
+      features: ['5 Modul Edukasi Lengkap'],
     },
   };
 
-  const currentPlan = planPricing[planDuration] || planPricing['1_MONTH'];
+  const currentPlan = planPricing['EDUKASI'];
   const adminWhatsAppNumber = siteSettings?.adminWhatsAppNumber || '6287774229255';
 
   const handleCopyNominal = () => {
@@ -867,144 +857,145 @@ export default function QrisPaymentModal() {
             )}
 
             {/* =========================================================================
-                SLIDE 2: PILIH PAKET LANGGANAN (2x2 GRID ON DESKTOP — NO CRAMPED CAROUSEL)
+                SLIDE 2: PILIH PAKET EDUKASI (FOKUS EDUKASI 100K & GRATIS DASAR FOREX)
                ========================================================================= */}
             {step === 2 && (
               <div className="space-y-5 animate-in fade-in duration-150">
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-[#00A651] border border-emerald-200 text-[11px] font-bold">
-                    <Sparkles className="w-3.5 h-3.5" /> LANGKAH 2: PILIH PAKET
+                    <Sparkles className="w-3.5 h-3.5" /> LANGKAH 2: PILIH PAKET EDUKASI
                   </div>
                   <h3 className="text-lg md:text-xl font-black text-slate-900">
-                    Pilih Paket Edukasi atau VIP Sinyal AI Realistis
+                    Pilihan Paket Edukasi RealistisFx
                   </h3>
                   <p className="text-xs text-slate-600">
-                    Akses paket akan otomatis terhubung ke akun trader{' '}
+                    Akses paket akan otomatis aktif ke akun trader{' '}
                     <strong className="text-slate-900 font-mono">{user.name || name}</strong> (ID: {user.id || accountId}).
                   </p>
                 </div>
 
-                {/* 2x2 Grid on Desktop / Vertical Stack on Mobile */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 md:gap-4">
-                  {(
-                    [
-                      {
-                        key: 'EDUKASI' as const,
-                        icon: GraduationCap,
-                        tag: 'Sekali Bayar',
-                        color: 'emerald',
-                      },
-                      {
-                        key: '1_MONTH' as const,
-                        icon: Crown,
-                        tag: 'VIP Bulanan',
-                        color: 'emerald',
-                      },
-                      {
-                        key: '3_MONTHS' as const,
-                        icon: Crown,
-                        tag: 'Hemat 15%',
-                        color: 'emerald',
-                      },
-                      {
-                        key: '1_YEAR' as const,
-                        icon: Crown,
-                        tag: 'Hemat 35%',
-                        color: 'emerald',
-                      },
-                    ] as const
-                  ).map((item) => {
-                    const plan = planPricing[item.key];
-                    const isSelected = planDuration === item.key;
-                    const IconComponent = item.icon;
-
-                    return (
-                      <div
-                        key={item.key}
-                        onClick={() => {
-                          setPlanDuration(item.key);
-                          setSelectedPaymentPlan(item.key);
-                        }}
-                        className={`p-4 sm:p-5 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
-                          isSelected
-                            ? 'bg-emerald-50/70 border-[#00A651] shadow-md ring-2 ring-[#00A651]/20'
-                            : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/60'
-                        }`}
-                      >
-                        <div className="space-y-3">
-                          {/* Card Header */}
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex items-center gap-2.5">
-                              <div
-                                className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-                                  isSelected
-                                    ? 'bg-[#00A651] text-white shadow-xs'
-                                    : 'bg-slate-100 text-slate-600'
-                                }`}
-                              >
-                                <IconComponent className="w-5 h-5" />
-                              </div>
-                              <div>
-                                <h4 className="font-extrabold text-sm text-slate-900 leading-tight">
-                                  {plan.name}
-                                </h4>
-                                <span
-                                  className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider mt-1 ${
-                                    isSelected
-                                      ? 'bg-[#00A651] text-white'
-                                      : 'bg-slate-100 text-slate-600'
-                                  }`}
-                                >
-                                  {plan.badge}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div
-                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
-                                isSelected
-                                  ? 'border-[#00A651] bg-[#00A651] text-white'
-                                  : 'border-slate-300'
-                              }`}
-                            >
-                              {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
-                            </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Card 1: Edukasi Gratis (Dasar-dasar Forex) */}
+                  <div className="p-5 rounded-2xl border-2 border-slate-200 bg-slate-50 flex flex-col justify-between space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-9 h-9 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center shrink-0">
+                            <GraduationCap className="w-5 h-5" />
                           </div>
-
-                          <p className="text-[11px] text-slate-600 leading-relaxed">
-                            {plan.desc}
-                          </p>
-
-                          {/* Features Checklist */}
-                          <div className="space-y-1 text-[11px] text-slate-700 pt-1">
-                            {plan.features.slice(0, 3).map((feat, idx) => (
-                              <div key={idx} className="flex items-start gap-1.5">
-                                <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
-                                <span className="leading-tight">{feat}</span>
-                              </div>
-                            ))}
+                          <div>
+                            <h4 className="font-extrabold text-sm text-slate-900">
+                              Edukasi Dasar Forex (Gratis)
+                            </h4>
+                            <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider mt-1 bg-slate-200 text-slate-700">
+                              Gratis untuk Pemula
+                            </span>
                           </div>
                         </div>
+                        <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-full">
+                          Aktif
+                        </span>
+                      </div>
 
-                        {/* Card Price Footer */}
-                        <div className="pt-3 mt-3 border-t border-slate-100 flex items-baseline justify-between">
-                          <div>
-                            <div className="text-base font-black font-mono text-[#00A651]">
-                              {plan.label}
-                            </div>
-                            {plan.savings && (
-                              <span className="text-[10px] text-amber-700 font-extrabold block">
-                                {plan.savings}
-                              </span>
-                            )}
-                          </div>
-                          <span className={`text-[11px] font-bold ${isSelected ? 'text-[#00A651]' : 'text-slate-400'}`}>
-                            {isSelected ? 'Terpilih ✓' : 'Klik untuk Pilih'}
-                          </span>
+                      <p className="text-[11px] text-slate-600 leading-relaxed">
+                        Materi pengenalan dasar forex untuk trader pemula yang baru memulai trading.
+                      </p>
+
+                      <div className="space-y-1 text-[11px] text-slate-700 pt-1">
+                        <div className="flex items-start gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+                          <span className="leading-tight">Modul Dasar: Pengenalan Pasar Forex</span>
+                        </div>
+                        <div className="flex items-start gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+                          <span className="leading-tight">Memahami Pips, Spread, Lot, dan Leverage</span>
+                        </div>
+                        <div className="flex items-start gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+                          <span className="leading-tight">Dasar Baca Candlestick & Trend Pasar</span>
+                        </div>
+                        <div className="flex items-start gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+                          <span className="leading-tight">Kalkulator Lot Dasar (Maks. 3x/hari)</span>
                         </div>
                       </div>
-                    );
-                  })}
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-200 flex items-baseline justify-between">
+                      <div className="text-base font-black font-mono text-slate-700">
+                        Rp 0 (Gratis)
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-500">
+                        Tersedia Bebas
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card 2: Paket Edukasi Realistis Rp 100.000 (Rekomendasi Utama) */}
+                  <div className="p-5 rounded-2xl border-2 border-[#00A651] bg-emerald-50/70 shadow-md ring-2 ring-[#00A651]/20 flex flex-col justify-between space-y-4 relative">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-9 h-9 rounded-xl bg-[#00A651] text-white flex items-center justify-center shrink-0 shadow-xs">
+                            <Sparkles className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h4 className="font-extrabold text-sm text-slate-900">
+                              Paket Edukasi Lengkap Realistis
+                            </h4>
+                            <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider mt-1 bg-[#00A651] text-white">
+                              Sekali Bayar • Akses Selamanya
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="w-5 h-5 rounded-full border-2 border-[#00A651] bg-[#00A651] text-white flex items-center justify-center shrink-0 mt-0.5">
+                          <Check className="w-3 h-3 stroke-[3]" />
+                        </div>
+                      </div>
+
+                      <p className="text-[11px] text-slate-600 leading-relaxed">
+                        Kurikulum lengkap SOP Anti Margin Call, Money Management 1%, dan seluruh tools trading tanpa batas.
+                      </p>
+
+                      <div className="space-y-1 text-[11px] text-slate-800 pt-1 font-medium">
+                        <div className="flex items-start gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
+                          <span className="leading-tight">Akses Penuh Seluruh Modul Lvl 1 - 5</span>
+                        </div>
+                        <div className="flex items-start gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
+                          <span className="leading-tight">SOP Baku Money Management 1% &amp; Fixed SL 30 Pips</span>
+                        </div>
+                        <div className="flex items-start gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
+                          <span className="leading-tight">Kalkulator Lot Unlimited (Semua Pair + XAUUSD)</span>
+                        </div>
+                        <div className="flex items-start gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
+                          <span className="leading-tight">Checklist SOP Anti-FOMO &amp; Jurnal Interaktif</span>
+                        </div>
+                        <div className="flex items-start gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
+                          <span className="leading-tight">Ujian Kelulusan Trader &amp; Sertifikat Digital</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-emerald-200 flex items-baseline justify-between">
+                      <div>
+                        <div className="text-xl font-black font-mono text-[#00A651]">
+                          Rp 100.000
+                        </div>
+                        <span className="text-[10px] text-emerald-800 font-extrabold block">
+                          Sekali bayar seumur hidup (Tanpa iuran bulanan)
+                        </span>
+                      </div>
+                      <span className="text-[11px] font-bold text-[#00A651] bg-white px-2 py-0.5 rounded-full border border-emerald-300">
+                        Terpilih ✓
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Bottom Navigation Buttons */}
@@ -1022,7 +1013,7 @@ export default function QrisPaymentModal() {
                     onClick={() => setStep(3)}
                     className="flex-1 py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <span>Lanjut ke Scan QRIS ({currentPlan.label})</span>
+                    <span>Lanjut ke Scan QRIS (Rp 100.000)</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

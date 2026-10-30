@@ -103,14 +103,14 @@ export default function WatchlistPage() {
           <div className="flex items-center gap-2.5">
             <Lock className="w-5 h-5 text-amber-600 flex-shrink-0" />
             <p className="text-xs text-slate-700">
-              Anda berada di <span className="font-bold text-slate-900">Free Tier</span> (hanya menampilkan 1 pair acak AUDUSD). Upgrade ke PRO VIP Rp500k untuk membuka analisa lengkap <span className="text-amber-800 font-bold">XAUUSD, EURUSD, dan GBPUSD</span>.
+              Anda berada di <span className="font-bold text-slate-900">Edukasi Dasar</span> (hanya menampilkan 1 pair acak AUDUSD). Buka Paket Edukasi Realistis (Rp 100.000 sekali bayar) untuk membuka analisa lengkap <span className="text-emerald-800 font-bold">XAUUSD, EURUSD, dan GBPUSD</span>.
             </p>
           </div>
           <button
-            onClick={openPaymentModal}
+            onClick={() => openPaymentModal('EDUKASI')}
             className="px-3.5 py-1.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-bold whitespace-nowrap cursor-pointer shadow-sm shadow-[#00A651]/20"
           >
-            Upgrade VIP Rp500k
+            Aktivasi Edukasi Rp 100k
           </button>
         </div>
       )}
@@ -138,10 +138,10 @@ export default function WatchlistPage() {
                     Analisa Zona {item.pair} Terkunci
                   </h3>
                   <p className="text-xs text-slate-600 max-w-xs leading-relaxed">
-                    Khusus member PRO VIP RealistisFx Rp500.000/bln untuk mendapatkan Buy/Sell Zone presisi.
+                    Khusus member Paket Edukasi Realistis Rp 100.000 (sekali bayar seumur hidup) untuk mendapatkan Buy/Sell Zone presisi.
                   </p>
                   <button
-                    onClick={openPaymentModal}
+                    onClick={() => openPaymentModal('EDUKASI')}
                     className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs cursor-pointer shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all"
                   >
                     Buka Akses Pair Ini

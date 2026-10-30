@@ -740,15 +740,15 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             </a>
             <a href="#channel" className="hover:text-[#00A651] transition-colors flex items-center gap-1">
               <Send className="w-3.5 h-3.5 text-sky-600" />
-              <span>Channel VIP</span>
+              <span>Komunitas Edukasi</span>
             </a>
             <a href="#pricing" className="hover:text-[#00A651] transition-colors flex items-center gap-1">
-              <Crown className="w-3.5 h-3.5 text-amber-500" />
-              <span>Paket VIP (Rp500k)</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>Paket Edukasi (Rp100k)</span>
             </a>
             <a href="#free-education" className="hover:text-[#00A651] transition-colors flex items-center gap-1">
               <GraduationCap className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Edukasi (Rp100k)</span>
+              <span>Dasar Forex (Gratis)</span>
             </a>
             <a href="#faq" className="hover:text-[#00A651] transition-colors">
               FAQ
@@ -867,12 +867,12 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors"
               >
-                <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600 border border-amber-200">
-                  <Crown className="w-4 h-4" />
+                <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
+                  <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-900 font-extrabold">Paket VIP (Rp 500.000 / bln)</div>
-                  <div className="text-[10px] text-slate-400 font-normal">Akses penuh sinyal, playbook &amp; private channel</div>
+                  <div className="text-slate-900 font-extrabold">Paket Edukasi Lengkap (Rp 100.000)</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Akses penuh modul Lvl 1-5, SOP Anti-MC &amp; kalkulator</div>
                 </div>
               </a>
 
@@ -1114,10 +1114,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               </div>
               <div>
                 <span className="font-extrabold text-xs sm:text-sm block text-slate-900">
-                  Sinyal Trading Aktif &amp; Level Eksekusi Khusus Member VIP
+                  Sinyal Trading Aktif &amp; Level Eksekusi Khusus Paket Edukasi Realistis
                 </span>
                 <span className="text-[11px] text-slate-600">
-                  Sinyal aktif tidak dipublikasikan gratis di landing page dan hanya dapat dilihat setelah berlangganan VIP (Rp 500.000/bulan). Anda dapat melihat rekap riwayat performa sinyal resmi bulan kemaren di bawah ini.
+                  Sinyal dan skenario trading aktif dapat diakses setelah mengaktifkan Paket Edukasi Realistis (Rp 100.000 sekali bayar seumur hidup). Anda dapat melihat rekap riwayat performa resmi di bawah ini.
                 </span>
               </div>
             </div>
@@ -1125,8 +1125,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               href="#pricing"
               className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs whitespace-nowrap shadow-xs transition-all shrink-0 flex items-center gap-1.5"
             >
-              <Crown className="w-3.5 h-3.5 text-amber-300" />
-              <span>Langganan VIP (Rp500k)</span>
+              <Sparkles className="w-3.5 h-3.5 text-white" />
+              <span>Akses Edukasi (Rp100k)</span>
             </a>
           </div>
 
@@ -1337,8 +1337,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                                 href="#pricing"
                                 className="w-full py-2.5 px-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-[#00A651]/20 transition-all text-center cursor-pointer"
                               >
-                                <Crown className="w-3.5 h-3.5 text-amber-300" />
-                                <span>Berlangganan VIP untuk Buka Sensor (Rp 500.000/bln)</span>
+                                <Sparkles className="w-3.5 h-3.5 text-white" />
+                                <span>Aktivasi Paket Edukasi untuk Buka Akses (Rp 100.000)</span>
                               </a>
                             )}
                           </div>
@@ -1793,42 +1793,106 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               </ul>
 
               <div className="p-2.5 rounded-xl bg-white border border-emerald-200 text-xs font-semibold text-slate-800 text-center">
-                Investasi Edukasi &amp; Sinyal: <strong className="text-[#00A651]">Rp 500.000 / bulan</strong>
+                Investasi Paket Edukasi: <strong className="text-[#00A651]">Rp 100.000 (Sekali Bayar Seumur Hidup)</strong>
               </div>
 
               <a
                 href="#pricing"
                 className="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs shadow-md shadow-[#00A651]/20 transition-all cursor-pointer text-center"
               >
-                Gabung Member VIP RealistisFx Sekarang →
+                Aktivasi Paket Edukasi Realistis Sekarang →
               </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 8. Pricing Section (Tabel VIP Rp 500.000 vs Akses Gratis) */}
+      {/* 8. Pricing Section (Edukasi Dasar Gratis vs Paket Edukasi Rp 100k) */}
       <section id="pricing" className="py-16 sm:py-20 bg-slate-50 border-b border-slate-200 scroll-mt-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="px-3 py-1 rounded-full bg-emerald-100 text-[#00A651] text-xs font-black uppercase tracking-wider">
-              PAKET TRANSPARAN &amp; BERBAYAR
+              PILIHAN AKSES BELAJAR TRADING
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              Pilih Akses: Paket Edukasi (Rp 100k) atau VIP Member Area (Rp 500k)
+              Edukasi Dasar Gratis atau Paket Edukasi Lengkap (Rp 100.000)
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
-              Tidak ada modul edukasi gratis. Pilih Paket Edukasi (Rp 100.000 sekali bayar) untuk kurikulum terstruktur seumur hidup, atau VIP Member Area untuk mendapatkan Sinyal AI real-time &amp; Private Channel Telegram.
+              Pelajari dasar-dasar forex secara gratis, atau buka seluruh kurikulum terstruktur Level 1 sampai 5 (SOP Anti-MC, Money Management 1%, dan Kalkulator Unlimited) hanya Rp 100.000 sekali bayar seumur hidup tanpa biaya langganan bulanan.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto items-stretch">
-            {/* Edukasi Paid Tier Card (Rp 100.000 Sekali Bayar) */}
+            {/* Free Tier Card (Dasar-dasar Forex) */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
               <div className="space-y-4">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
-                  <GraduationCap className="w-3.5 h-3.5 text-[#00A651]" />
-                  PAKET EDUKASI REALISTIS (BERBAYAR)
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold">
+                  <GraduationCap className="w-3.5 h-3.5 text-slate-600" />
+                  EDUKASI DASAR FOREX (GRATIS)
+                </div>
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl sm:text-4xl font-black text-slate-900">Rp 0</span>
+                    <span className="text-xs text-slate-500 font-semibold">/ Gratis Selamanya</span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Materi pengenalan dasar forex untuk pemula yang ingin memahami cara kerja pasar dari nol.
+                  </p>
+                </div>
+
+                <div className="space-y-3 pt-4 border-t border-slate-100 text-xs text-slate-700">
+                  <div className="flex items-center gap-2.5">
+                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>Modul Dasar: Pengenalan Pasar Forex &amp; Mata Uang</strong></span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span>Memahami Istilah Wajib: Pips, Spread, Lot &amp; Leverage</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span>Cara Membaca Candlestick, Trend Bullish &amp; Bearish</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span>Mengenal Software Trading (MetaTrader 5 &amp; TradingView)</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span>Kalkulator Lot Forex Dasar (Maks. 3x per hari)</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-slate-400">
+                    <X className="w-4 h-4 text-slate-300 shrink-0" />
+                    <span>Tanpa Modul Lanjutan Level 1-5 (SOP Anti-Margin Call)</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-slate-400">
+                    <X className="w-4 h-4 text-slate-300 shrink-0" />
+                    <span>Tanpa Ujian Kelulusan &amp; Sertifikasi Digital</span>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => openAuth('register')}
+                className="w-full py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs transition-all cursor-pointer border border-slate-300 flex items-center justify-center gap-1.5"
+              >
+                <span>Mulai Belajar Dasar Forex (Gratis)</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Edukasi Paid Tier Card (Rp 100.000 Sekali Bayar) - Recommended */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#00A651] shadow-xl relative flex flex-col justify-between space-y-6">
+              {/* Most Popular Badge */}
+              <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-[#00A651] text-white text-[10px] font-black tracking-widest uppercase shadow-md shadow-[#00A651]/20">
+                ★ PILIHAN TERBAIK • SEKALI BAYAR
+              </div>
+
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-black">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  PAKET EDUKASI LENGKAP &amp; SOP ANTI-MC
                 </div>
                 <div>
                   <div className="flex items-baseline gap-2">
@@ -1836,46 +1900,46 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                     <span className="text-xs text-slate-500 font-semibold">/ Sekali Bayar (Permanen)</span>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">
-                    Kurikulum lengkap trader mandiri bebas MC, fondasi money management, dan SOP disiplin eksekusi Level 1 sampai 5.
+                    Kurikulum komprehensif trader mandiri bebas MC, fondasi money management 1%, dan SOP disiplin eksekusi Level 1 sampai 5.
                   </p>
                 </div>
 
-                <div className="space-y-3 pt-4 border-t border-slate-100 text-xs text-slate-700">
+                <div className="space-y-3 pt-4 border-t border-slate-100 text-xs text-slate-800 font-medium">
                   <div className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Akses Penuh Semua Modul Edukasi (Level 1-5)</strong></span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span>Modul Video: Fondasi Lot, Leverage &amp; Margin</span>
+                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>Akses Penuh Seluruh Modul Edukasi (Level 1 - 5)</strong></span>
                   </div>
                   <div className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span>Panduan Manajemen Risiko &amp; Aturan 1-2% Modal</span>
+                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>SOP Baku Money Management 1% &amp; Aturan Ketat Anti-MC</strong></span>
                   </div>
                   <div className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span>Struktur Market H1/H4 &amp; Supply-Demand Zone Valid</span>
+                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>Metode Baku Fixed Stop Loss 30 Pips</strong> (Risk:Reward Min. 1:2)</span>
                   </div>
                   <div className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span>Psikologi Anti-FOMO &amp; Melawan Revenge Trading</span>
+                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>Struktur Market H1/H4 &amp; Supply-Demand Zone Valid</strong></span>
                   </div>
                   <div className="flex items-center gap-2.5">
-                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span>Ujian Akhir SOP &amp; Sertifikat Kelulusan RealistisFx</span>
+                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>Psikologi Trading Anti-FOMO &amp; Melawan Revenge Trading</strong></span>
                   </div>
-                  <div className="flex items-center gap-2.5 text-slate-400">
-                    <X className="w-4 h-4 text-slate-300 shrink-0" />
-                    <span>Tanpa Sinyal Trading AI Real-Time (Khusus VIP)</span>
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>Kalkulator Lot Unlimited</strong> (Semua Pair Forex &amp; Emas XAUUSD)</span>
                   </div>
-                  <div className="flex items-center gap-2.5 text-slate-400">
-                    <X className="w-4 h-4 text-slate-300 shrink-0" />
-                    <span>Tanpa Playbook Rilis Berita NFP &amp; CPI (Khusus VIP)</span>
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>Checklist SOP Anti-FOMO &amp; Jurnal Trading Interaktif</strong></span>
                   </div>
-                  <div className="flex items-center gap-2.5 text-slate-400">
-                    <X className="w-4 h-4 text-slate-300 shrink-0" />
-                    <span>Tanpa Akses Private Channel VIP Telegram (Khusus VIP)</span>
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>Ujian Akhir SOP &amp; Sertifikat Kelulusan RealistisFx</strong></span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>Konsultasi &amp; Tanya Jawab Materi via WhatsApp Admin</strong></span>
                   </div>
                 </div>
               </div>
@@ -1883,90 +1947,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <button
                 type="button"
                 onClick={() => handleBuyPlan('EDUKASI')}
-                className="w-full py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs transition-all cursor-pointer shadow-md shadow-[#00A651]/20 flex items-center justify-center gap-1.5"
-              >
-                <Sparkles className="w-4 h-4" /> Beli Paket Edukasi (Rp 100.000)
-              </button>
-            </div>
-
-            {/* VIP Tier Card (Rp 500.000 / bln) - Recommended */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#00A651] shadow-xl relative flex flex-col justify-between space-y-6">
-              {/* Most Popular Badge */}
-              <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-[#00A651] text-white text-[10px] font-black tracking-widest uppercase shadow-md shadow-[#00A651]/20">
-                ★ REKOMENDASI TERBAIK
-              </div>
-
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-black">
-                  <Crown className="w-3.5 h-3.5" />
-                  VIP MEMBER AREA &amp; PRIVATE CHANNEL
-                </div>
-                <div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-black text-slate-900">Rp 500.000</span>
-                    <span className="text-xs text-slate-500 font-semibold">/ Bulan</span>
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Akses lengkap sinyal presisi AI, playbook berita NFP/CPI, dan Private Channel Telegram VIP 1 arah.
-                  </p>
-                </div>
-
-                <div className="space-y-3 pt-4 border-t border-slate-100 text-xs text-slate-800 font-medium">
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Sinyal Trading AI Real-Time XAUUSD</strong> (Entry, SL, TP1, TP2)</span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Skenario Playbook Rilis Berita Ekonomi</strong> (NFP, CPI, FOMC)</span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Akses Private Channel Telegram VIP</strong> (Alert Real-Time ke HP)</span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Sistem 1 Arah (Bebas Drama)</strong> — Tanpa Grup Chat &amp; Anti-Debat</span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Watchlist Harian &amp; S&amp;R Zone Valid</strong> Timeframe H4 &amp; H1</span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Kalkulator Margin Resistance</strong> (Proteksi Anti Margin Call)</span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Smart Journaling &amp; AI Emotion Audit</strong></span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Customer Support Resmi 1-on-1 via WhatsApp</strong> (Bukan Grup)</span>
-                  </div>
-                </div>
-
-                {/* Bundle Options */}
-                <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-900 space-y-1">
-                  <span className="font-extrabold text-[11px] block uppercase">PILIHAN HEMAT MULTI-BULAN:</span>
-                  <div className="flex justify-between text-[11px]">
-                    <span>• 3 Bulan VIP: <strong>Rp 1.275.000</strong></span>
-                    <span className="text-[#00A651] font-bold">(Hemat 15%)</span>
-                  </div>
-                  <div className="flex justify-between text-[11px]">
-                    <span>• 1 Tahun VIP: <strong>Rp 3.900.000</strong></span>
-                    <span className="text-[#00A651] font-bold">(Hemat 35%)</span>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => handleBuyPlan('1_MONTH')}
                 className="w-full py-4 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-lg shadow-[#00A651]/25 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <Crown className="w-4 h-4 text-amber-300" />
-                <span>Langganan VIP Member (Rp 500.000 / bln) via QRIS →</span>
+                <Sparkles className="w-4 h-4" />
+                <span>Aktivasi Paket Edukasi (Rp 100.000) via QRIS →</span>
               </button>
             </div>
           </div>
@@ -2125,8 +2109,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 a: 'Sama sekali TIDAK ADA jaminan profit pasti atau penggandaan modal. Nama kami "RealistisFx" karena kami menjunjung tinggi kejujuran dan edukasi realistis: pasar finansial selalu memiliki risiko fluktuasi harga. Layanan kami adalah alat bantu analisis probabilitas statistik, edukasi money management ketat (risk 1-2% per trade), dan sinyal dengan Stop Loss terukur demi melindungi modal Anda dari kehancuran Margin Call.',
               },
               {
-                q: 'Bagaimana cara pembayaran langganan VIP Rp 500.000?',
-                a: 'Pembayaran sangat mudah dan instan menggunakan QRIS (BCA, Mandiri, BRI, BNI, GoPay, OVO, Dana) melalui halaman pendaftaran. Akun VIP Anda akan aktif dalam hitungan menit.',
+                q: 'Bagaimana cara pembayaran Paket Edukasi Rp 100.000?',
+                a: 'Pembayaran sangat mudah dan instan menggunakan QRIS (BCA, Mandiri, BRI, BNI, GoPay, OVO, Dana) melalui platform. Akses modul dan seluruh tools edukasi Anda akan langsung aktif permanen seumur hidup tanpa iuran bulanan.',
               },
             ].map((faq, idx) => (
               <div
@@ -2219,7 +2203,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-400 font-semibold">
               <a href="#track-record" className="hover:text-white transition-colors">Riwayat Sinyal Berita</a>
               <a href="#news-playbook" className="hover:text-white transition-colors">Playbook Berita</a>
-              <a href="#pricing" className="hover:text-white transition-colors">Paket VIP Rp 500k</a>
+              <a href="#pricing" className="hover:text-white transition-colors">Paket Edukasi Rp 100k</a>
               <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
               <a
                 href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
@@ -2299,9 +2283,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   <div className="text-[11px] text-slate-600 leading-relaxed">
                     Untuk melanjutkan pembayaran{' '}
                     <strong className="text-[#00A651]">
-                      {pendingCheckoutPlan === 'EDUKASI'
-                        ? 'Paket Edukasi Realistis (Rp 100.000)'
-                        : 'Langganan VIP Member Area (Rp 500.000)'}
+                      Paket Edukasi Realistis (Rp 100.000)
                     </strong>
                     , silakan masuk ke akun Anda atau daftar baru. Setelah berhasil masuk, Anda akan langsung diarahkan ke pembayaran QRIS.
                   </div>

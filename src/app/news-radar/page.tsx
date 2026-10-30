@@ -1286,11 +1286,11 @@ export default function NewsRadarPage() {
                               </div>
 
                               <button
-                                onClick={openPaymentModal}
+                                onClick={() => openPaymentModal('EDUKASI')}
                                 className="px-6 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
                               >
-                                <Crown className="w-4 h-4" />
-                                <span>Buka Kunci Prediksi &amp; Sinyal VIP PRO (Rp500.000 / Bulan)</span>
+                                <Sparkles className="w-4 h-4" />
+                                <span>Buka Playbook Berita (Paket Edukasi Rp 100.000)</span>
                               </button>
                             </div>
                           </div>

@@ -86,22 +86,22 @@ export default function AdminDashboardPage() {
   // Form State for VIP & Free Menu Configuration
   const [menuForm, setMenuForm] = useState({
     freeDailyCalculatorLimit: siteSettings.freeDailyCalculatorLimit ?? 3,
-    vipMonthlyPrice: siteSettings.vipMonthlyPrice ?? 500000,
+    vipMonthlyPrice: siteSettings.vipMonthlyPrice ?? 100000,
     academyPrice: siteSettings.academyPrice ?? 100000,
-    botAssistantVipOnly: siteSettings.botAssistantVipOnly ?? true,
-    newsScenarioVipOnly: siteSettings.newsScenarioVipOnly ?? true,
-    marginResistanceVipOnly: siteSettings.marginResistanceVipOnly ?? true,
-    compoundingVipOnly: siteSettings.compoundingVipOnly ?? true,
+    botAssistantVipOnly: siteSettings.botAssistantVipOnly ?? false,
+    newsScenarioVipOnly: siteSettings.newsScenarioVipOnly ?? false,
+    marginResistanceVipOnly: siteSettings.marginResistanceVipOnly ?? false,
+    compoundingVipOnly: siteSettings.compoundingVipOnly ?? false,
     qrisMerchantName: siteSettings.qrisMerchantName ?? 'REALISTISFX EDUKASI SAAS',
     qrisNmid: siteSettings.qrisNmid ?? 'ID102439281729',
   });
 
   // Form State for Landing Page Configuration
   const [landingForm, setLandingForm] = useState({
-    landingAnnouncement: siteSettings.landingAnnouncement ?? '🔥 Pendaftaran VIP PRO Edukasi RealistisFx Dibuka — Dapatkan Akses Sinyal AI & SOP Anti Margin Call',
+    landingAnnouncement: siteSettings.landingAnnouncement ?? '🔥 Paket Edukasi RealistisFx (Rp 100.000 Sekali Bayar) — Akses Modul Lengkap & SOP Anti Margin Call',
     isAnnouncementActive: siteSettings.isAnnouncementActive ?? true,
     adminWhatsAppNumber: siteSettings.adminWhatsAppNumber ?? '6287774229255',
-    copyTradeWaMessage: siteSettings.copyTradeWaMessage ?? 'Halo Admin RealistisFx, saya tertarik bergabung Copy-Trade & VIP Member Area.',
+    copyTradeWaMessage: siteSettings.copyTradeWaMessage ?? 'Halo Admin RealistisFx, saya tertarik aktivasi Paket Edukasi Realistis (Rp 100.000 sekali bayar).',
     vipRegistrationOpen: siteSettings.vipRegistrationOpen ?? true,
   });
 
@@ -109,12 +109,12 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     setMenuForm({
       freeDailyCalculatorLimit: siteSettings.freeDailyCalculatorLimit ?? 3,
-      vipMonthlyPrice: siteSettings.vipMonthlyPrice ?? 500000,
+      vipMonthlyPrice: siteSettings.vipMonthlyPrice ?? 100000,
       academyPrice: siteSettings.academyPrice ?? 100000,
-      botAssistantVipOnly: siteSettings.botAssistantVipOnly ?? true,
-      newsScenarioVipOnly: siteSettings.newsScenarioVipOnly ?? true,
-      marginResistanceVipOnly: siteSettings.marginResistanceVipOnly ?? true,
-      compoundingVipOnly: siteSettings.compoundingVipOnly ?? true,
+      botAssistantVipOnly: siteSettings.botAssistantVipOnly ?? false,
+      newsScenarioVipOnly: siteSettings.newsScenarioVipOnly ?? false,
+      marginResistanceVipOnly: siteSettings.marginResistanceVipOnly ?? false,
+      compoundingVipOnly: siteSettings.compoundingVipOnly ?? false,
       qrisMerchantName: siteSettings.qrisMerchantName ?? 'REALISTISFX EDUKASI SAAS',
       qrisNmid: siteSettings.qrisNmid ?? 'ID102439281729',
     });
@@ -206,11 +206,11 @@ export default function AdminDashboardPage() {
   const approvedRequests = subscriptionRequests.filter((r) => r.status === 'APPROVED');
   const totalProMembers = allUsers.filter((u) => u.tier === 'PRO').length;
   const totalFreeMembers = allUsers.filter((u) => u.tier === 'FREE').length;
-  const totalRevenue = approvedRequests.length * (siteSettings.vipMonthlyPrice || 500000);
+  const totalRevenue = approvedRequests.reduce((acc, r) => acc + (r.amount || 100000), 0);
 
   const handleApprove = (requestId: string, userName: string) => {
     approveSubscription(requestId);
-    showNotification(`✅ Sukses! Akun ${userName} berhasil diaktifkan menjadi VIP PRO.`);
+    showNotification(`✅ Sukses! Akun ${userName} berhasil diaktifkan menjadi Edukasi Lengkap (Lifetime).`);
   };
 
   const handleReject = (requestId: string, userName: string) => {
