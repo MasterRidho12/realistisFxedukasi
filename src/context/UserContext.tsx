@@ -21,6 +21,8 @@ interface SubmitPaymentData {
   proofScreenshot?: string;
 }
 
+export type PaymentPlanKey = 'EDUKASI' | '1_MONTH' | '3_MONTHS' | '1_YEAR';
+
 interface UserContextType {
   user: UserState;
   allUsers: UserState[];
@@ -30,13 +32,24 @@ interface UserContextType {
   toggleStrictMode: () => void;
   setChecklistPassed: (passed: boolean) => void;
   login: (email: string, password?: string) => boolean;
+  loginWithGoogle: (googleData: {
+    name?: string;
+    email?: string;
+    avatar?: string;
+    credential?: string;
+  }) => Promise<{ success: boolean; error?: string }>;
   register: (data: RegisterData & { password?: string }) => void;
   logout: () => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (open: boolean) => void;
   isPaymentModalOpen: boolean;
   setIsPaymentModalOpen: (open: boolean) => void;
-  openPaymentModal: () => void;
+  openPaymentModal: (plan?: PaymentPlanKey | unknown) => void;
+  selectedPaymentPlan: PaymentPlanKey;
+  setSelectedPaymentPlan: (plan: PaymentPlanKey) => void;
+  pendingCheckoutPlan: PaymentPlanKey | null;
+  setPendingCheckoutPlan: (plan: PaymentPlanKey | null) => void;
+  grantAcademyAccess: (userId: string) => void;
   marketPrice: MarketPrice;
   priceTickDirection: 'up' | 'down' | 'neutral';
 
@@ -63,6 +76,7 @@ interface UserContextType {
 export interface AdminSiteSettings {
   freeDailyCalculatorLimit: number;
   vipMonthlyPrice: number;
+  academyPrice: number;
   landingAnnouncement: string;
   isAnnouncementActive: boolean;
   adminWhatsAppNumber: string;
@@ -79,6 +93,7 @@ export interface AdminSiteSettings {
 const defaultSiteSettings: AdminSiteSettings = {
   freeDailyCalculatorLimit: 3,
   vipMonthlyPrice: 500000,
+  academyPrice: 100000,
   landingAnnouncement: '🔥 Pendaftaran VIP PRO Edukasi RealistisFx Dibuka — Dapatkan Akses Sinyal AI & SOP Anti Margin Call',
   isAnnouncementActive: true,
   adminWhatsAppNumber: '6287774229255',
@@ -92,29 +107,52 @@ const defaultSiteSettings: AdminSiteSettings = {
   qrisNmid: 'ID102439281729',
 };
 
-const defaultUser: UserState = {
-  id: 'usr-trader-01',
-  name: 'Budi Santoso (Trader)',
-  email: 'trader@realistisfx.com',
-  password: 'trader123',
-  whatsapp: '081234567890',
+const defaultGuestUser: UserState = {
+  id: '',
+  name: '',
+  email: '',
+  password: '',
+  whatsapp: '',
   accountType: 'STANDARD',
   tier: 'FREE', // Tamu / Pengunjung default FREE
   role: 'USER',
   isAuthenticated: false,
   telegramLinked: false,
   dailyCalculatorCount: 0,
-  disciplineScore: 88,
-  winRate: 78.4,
-  totalTrades: 24,
+  disciplineScore: 0,
+  winRate: 0,
+  totalTrades: 0,
   strictModeEnabled: true,
   isChecklistPassed: false,
+  hasAcademyAccess: false,
   subscriptionStatus: 'NONE',
   proExpiryDate: '',
 };
 
+const defaultTraderUser: UserState = {
+  id: 'usr-trader-01',
+  name: 'Budi Santoso (Trader)',
+  email: 'trader@realistisfx.com',
+  password: 'trader123',
+  whatsapp: '081234567890',
+  accountType: 'STANDARD',
+  tier: 'PRO',
+  role: 'USER',
+  isAuthenticated: false,
+  telegramLinked: true,
+  dailyCalculatorCount: 0,
+  disciplineScore: 88,
+  winRate: 78.4,
+  totalTrades: 24,
+  strictModeEnabled: true,
+  isChecklistPassed: true,
+  hasAcademyAccess: true,
+  subscriptionStatus: 'ACTIVE',
+  proExpiryDate: '16 Nov 2026',
+};
+
 const initialUsers: UserState[] = [
-  defaultUser,
+  defaultTraderUser,
   {
     id: 'usr-trader-02',
     name: 'Siti Rahmawati',
@@ -132,6 +170,7 @@ const initialUsers: UserState[] = [
     totalTrades: 0,
     strictModeEnabled: true,
     isChecklistPassed: true,
+    hasAcademyAccess: true,
     subscriptionStatus: 'ACTIVE',
     proExpiryDate: '15 Nov 2026',
   },
@@ -152,6 +191,7 @@ const initialUsers: UserState[] = [
     totalTrades: 0,
     strictModeEnabled: false,
     isChecklistPassed: true,
+    hasAcademyAccess: true,
     subscriptionStatus: 'ACTIVE',
   },
 ];
@@ -203,11 +243,13 @@ const defaultMarket: MarketPrice = {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserState>(defaultUser);
+  const [user, setUser] = useState<UserState>(defaultGuestUser);
   const [allUsers, setAllUsers] = useState<UserState[]>(initialUsers);
   const [subscriptionRequests, setSubscriptionRequests] = useState<SubscriptionRequest[]>(initialRequests);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedPaymentPlan, setSelectedPaymentPlan] = useState<PaymentPlanKey>('1_MONTH');
+  const [pendingCheckoutPlan, setPendingCheckoutPlan] = useState<PaymentPlanKey | null>(null);
   const [marketPrice, setMarketPrice] = useState<MarketPrice>(defaultMarket);
   const [priceTickDirection, setPriceTickDirection] = useState<'up' | 'down' | 'neutral'>('neutral');
   const prevPriceRef = useRef<number>(4176.50);
@@ -227,9 +269,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     const savedUser = localStorage.getItem('realistisfx_user');
     if (savedUser) {
       try {
-        setUser(JSON.parse(savedUser));
+        const parsed = JSON.parse(savedUser);
+        if (parsed && parsed.isAuthenticated) {
+          setUser(parsed);
+        } else {
+          setUser(defaultGuestUser);
+        }
       } catch {
-        // ignore
+        setUser(defaultGuestUser);
       }
     }
 
@@ -402,8 +449,30 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const openPaymentModal = () => {
+  const openPaymentModal = (plan?: PaymentPlanKey | unknown) => {
+    let chosenPlan: PaymentPlanKey = selectedPaymentPlan || '1_MONTH';
+    if (typeof plan === 'string') {
+      chosenPlan = plan as PaymentPlanKey;
+      setSelectedPaymentPlan(chosenPlan);
+    }
+    if (!user.isAuthenticated) {
+      setPendingCheckoutPlan(chosenPlan);
+    }
     setIsPaymentModalOpen(true);
+  };
+
+  const grantAcademyAccess = (userId: string) => {
+    const updatedAllUsers = allUsers.map((u) => {
+      if (u.id === userId) {
+        return { ...u, hasAcademyAccess: true };
+      }
+      return u;
+    });
+    setAllUsers(updatedAllUsers);
+    localStorage.setItem('realistisfx_all_users', JSON.stringify(updatedAllUsers));
+    if (user.id === userId) {
+      saveUser({ ...user, hasAcademyAccess: true });
+    }
   };
 
   const login = (email: string, password?: string): boolean => {
@@ -482,6 +551,76 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     return false;
   };
 
+  const loginWithGoogle = async (googleData: {
+    name?: string;
+    email?: string;
+    avatar?: string;
+    credential?: string;
+  }): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(googleData),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success || !data.user) {
+        return { success: false, error: data.error || 'Gagal login dengan Google.' };
+      }
+
+      const googleUser: UserState = {
+        ...data.user,
+        isAuthenticated: true,
+      };
+
+      saveUser(googleUser);
+
+      // Also sync into allUsers list
+      setAllUsers((prev) => {
+        const idx = prev.findIndex((u) => u.email.toLowerCase() === googleUser.email.toLowerCase());
+        const updated = [...prev];
+        if (idx >= 0) {
+          updated[idx] = { ...updated[idx], ...googleUser };
+        } else {
+          updated.push(googleUser);
+        }
+        try {
+          localStorage.setItem('realistisfx_all_users', JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
+
+      return { success: true };
+    } catch (err) {
+      console.error('[UserContext] loginWithGoogle error:', err);
+      // Fallback local if serverless / network is unavailable
+      if (googleData.email) {
+        const fallbackUser: UserState = {
+          id: `usr-g-${Date.now().toString().slice(-6)}`,
+          name: googleData.name || 'Trader Google',
+          email: googleData.email.trim().toLowerCase(),
+          avatar: googleData.avatar,
+          whatsapp: '',
+          accountType: 'STANDARD',
+          tier: 'FREE',
+          role: googleData.email.trim().toLowerCase() === 'admin@realistisfx.com' ? 'ADMIN' : 'USER',
+          isAuthenticated: true,
+          telegramLinked: false,
+          dailyCalculatorCount: 0,
+          disciplineScore: 0,
+          winRate: 0,
+          totalTrades: 0,
+          strictModeEnabled: true,
+          isChecklistPassed: false,
+          subscriptionStatus: 'NONE',
+        };
+        saveUser(fallbackUser);
+        return { success: true };
+      }
+      return { success: false, error: 'Koneksi ke server gagal. Coba lagi.' };
+    }
+  };
+
   const register = (data: RegisterData & { password?: string }) => {
     // STRICT SECURITY: Public registration is 100% locked to role 'USER' (Trader).
     // An administrator account can NEVER be created via public user registration.
@@ -529,16 +668,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
-    // Completely reset session to clean unauthenticated trader state
-    const cleanGuest: UserState = {
-      ...defaultUser,
-      isAuthenticated: false,
-      disciplineScore: 0,
-      winRate: 0,
-      totalTrades: 0,
-      dailyCalculatorCount: 0,
-    };
-    setUser(cleanGuest);
+    // Completely reset session to clean unauthenticated guest state
+    setUser(defaultGuestUser);
     setJournals([]);
     try {
       localStorage.removeItem('realistisfx_user');
@@ -644,14 +775,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       year: 'numeric',
     });
 
+    const isEdukasiOnly = req.amount === 100000 || req.planName.toLowerCase().includes('edukasi');
+
     // Update the target user in allUsers
     const updatedAllUsers = allUsers.map((u) => {
       if (u.id === req.userId || u.email === req.userEmail) {
         return {
           ...u,
-          tier: 'PRO' as UserTier,
+          tier: isEdukasiOnly ? u.tier : ('PRO' as UserTier),
+          hasAcademyAccess: true,
           subscriptionStatus: 'ACTIVE' as const,
-          proExpiryDate: expiryStr,
+          proExpiryDate: isEdukasiOnly ? (u.proExpiryDate || 'Lifetime Edukasi') : expiryStr,
         };
       }
       return u;
@@ -670,9 +804,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     if (user.id === req.userId || user.email === req.userEmail) {
       saveUser({
         ...user,
-        tier: 'PRO',
+        tier: isEdukasiOnly ? user.tier : 'PRO',
+        hasAcademyAccess: true,
         subscriptionStatus: 'ACTIVE',
-        proExpiryDate: expiryStr,
+        proExpiryDate: isEdukasiOnly ? (user.proExpiryDate || 'Lifetime Edukasi') : expiryStr,
       });
     }
   };
@@ -804,6 +939,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         toggleStrictMode,
         setChecklistPassed,
         login,
+        loginWithGoogle,
         register,
         logout,
         isSidebarOpen,
@@ -811,6 +947,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         isPaymentModalOpen,
         setIsPaymentModalOpen,
         openPaymentModal,
+        selectedPaymentPlan,
+        setSelectedPaymentPlan,
+        pendingCheckoutPlan,
+        setPendingCheckoutPlan,
+        grantAcademyAccess,
         marketPrice,
         priceTickDirection,
         journals,

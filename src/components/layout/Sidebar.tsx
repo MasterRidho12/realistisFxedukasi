@@ -85,7 +85,8 @@ const navigationItems = [
     name: 'Gamified Academy',
     href: '/academy',
     icon: GraduationCap,
-    badge: 'Lvl 1-5',
+    badge: 'Rp 100k',
+    badgeColor: 'amber',
   },
   {
     name: 'Bot Assistant (Telegram)',
@@ -299,13 +300,21 @@ export default function Sidebar() {
         {/* User Footer Profile */}
         <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="relative w-8 h-8 rounded-full bg-[#00A651] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs">
-              {user.name ? user.name.slice(0, 2).toUpperCase() : 'TR'}
+            <div className="relative w-8 h-8 rounded-full bg-[#00A651] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs overflow-hidden">
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name || 'User Avatar'}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span>{user.name ? user.name.slice(0, 2).toUpperCase() : 'TR'}</span>
+              )}
               <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-white" />
             </div>
             <div className="min-w-0">
               <p className="text-xs font-bold text-slate-900 truncate">{user.name}</p>
-              <p className="text-[10px] text-slate-500 truncate">{user.id}</p>
+              <p className="text-[10px] text-slate-500 truncate">{user.id || user.email}</p>
             </div>
           </div>
         </div>

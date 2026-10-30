@@ -7,6 +7,7 @@ export interface UserState {
   password?: string;
   whatsapp: string;
   accountType: 'STANDARD' | 'CENT';
+  avatar?: string;
   tier: UserTier;
   role: 'USER' | 'ADMIN';
   isAuthenticated: boolean;
@@ -18,6 +19,7 @@ export interface UserState {
   totalTrades: number;
   strictModeEnabled: boolean;
   isChecklistPassed: boolean;
+  hasAcademyAccess?: boolean;
   subscriptionStatus?: 'NONE' | 'PENDING' | 'ACTIVE';
   proExpiryDate?: string;
 }

@@ -87,6 +87,7 @@ export default function AdminDashboardPage() {
   const [menuForm, setMenuForm] = useState({
     freeDailyCalculatorLimit: siteSettings.freeDailyCalculatorLimit ?? 3,
     vipMonthlyPrice: siteSettings.vipMonthlyPrice ?? 500000,
+    academyPrice: siteSettings.academyPrice ?? 100000,
     botAssistantVipOnly: siteSettings.botAssistantVipOnly ?? true,
     newsScenarioVipOnly: siteSettings.newsScenarioVipOnly ?? true,
     marginResistanceVipOnly: siteSettings.marginResistanceVipOnly ?? true,
@@ -109,6 +110,7 @@ export default function AdminDashboardPage() {
     setMenuForm({
       freeDailyCalculatorLimit: siteSettings.freeDailyCalculatorLimit ?? 3,
       vipMonthlyPrice: siteSettings.vipMonthlyPrice ?? 500000,
+      academyPrice: siteSettings.academyPrice ?? 100000,
       botAssistantVipOnly: siteSettings.botAssistantVipOnly ?? true,
       newsScenarioVipOnly: siteSettings.newsScenarioVipOnly ?? true,
       marginResistanceVipOnly: siteSettings.marginResistanceVipOnly ?? true,
@@ -135,6 +137,7 @@ export default function AdminDashboardPage() {
     updateSiteSettings({
       freeDailyCalculatorLimit: Number(menuForm.freeDailyCalculatorLimit),
       vipMonthlyPrice: Number(menuForm.vipMonthlyPrice),
+      academyPrice: Number(menuForm.academyPrice),
       botAssistantVipOnly: menuForm.botAssistantVipOnly,
       newsScenarioVipOnly: menuForm.newsScenarioVipOnly,
       marginResistanceVipOnly: menuForm.marginResistanceVipOnly,
@@ -677,11 +680,11 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* 1. Limit & Pricing */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Daily Limit */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
                 <label className="block text-xs font-bold text-slate-800">
-                  Kuota Kalkulator Harian untuk Akun FREE (Kali / Hari)
+                  Kuota Kalkulator Harian Akun FREE
                 </label>
                 <input
                   type="number"
@@ -693,14 +696,14 @@ export default function AdminDashboardPage() {
                   className="w-full p-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 font-mono font-bold text-sm focus:border-[#00A651] focus:outline-none"
                 />
                 <p className="text-[11px] text-slate-500">
-                  Saat ini: Trader gratis dibatasi maksimal <strong className="text-slate-800">{menuForm.freeDailyCalculatorLimit}x kalkulasi</strong> per hari sebelum diarahkan upgrade VIP.
+                  Maksimal <strong className="text-slate-800">{menuForm.freeDailyCalculatorLimit}x</strong> kalkulasi/hari.
                 </p>
               </div>
 
               {/* VIP Price */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
                 <label className="block text-xs font-bold text-slate-800">
-                  Harga Langganan Bulanan VIP PRO (IDR)
+                  Harga Langganan Bulanan VIP (IDR)
                 </label>
                 <input
                   type="number"
@@ -711,7 +714,25 @@ export default function AdminDashboardPage() {
                   className="w-full p-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 font-mono font-bold text-sm focus:border-[#00A651] focus:outline-none"
                 />
                 <p className="text-[11px] text-slate-500">
-                  Tampil sebagai: <strong className="text-emerald-700 font-mono">Rp {Number(menuForm.vipMonthlyPrice).toLocaleString('id-ID')} / Bulan</strong> di seluruh landing page dan formulir QRIS.
+                  Tampil: <strong className="text-emerald-700 font-mono">Rp {Number(menuForm.vipMonthlyPrice).toLocaleString('id-ID')} / Bulan</strong>
+                </p>
+              </div>
+
+              {/* Academy Price */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                <label className="block text-xs font-bold text-slate-800">
+                  Harga Paket Edukasi Permanen (IDR)
+                </label>
+                <input
+                  type="number"
+                  step={5000}
+                  required
+                  value={menuForm.academyPrice}
+                  onChange={(e) => setMenuForm({ ...menuForm, academyPrice: Number(e.target.value) })}
+                  className="w-full p-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 font-mono font-bold text-sm focus:border-[#00A651] focus:outline-none"
+                />
+                <p className="text-[11px] text-slate-500">
+                  Tampil: <strong className="text-emerald-700 font-mono">Rp {Number(menuForm.academyPrice).toLocaleString('id-ID')} (Sekali Bayar)</strong>
                 </p>
               </div>
             </div>

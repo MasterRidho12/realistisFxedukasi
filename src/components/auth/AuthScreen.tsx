@@ -10,9 +10,12 @@ import {
   User as UserIcon,
   Phone,
   ArrowRight,
-  AlertTriangle
+  AlertTriangle,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
+import GoogleLoginButton from '@/components/auth/GoogleLoginButton';
 
 export default function AuthScreen() {
   const router = useRouter();
@@ -23,6 +26,7 @@ export default function AuthScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [whatsapp, setWhatsapp] = useState('');
   const [accountType, setAccountType] = useState<'STANDARD' | 'CENT'>('STANDARD');
   const [errorMsg, setErrorMsg] = useState('');
@@ -31,7 +35,9 @@ export default function AuthScreen() {
   const [resetStep, setResetStep] = useState<1 | 2 | 3>(1);
   const [resetCode, setResetCode] = useState('');
   const [resetNewPassword, setResetNewPassword] = useState('');
+  const [showResetNewPassword, setShowResetNewPassword] = useState(false);
   const [resetConfirmPassword, setResetConfirmPassword] = useState('');
+  const [showResetConfirmPassword, setShowResetConfirmPassword] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
   const [resetSuccessMsg, setResetSuccessMsg] = useState('');
   const [resetPreviewCode, setResetPreviewCode] = useState<string | null>(null);
@@ -393,27 +399,55 @@ export default function AuthScreen() {
                     <label className="block text-xs font-bold text-slate-700 mb-1">
                       Kata Sandi Baru
                     </label>
-                    <input
-                      type="password"
-                      required
-                      placeholder="Minimal 6 karakter"
-                      value={resetNewPassword}
-                      onChange={(e) => setResetNewPassword(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:bg-white focus:border-[#00A651]"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showResetNewPassword ? 'text' : 'password'}
+                        required
+                        placeholder="Minimal 6 karakter"
+                        value={resetNewPassword}
+                        onChange={(e) => setResetNewPassword(e.target.value)}
+                        className="w-full pl-3 pr-10 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:bg-white focus:border-[#00A651]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowResetNewPassword(!showResetNewPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 cursor-pointer transition-colors"
+                        title={showResetNewPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                      >
+                        {showResetNewPassword ? (
+                          <EyeOff className="w-4 h-4 text-slate-500" />
+                        ) : (
+                          <Eye className="w-4 h-4 text-slate-400" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">
                       Konfirmasi Kata Sandi Baru
                     </label>
-                    <input
-                      type="password"
-                      required
-                      placeholder="Ketik ulang kata sandi baru"
-                      value={resetConfirmPassword}
-                      onChange={(e) => setResetConfirmPassword(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:bg-white focus:border-[#00A651]"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showResetConfirmPassword ? 'text' : 'password'}
+                        required
+                        placeholder="Ketik ulang kata sandi baru"
+                        value={resetConfirmPassword}
+                        onChange={(e) => setResetConfirmPassword(e.target.value)}
+                        className="w-full pl-3 pr-10 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:bg-white focus:border-[#00A651]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowResetConfirmPassword(!showResetConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 cursor-pointer transition-colors"
+                        title={showResetConfirmPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                      >
+                        {showResetConfirmPassword ? (
+                          <EyeOff className="w-4 h-4 text-slate-500" />
+                        ) : (
+                          <Eye className="w-4 h-4 text-slate-400" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                   <button
                     type="submit"
@@ -499,13 +533,26 @@ export default function AuthScreen() {
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   <input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Minimal 6 karakter"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-all"
+                    className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-all"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 cursor-pointer transition-colors"
+                    title={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                    aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4 text-slate-500" />
+                    ) : (
+                      <Eye className="w-4 h-4 text-slate-400" />
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -517,6 +564,23 @@ export default function AuthScreen() {
                 <span>Daftar Akun Trader</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
+
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200" />
+                </div>
+                <div className="relative flex justify-center text-[10px] uppercase">
+                  <span className="bg-white px-2 text-slate-400 font-bold tracking-wider">
+                    atau daftar dengan
+                  </span>
+                </div>
+              </div>
+
+              <GoogleLoginButton
+                mode="register"
+                onSuccess={() => router.push('/')}
+                onError={(err) => setErrorMsg(err)}
+              />
             </form>
           ) : (
             <form onSubmit={handleLogin} className="space-y-4">
@@ -559,13 +623,26 @@ export default function AuthScreen() {
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   <input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-all"
+                    className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-all"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 cursor-pointer transition-colors"
+                    title={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                    aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4 text-slate-500" />
+                    ) : (
+                      <Eye className="w-4 h-4 text-slate-400" />
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -576,6 +653,23 @@ export default function AuthScreen() {
                 <span>Masuk ke Akun</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
+
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200" />
+                </div>
+                <div className="relative flex justify-center text-[10px] uppercase">
+                  <span className="bg-white px-2 text-slate-400 font-bold tracking-wider">
+                    atau masuk dengan
+                  </span>
+                </div>
+              </div>
+
+              <GoogleLoginButton
+                mode="login"
+                onSuccess={() => router.push('/')}
+                onError={(err) => setErrorMsg(err)}
+              />
             </form>
           )}
         </div>

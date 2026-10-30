@@ -34,6 +34,8 @@ import {
   X,
   CreditCard,
   Zap,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
@@ -55,7 +57,9 @@ export default function DashboardOverviewPage() {
   // Password Change Modal State
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [newPassword, setNewPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [pwSuccessMsg, setPwSuccessMsg] = useState('');
   const [pwErrorMsg, setPwErrorMsg] = useState('');
   const [copiedId, setCopiedId] = useState(false);
@@ -200,11 +204,11 @@ export default function DashboardOverviewPage() {
       description: 'Kurikulum trading realistis langkah demi langkah untuk membangun mental trader profesional.',
       href: '/academy',
       icon: GraduationCap,
-      freeStatus: 'Modul Level 1',
-      proStatus: 'Semua Modul Lvl 1-5 + Sertifikat',
-      isProFeature: false,
-      badge: 'Academy',
-      badgeColor: 'green',
+      freeStatus: 'Terkunci (Paket Rp 100k)',
+      proStatus: 'Akses Penuh Lvl 1-5 + Sertifikat',
+      isProFeature: true,
+      badge: 'Rp 100k',
+      badgeColor: 'amber',
     },
     {
       title: 'Discipline Score AI',
@@ -1103,28 +1107,58 @@ export default function DashboardOverviewPage() {
                 <label className="block text-xs font-bold text-slate-700 mb-1">
                   Kata Sandi Baru (Min. 6 Karakter)
                 </label>
-                <input
-                  type="password"
-                  required
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Ketik kata sandi baru"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:border-[#00A651] outline-hidden bg-slate-50 focus:bg-white"
-                />
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? 'text' : 'password'}
+                    required
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Ketik kata sandi baru"
+                    className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-slate-200 text-xs focus:border-[#00A651] outline-hidden bg-slate-50 focus:bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 cursor-pointer transition-colors flex items-center justify-center z-10"
+                    title={showNewPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                    aria-label={showNewPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                  >
+                    {showNewPassword ? (
+                      <EyeOff className="w-4 h-4 text-slate-500" />
+                    ) : (
+                      <Eye className="w-4 h-4 text-slate-400" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
                   Konfirmasi Kata Sandi Baru
                 </label>
-                <input
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Ulangi kata sandi baru"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:border-[#00A651] outline-hidden bg-slate-50 focus:bg-white"
-                />
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Ulangi kata sandi baru"
+                    className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-slate-200 text-xs focus:border-[#00A651] outline-hidden bg-slate-50 focus:bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 cursor-pointer transition-colors flex items-center justify-center z-10"
+                    title={showConfirmPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                    aria-label={showConfirmPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="w-4 h-4 text-slate-500" />
+                    ) : (
+                      <Eye className="w-4 h-4 text-slate-400" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="pt-2 flex gap-2">

@@ -96,7 +96,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-black uppercase tracking-wider shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-[#00A651]" />
-            <span>Audit Backtest AI Kuantitatif 2020 – 2026 (Metode Baku)</span>
+            <span>Audit Backtest AI Kuantitatif 2015 – 2026 (Metode Baku • 10+ Tahun)</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-snug">
@@ -106,7 +106,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
 
           <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
             Dianalisis secara objektif oleh algoritma AI RealistisFx merujuk langsung ke harga historis riil{' '}
-            <strong className="text-slate-900 font-bold underline decoration-[#00A651]">TradingView (2020 – 2026)</strong> di 5 pair utama dengan formula parameter baku: <strong>Timeframe H1 &amp; H4</strong>, <strong>Stop Loss 200 Pips</strong>, <strong>Take Profit 400 Pips</strong>, dan <strong>Risk-to-Reward 1 : 2</strong>.
+            <strong className="text-slate-900 font-bold underline decoration-[#00A651]">TradingView (2015 – 2026 / 10+ Tahun)</strong> di 5 pair utama dengan formula parameter baku: <strong>Timeframe H1 &amp; H4</strong>, <strong>Stop Loss 200 Pips</strong>, <strong>Take Profit 400 Pips</strong>, dan <strong>Risk-to-Reward 1 : 2</strong>.
           </p>
         </div>
 
@@ -272,10 +272,10 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
             </div>
           </div>
 
-          {/* Card 2: Total Pips 2020-2026 */}
+          {/* Card 2: Total Pips 2015-2026 */}
           <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between min-w-0">
             <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-              <span className="font-semibold truncate">Total Pips (6+ Thn)</span>
+              <span className="font-semibold truncate">Total Pips (10+ Thn)</span>
               <TrendingUp className="w-3.5 h-3.5 text-[#00A651] shrink-0" />
             </div>
             <div>
@@ -380,7 +380,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                   {pairData.name} ({pairData.symbol})
                 </span>
                 <span className="text-xs text-slate-500">
-                  Visualisasi Grafik Kuantitatif 2020 – 2026
+                  Visualisasi Grafik Kuantitatif 2015 – 2026 (10+ Tahun)
                 </span>
               </div>
               <h3 className="text-base sm:text-lg font-black text-slate-900 mt-1">
@@ -596,7 +596,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                   </div>
                 </div>
                 <div className="text-[#00A651] font-mono font-bold">
-                  Total Gain 2020-2026: +{pairData.totalPips.toLocaleString()} Pips
+                  Total Gain 2015-2026 (10+ Thn): +{pairData.totalPips.toLocaleString('id-ID')} Pips
                 </div>
               </div>
             </div>
@@ -776,7 +776,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                 </h3>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Rincian matriks perolehan pips algoritma AI dari 2020 sampai 2026 untuk {pairData.name}
+                Rincian matriks perolehan pips algoritma AI dari 2015 sampai 2026 (10+ Tahun) untuk {pairData.name}
               </p>
             </div>
 
@@ -792,7 +792,7 @@ export default function AiBacktestSection({ onOpenAuth, onOpenPayment }: AiBackt
                 }`}
               >
                 <Calendar className="w-3.5 h-3.5" />
-                <span>Pips Per Bulan (2020-2026)</span>
+                <span>Pips Per Bulan (2015-2026)</span>
               </button>
 
               <button

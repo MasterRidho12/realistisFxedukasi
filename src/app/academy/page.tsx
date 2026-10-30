@@ -10,7 +10,9 @@ import {
   Sparkles,
   BookOpen,
   Award,
-  ChevronRight
+  ChevronRight,
+  ShieldCheck,
+  Coins
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
@@ -32,8 +34,8 @@ const MODULES: AcademyModule[] = [
     title: 'Fondasi Money Management & Aturan 1-2% Modal',
     duration: '45 Menit',
     summary: 'Memahami cara kerja leverage broker, margin, dan kenapa 90% retail trader bangkrut karena over-lot.',
-    isCompleted: true,
-    proOnly: false, // Free tier module
+    isCompleted: false,
+    proOnly: true, // Now paid (100k) — No free modules
     lessons: [
       'Pelajaran 1: Mengapa Over-lot Membunuh Akun Anda',
       'Pelajaran 2: Menghitung Nilai Pips dan Leverage Nyata',
@@ -99,13 +101,25 @@ const MODULES: AcademyModule[] = [
 ];
 
 export default function AcademyPage() {
-  const { user, setTier, openPaymentModal } = useUser();
+  const { user, openPaymentModal } = useUser();
   const isPro = user.tier === 'PRO';
+  const hasAcademyAccess = isPro || Boolean(user.hasAcademyAccess);
 
   const [activeModule, setActiveModule] = useState<AcademyModule>(MODULES[0]);
+  const [completedModules, setCompletedModules] = useState<string[]>([]);
 
-  const completedCount = MODULES.filter((m) => m.isCompleted).length;
+  const completedCount = completedModules.length;
   const progressPercent = Math.round((completedCount / MODULES.length) * 100);
+
+  const handleToggleComplete = (modId: string) => {
+    if (!hasAcademyAccess) {
+      openPaymentModal('EDUKASI');
+      return;
+    }
+    setCompletedModules((prev) =>
+      prev.includes(modId) ? prev.filter((id) => id !== modId) : [...prev, modId]
+    );
+  };
 
   return (
     <div className="space-y-6 pb-12">
@@ -121,19 +135,62 @@ export default function AcademyPage() {
             </h1>
           </div>
           <p className="text-xs text-slate-600 max-w-2xl">
-            Modul edukasi terstruktur dari dasar hingga mahir untuk membentuk pola pikir trader mandiri bebas MC.
+            Modul edukasi terstruktur Level 1 sampai 5 untuk membentuk pola pikir trader mandiri bebas Margin Call.
           </p>
         </div>
 
-        {!isPro && (
-          <button
-            onClick={openPaymentModal}
-            className="px-3.5 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
-          >
-            <Crown className="w-3.5 h-3.5" /> Buka Semua Modul (PRO VIP Rp500k)
-          </button>
+        {!hasAcademyAccess ? (
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => openPaymentModal('EDUKASI')}
+              className="px-3.5 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+            >
+              <Sparkles className="w-3.5 h-3.5" /> Beli Paket Edukasi (Rp 100.000)
+            </button>
+            <button
+              onClick={() => openPaymentModal('1_MONTH')}
+              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+            >
+              <Crown className="w-3.5 h-3.5" /> VIP PRO Lengkap (Rp 500k)
+            </button>
+          </div>
+        ) : (
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+            <ShieldCheck className="w-4 h-4 text-[#00A651]" />
+            <span>Akses Edukasi Terbuka Penuh</span>
+          </div>
         )}
       </div>
+
+      {/* Paid Notice Banner if Not Unlocked */}
+      {!hasAcademyAccess && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-start gap-3">
+            <div className="p-2.5 rounded-xl bg-[#00A651] text-white shadow-sm shrink-0">
+              <GraduationCap className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-black uppercase text-emerald-950 tracking-wider">
+                  Kurikulum Edukasi Berbayar (Rp 100.000)
+                </span>
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-300">
+                  TIDAK ADA MODUL GRATIS
+                </span>
+              </div>
+              <p className="text-xs text-slate-700 mt-1 max-w-2xl leading-relaxed">
+                Seluruh 5 modul kurikulum trading realistis dipersiapkan secara komprehensif berbayar Rp 100.000 sekali bayar (lifetime access). Buka akses instan melalui QRIS untuk mempelajari SOP Money Management &amp; ujian sertifikasi.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => openPaymentModal('EDUKASI')}
+            className="shrink-0 px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-98 transition-all cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4" /> Beli Akses Edukasi (Rp 100k)
+          </button>
+        </div>
+      )}
 
       {/* Progress Bar Header */}
       <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -143,7 +200,7 @@ export default function AcademyPage() {
             <span>{completedCount} dari 5 Modul Selesai ({progressPercent}%)</span>
             {completedCount >= 1 && (
               <span className="text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold border border-emerald-200">
-                Level 1 Lulus
+                Level {completedCount} Lulus
               </span>
             )}
           </div>
@@ -162,18 +219,24 @@ export default function AcademyPage() {
         {/* Module Nav Cards (7 Cols) */}
         <div className="lg:col-span-7 space-y-3">
           {MODULES.map((mod) => {
-            const isLocked = mod.proOnly && !isPro;
+            const isLocked = !hasAcademyAccess;
             const isSelected = activeModule.id === mod.id;
+            const isDone = completedModules.includes(mod.id);
 
             return (
               <div
                 key={mod.id}
-                onClick={() => !isLocked && setActiveModule(mod)}
+                onClick={() => {
+                  setActiveModule(mod);
+                  if (isLocked) {
+                    openPaymentModal('EDUKASI');
+                  }
+                }}
                 className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer relative overflow-hidden ${
                   isSelected
                     ? 'border-emerald-500 bg-emerald-50/50 shadow-sm'
                     : isLocked
-                    ? 'border-slate-200 bg-slate-50 opacity-75'
+                    ? 'border-slate-200 bg-slate-50/80 hover:border-amber-300'
                     : 'border-slate-200 bg-white hover:border-emerald-300 hover:shadow-xs'
                 }`}
               >
@@ -185,21 +248,17 @@ export default function AcademyPage() {
                     <span className="text-xs text-slate-500">{mod.duration}</span>
                   </div>
 
-                  {mod.isCompleted ? (
+                  {isDone ? (
                     <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Selesai
                     </span>
-                  ) : mod.proOnly ? (
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                        isPro ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200'
-                      }`}
-                    >
-                      {isPro ? 'PRO' : 'PRO ONLY'}
+                  ) : isLocked ? (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1">
+                      <Lock className="w-3 h-3" /> BERBAYAR (Rp 100K)
                     </span>
                   ) : (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
-                      FREE TIER
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      TERBUKA
                     </span>
                   )}
                 </div>
@@ -208,9 +267,9 @@ export default function AcademyPage() {
                 <p className="text-xs text-slate-600 leading-relaxed">{mod.summary}</p>
 
                 {isLocked && (
-                  <div className="mt-3 flex items-center gap-2 text-xs text-amber-700 font-semibold">
-                    <Lock className="w-3.5 h-3.5" />
-                    <span>Terkunci untuk Akun Free (Upgrade ke PRO VIP Rp500k)</span>
+                  <div className="mt-3 flex items-center gap-1.5 text-xs text-amber-700 font-semibold">
+                    <Lock className="w-3.5 h-3.5 shrink-0" />
+                    <span>Terkunci — Butuh Paket Edukasi Rp 100.000 atau VIP PRO</span>
                   </div>
                 )}
               </div>
@@ -228,24 +287,79 @@ export default function AcademyPage() {
             <h2 className="text-base font-extrabold text-slate-900">{activeModule.title}</h2>
             <p className="text-xs text-slate-600 leading-relaxed">{activeModule.summary}</p>
 
+            {/* Paywall Container if Locked */}
+            {!hasAcademyAccess ? (
+              <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-center space-y-3">
+                <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black text-slate-900">Materi Edukasi Terkunci</h4>
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    Edukasi RealistisFx kini berbayar <strong className="text-slate-900">Rp 100.000</strong> (sekali bayar seumur hidup). Tidak ada materi gratis. Buka akses untuk menonton video materi &amp; ujian sertifikasi.
+                  </p>
+                </div>
+                <div className="space-y-2 pt-1">
+                  <button
+                    onClick={() => openPaymentModal('EDUKASI')}
+                    className="w-full py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-[#00A651]/20 cursor-pointer transition-all"
+                  >
+                    <Sparkles className="w-4 h-4" /> Buka Akses Edukasi (Rp 100.000)
+                  </button>
+                  <button
+                    onClick={() => openPaymentModal('1_MONTH')}
+                    className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+                  >
+                    <Crown className="w-3.5 h-3.5" /> Atau Upgrade VIP PRO (Rp 500k)
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
+            {/* Lesson list */}
             <div className="border-t border-slate-100 pt-4 space-y-2.5">
               <span className="text-xs font-semibold text-slate-500 block">Daftar Materi:</span>
               {activeModule.lessons.map((lesson, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5 text-xs text-slate-800"
+                  className={`p-3 rounded-xl border flex items-center gap-2.5 text-xs transition-colors ${
+                    !hasAcademyAccess
+                      ? 'bg-slate-50 border-slate-200 text-slate-500'
+                      : 'bg-slate-50 hover:bg-emerald-50/50 border-slate-200 text-slate-800'
+                  }`}
                 >
-                  <PlayCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>{lesson}</span>
+                  {!hasAcademyAccess ? (
+                    <Lock className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  ) : (
+                    <PlayCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  )}
+                  <span className="flex-1">{lesson}</span>
                 </div>
               ))}
             </div>
 
-            <div className="pt-2">
-              <button className="w-full py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm hover:shadow transition-all cursor-pointer">
-                <PlayCircle className="w-4 h-4" /> Mulai Pelajari Modul
-              </button>
-            </div>
+            {hasAcademyAccess && (
+              <div className="pt-2 space-y-2">
+                <button className="w-full py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm hover:shadow transition-all cursor-pointer">
+                  <PlayCircle className="w-4 h-4" /> Mulai Pelajari Modul
+                </button>
+                <button
+                  onClick={() => handleToggleComplete(activeModule.id)}
+                  className={`w-full py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                    completedModules.includes(activeModule.id)
+                      ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                      : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>
+                    {completedModules.includes(activeModule.id)
+                      ? 'Tandai Belum Selesai'
+                      : 'Tandai Modul Selesai'}
+                  </span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -51,12 +51,14 @@ import {
   Activity,
   Calendar,
   Layers,
-  Crosshair
+  Eye,
+  EyeOff,
 } from 'lucide-react';
-import { useUser } from '@/context/UserContext';
+import { useUser, PaymentPlanKey } from '@/context/UserContext';
 import { EnrichedNewsItem } from '@/app/api/news/route';
 import type { HistoricalSignalItem } from '@/app/api/signals/route';
 import AiBacktestSection from '@/components/landing/AiBacktestSection';
+import GoogleLoginButton from '@/components/auth/GoogleLoginButton';
 
 interface LandingPageProps {
   onOpenAuth?: (initialMode?: 'login' | 'register') => void;
@@ -106,7 +108,18 @@ function calculateRealTimeSignalLevels(liveSpot: number) {
 }
 
 export default function LandingPage({ onOpenAuth }: LandingPageProps) {
-  const { user, login, register, marketPrice, openPaymentModal, updateUserPasswordLocal, siteSettings } = useUser();
+  const {
+    user,
+    login,
+    register,
+    marketPrice,
+    openPaymentModal,
+    updateUserPasswordLocal,
+    siteSettings,
+    pendingCheckoutPlan,
+    setPendingCheckoutPlan,
+    setSelectedPaymentPlan,
+  } = useUser();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null);
 
@@ -133,6 +146,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
   const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot-password'>('register');
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
+  const [showAuthPassword, setShowAuthPassword] = useState(false);
   const [authName, setAuthName] = useState('');
   const [authWhatsapp, setAuthWhatsapp] = useState('');
   const [authAccountType, setAuthAccountType] = useState<'STANDARD' | 'CENT'>('STANDARD');
@@ -142,7 +156,9 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
   const [resetStep, setResetStep] = useState<1 | 2 | 3>(1); // 1: Email, 2: Code, 3: New Password
   const [resetCode, setResetCode] = useState('');
   const [resetNewPassword, setResetNewPassword] = useState('');
+  const [showResetNewPassword, setShowResetNewPassword] = useState(false);
   const [resetConfirmPassword, setResetConfirmPassword] = useState('');
+  const [showResetConfirmPassword, setShowResetConfirmPassword] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
   const [resetSuccessMsg, setResetSuccessMsg] = useState('');
   const [resetPreviewCode, setResetPreviewCode] = useState<string | null>(null);
@@ -211,6 +227,21 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
     }
   };
 
+  // ALUR PEMBELIAN: Wajib Login / Register Dulu Sebelum Bayar!
+  const handleBuyPlan = (plan: PaymentPlanKey = 'EDUKASI') => {
+    setSelectedPaymentPlan(plan);
+    setPendingCheckoutPlan(plan);
+    if (!user.isAuthenticated) {
+      // WAJIB LOGIN DULU: Tampilkan Auth Modal dalam mode login
+      setAuthMode('login');
+      setAuthError('');
+      setShowAuthModal(true);
+      return;
+    }
+    // Jika sudah login: langsung buka modal pembayaran
+    openPaymentModal(plan);
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
@@ -230,6 +261,15 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
       // If administrator logs in via modal, route to /admin
       if (normalizedEmail === 'admin@realistisfx.com') {
         window.location.href = '/admin';
+        return;
+      }
+      // Jika sebelumnya klik beli paket, langsung lanjutkan ke modal bayar QRIS
+      if (pendingCheckoutPlan) {
+        const targetPlan = pendingCheckoutPlan;
+        setPendingCheckoutPlan(null);
+        setTimeout(() => {
+          openPaymentModal(targetPlan);
+        }, 350);
       }
     } else {
       if (!authName.trim() || !authEmail.trim() || !authWhatsapp.trim()) {
@@ -249,6 +289,14 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         tier: 'FREE',
       });
       setShowAuthModal(false);
+      // Jika sebelumnya klik beli paket, langsung lanjutkan ke modal bayar QRIS
+      if (pendingCheckoutPlan) {
+        const targetPlan = pendingCheckoutPlan;
+        setPendingCheckoutPlan(null);
+        setTimeout(() => {
+          openPaymentModal(targetPlan);
+        }, 350);
+      }
     }
   };
 
@@ -680,7 +728,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           <nav className="hidden lg:flex items-center gap-5 text-xs font-bold text-slate-600">
             <a href="#ai-backtest" className="hover:text-[#00A651] transition-colors flex items-center gap-1.5 text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
               <LineChart className="w-3.5 h-3.5 text-[#00A651]" />
-              <span>Backtest AI (2020-2026)</span>
+              <span>Backtest AI (2015-2026)</span>
             </a>
             <a href="#track-record" className="hover:text-[#00A651] transition-colors flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-[#00A651]" />
@@ -698,8 +746,9 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <Crown className="w-3.5 h-3.5 text-amber-500" />
               <span>Paket VIP (Rp500k)</span>
             </a>
-            <a href="#free-education" className="hover:text-[#00A651] transition-colors">
-              Edukasi Gratis
+            <a href="#free-education" className="hover:text-[#00A651] transition-colors flex items-center gap-1">
+              <GraduationCap className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Edukasi (Rp100k)</span>
             </a>
             <a href="#faq" className="hover:text-[#00A651] transition-colors">
               FAQ
@@ -752,8 +801,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   <LineChart className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-emerald-950 font-black">Backtest AI: SNR &amp; Breakout (2020-2026)</div>
-                  <div className="text-[10px] text-emerald-700 font-semibold">5 Pair TradingView (+178,650 Pips • WR 79.8%)</div>
+                  <div className="text-emerald-950 font-black">Backtest AI: SNR &amp; Breakout (2015-2026)</div>
+                  <div className="text-[10px] text-emerald-700 font-semibold">5 Pair TradingView (+314,560 Pips • WR 79.5% • 10+ Thn)</div>
                 </div>
               </a>
 
@@ -832,12 +881,12 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors"
               >
-                <div className="p-1.5 rounded-lg bg-slate-100 text-slate-600">
-                  <Coins className="w-4 h-4" />
+                <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <GraduationCap className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-900 font-extrabold">Edukasi Dasar (Free)</div>
-                  <div className="text-[10px] text-slate-400 font-normal">Panduan manajemen lot, margin, &amp; leverage</div>
+                  <div className="text-slate-900 font-extrabold">Paket Edukasi (Rp 100.000)</div>
+                  <div className="text-[10px] text-slate-500 font-normal">Kurikulum lengkap MM, margin, &amp; leverage Lvl 1-5</div>
                 </div>
               </a>
 
@@ -935,7 +984,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-[#00A651] font-extrabold text-xs sm:text-sm border border-emerald-300 shadow-xs active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <LineChart className="w-4 h-4 text-[#00A651]" />
-              <span>Hasil Backtest AI (2020 - 2026)</span>
+              <span>Hasil Backtest AI 10 Tahun (2015 - Sekarang)</span>
             </a>
 
             <a
@@ -1038,8 +1087,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         </div>
       </section>
 
-      {/* 3b. AI QUANTITATIVE BACKTEST SECTION (2020 - 2026) - 5 PAIRS WITH SNR & BREAKOUT */}
-      <AiBacktestSection onOpenAuth={openAuth} onOpenPayment={openPaymentModal} />
+      {/* 3b. AI QUANTITATIVE BACKTEST SECTION (2015 - 2026) - 5 PAIRS WITH SNR & BREAKOUT (10+ YEARS) */}
+      <AiBacktestSection onOpenAuth={openAuth} onOpenPayment={() => handleBuyPlan('1_MONTH')} />
 
       {/* 4. VERIFIED HISTORICAL NEWS SIGNALS & TRACK RECORD (Real Official BLS/Fed Data) */}
       <section id="track-record" className="py-16 sm:py-20 bg-slate-50 border-b border-slate-200 scroll-mt-20 sm:scroll-mt-24">
@@ -1763,75 +1812,80 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="px-3 py-1 rounded-full bg-emerald-100 text-[#00A651] text-xs font-black uppercase tracking-wider">
-              PAKET LANGGANAN TRANSPARAN
+              PAKET TRANSPARAN &amp; BERBAYAR
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              Pilih Akses Anda: Edukasi Dasar Gratis atau VIP Member Area
+              Pilih Akses: Paket Edukasi (Rp 100k) atau VIP Member Area (Rp 500k)
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
-              Mulai gratis untuk mempelajari fondasi manajemen risiko, atau upgrade ke VIP Member Area untuk mendapatkan sinyal AI real-time &amp; akses Private Channel Telegram eksklusif.
+              Tidak ada modul edukasi gratis. Pilih Paket Edukasi (Rp 100.000 sekali bayar) untuk kurikulum terstruktur seumur hidup, atau VIP Member Area untuk mendapatkan Sinyal AI real-time &amp; Private Channel Telegram.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto items-stretch">
-            {/* Free Tier Card */}
+            {/* Edukasi Paid Tier Card (Rp 100.000 Sekali Bayar) */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
               <div className="space-y-4">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
-                  AKSES EDUKASI DASAR
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+                  <GraduationCap className="w-3.5 h-3.5 text-[#00A651]" />
+                  PAKET EDUKASI REALISTIS (BERBAYAR)
                 </div>
                 <div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-black text-slate-900">Rp 0</span>
-                    <span className="text-xs text-slate-500 font-semibold">/ Selamanya</span>
+                    <span className="text-3xl sm:text-4xl font-black text-slate-900">Rp 100.000</span>
+                    <span className="text-xs text-slate-500 font-semibold">/ Sekali Bayar (Permanen)</span>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">
-                    Dirancang untuk trader pemula yang ingin memahami fondasi money management sebelum terjun ke live market.
+                    Kurikulum lengkap trader mandiri bebas MC, fondasi money management, dan SOP disiplin eksekusi Level 1 sampai 5.
                   </p>
                 </div>
 
                 <div className="space-y-3 pt-4 border-t border-slate-100 text-xs text-slate-700">
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#00A651] shrink-0" />
+                    <span><strong>Akses Penuh Semua Modul Edukasi (Level 1-5)</strong></span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Check className="w-4 h-4 text-[#00A651] shrink-0" />
                     <span>Modul Video: Fondasi Lot, Leverage &amp; Margin</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span>Panduan Manajemen Risiko &amp; Ukuran Lot Aman</span>
+                    <span>Panduan Manajemen Risiko &amp; Aturan 1-2% Modal</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span>Kalkulator Risiko &amp; Ukuran Lot Dasar</span>
+                    <span>Struktur Market H1/H4 &amp; Supply-Demand Zone Valid</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span>Kalender Berita Ekonomi Umum (Data Standar)</span>
+                    <span>Psikologi Anti-FOMO &amp; Melawan Revenge Trading</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span>Checklist Anti-FOMO 5 Poin Pra-Order</span>
+                    <span>Ujian Akhir SOP &amp; Sertifikat Kelulusan RealistisFx</span>
                   </div>
                   <div className="flex items-center gap-2.5 text-slate-400">
                     <X className="w-4 h-4 text-slate-300 shrink-0" />
-                    <span>Tanpa Sinyal Trading AI Real-Time</span>
+                    <span>Tanpa Sinyal Trading AI Real-Time (Khusus VIP)</span>
                   </div>
                   <div className="flex items-center gap-2.5 text-slate-400">
                     <X className="w-4 h-4 text-slate-300 shrink-0" />
-                    <span>Tanpa Playbook Rilis Berita NFP &amp; CPI</span>
+                    <span>Tanpa Playbook Rilis Berita NFP &amp; CPI (Khusus VIP)</span>
                   </div>
                   <div className="flex items-center gap-2.5 text-slate-400">
                     <X className="w-4 h-4 text-slate-300 shrink-0" />
-                    <span>Tanpa Akses Private Channel VIP Telegram</span>
+                    <span>Tanpa Akses Private Channel VIP Telegram (Khusus VIP)</span>
                   </div>
                 </div>
               </div>
 
               <button
                 type="button"
-                onClick={() => openAuth('register')}
-                className="w-full py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all cursor-pointer"
+                onClick={() => handleBuyPlan('EDUKASI')}
+                className="w-full py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs transition-all cursor-pointer shadow-md shadow-[#00A651]/20 flex items-center justify-center gap-1.5"
               >
-                Daftar Akun Gratis Sekarang
+                <Sparkles className="w-4 h-4" /> Beli Paket Edukasi (Rp 100.000)
               </button>
             </div>
 
@@ -1908,9 +1962,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
 
               <button
                 type="button"
-                onClick={() => {
-                  openPaymentModal();
-                }}
+                onClick={() => handleBuyPlan('1_MONTH')}
                 className="w-full py-4 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-lg shadow-[#00A651]/25 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <Crown className="w-4 h-4 text-amber-300" />
@@ -1921,18 +1973,18 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         </div>
       </section>
 
-      {/* 9. Educational Foundations (Materi Edukasi Dasar yang Tersedia) */}
+      {/* 9. Educational Foundations (Kurikulum Modul Edukasi Berbayar) */}
       <section id="free-education" className="py-16 sm:py-20 bg-white border-b border-slate-200 scroll-mt-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider">
-              EDUKASI DASAR GRATIS
+            <span className="px-3 py-1 rounded-full bg-emerald-100 text-[#00A651] text-xs font-black uppercase tracking-wider">
+              KURIKULUM EDUKASI BERBAYAR (RP 100.000)
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
               Pondasi yang Wajib Dikuasai Sebelum Menggunakan Sinyal
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
-              Kami percaya trader hebat lahir dari pemahaman risiko yang benar. Semua materi dasar ini dapat Anda pelajari secara cuma-cuma.
+              Kami percaya trader hebat lahir dari pemahaman risiko yang benar. Seluruh materi Level 1-5 berbayar Rp 100.000 sekali bayar untuk memastikan komitmen penuh tanpa distraksi.
             </p>
           </div>
 
@@ -1966,6 +2018,15 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 Bedah tuntas psikologi ilusi leverage tinggi. Mengapa leverage besar bukan jalan pintas kaya, melainkan perangkap percepatan Margin Call jika over-lot.
               </p>
             </div>
+          </div>
+
+          <div className="pt-2 text-center">
+            <button
+              onClick={() => handleBuyPlan('EDUKASI')}
+              className="px-6 py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs inline-flex items-center gap-2 shadow-lg shadow-[#00A651]/20 cursor-pointer transition-all hover:scale-[1.02] active:scale-98"
+            >
+              <Sparkles className="w-4 h-4" /> Buka Akses Seluruh Modul Edukasi (Rp 100.000 via QRIS)
+            </button>
           </div>
         </div>
       </section>
@@ -2114,13 +2175,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               type="button"
-              onClick={() => {
-                if (user.isAuthenticated) {
-                  openPaymentModal();
-                } else {
-                  openAuth('register');
-                }
-              }}
+              onClick={() => handleBuyPlan('1_MONTH')}
               className="w-full sm:w-auto px-7 py-3.5 sm:py-4 rounded-2xl bg-white text-[#00A651] font-black text-xs sm:text-sm shadow-xl hover:bg-emerald-50 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
             >
               Langganan VIP Member Area (Rp 500rb/bln)
@@ -2195,7 +2250,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
       {/* 14. Authentication Modal (On-Page Login & Register) */}
       {showAuthModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full max-w-md md:max-w-xl bg-white rounded-3xl p-6 sm:p-8 md:p-9 border border-slate-200 shadow-2xl space-y-5 max-h-[92vh] overflow-y-auto">
             {/* Close Button */}
             <button
               type="button"
@@ -2210,6 +2265,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <h3 className="text-xl font-black text-slate-900">
                 {authMode === 'forgot-password'
                   ? 'Reset Kata Sandi Akun'
+                  : pendingCheckoutPlan
+                  ? 'Masuk / Daftar untuk Melanjutkan Pembelian'
                   : authMode === 'login'
                   ? 'Masuk ke Member Area'
                   : 'Daftar Akun RealistisFx'}
@@ -2217,11 +2274,40 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <p className="text-xs text-slate-500">
                 {authMode === 'forgot-password'
                   ? 'Verifikasi 6-digit kode OTP ke email untuk membuat kata sandi baru'
+                  : pendingCheckoutPlan
+                  ? 'Akun trader diperlukan agar modul & fasilitas aktif ke akun Anda'
                   : authMode === 'login'
                   ? 'Akses dashboard sinyal AI & panduan trading Anda'
                   : 'Mulai dengan Akun Gratis atau bersiap untuk VIP Member'}
               </p>
             </div>
+
+            {/* Purchase Intent Notice when user clicked Beli Paket */}
+            {pendingCheckoutPlan && (
+              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-[#00A651] text-white flex items-center justify-center font-bold shrink-0 shadow-xs mt-0.5">
+                  {pendingCheckoutPlan === 'EDUKASI' ? (
+                    <GraduationCap className="w-4 h-4" />
+                  ) : (
+                    <Crown className="w-4 h-4" />
+                  )}
+                </div>
+                <div className="space-y-0.5">
+                  <div className="font-extrabold text-slate-900 text-xs">
+                    Langkah 1: Masuk atau Buat Akun Trader Terlebih Dahulu
+                  </div>
+                  <div className="text-[11px] text-slate-600 leading-relaxed">
+                    Untuk melanjutkan pembayaran{' '}
+                    <strong className="text-[#00A651]">
+                      {pendingCheckoutPlan === 'EDUKASI'
+                        ? 'Paket Edukasi Realistis (Rp 100.000)'
+                        : 'Langganan VIP Member Area (Rp 500.000)'}
+                    </strong>
+                    , silakan masuk ke akun Anda atau daftar baru. Setelah berhasil masuk, Anda akan langsung diarahkan ke pembayaran QRIS.
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Mode Switcher Tabs (Hidden when in Forgot Password) */}
             {authMode !== 'forgot-password' ? (
@@ -2417,28 +2503,58 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                       <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Kata Sandi Baru
                       </label>
-                      <input
-                        type="password"
-                        required
-                        placeholder="Minimal 6 karakter"
-                        value={resetNewPassword}
-                        onChange={(e) => setResetNewPassword(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showResetNewPassword ? 'text' : 'password'}
+                          required
+                          placeholder="Minimal 6 karakter"
+                          value={resetNewPassword}
+                          onChange={(e) => setResetNewPassword(e.target.value)}
+                          className="w-full pl-3.5 pr-11 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowResetNewPassword(!showResetNewPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg p-1.5 focus:outline-none cursor-pointer transition-colors flex items-center justify-center z-10"
+                          title={showResetNewPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                          aria-label={showResetNewPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                        >
+                          {showResetNewPassword ? (
+                            <EyeOff className="w-4 h-4 text-slate-600" />
+                          ) : (
+                            <Eye className="w-4 h-4 text-slate-500" />
+                          )}
+                        </button>
+                      </div>
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         Konfirmasi Kata Sandi Baru
                       </label>
-                      <input
-                        type="password"
-                        required
-                        placeholder="Ketik ulang kata sandi baru"
-                        value={resetConfirmPassword}
-                        onChange={(e) => setResetConfirmPassword(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showResetConfirmPassword ? 'text' : 'password'}
+                          required
+                          placeholder="Ketik ulang kata sandi baru"
+                          value={resetConfirmPassword}
+                          onChange={(e) => setResetConfirmPassword(e.target.value)}
+                          className="w-full pl-3.5 pr-11 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowResetConfirmPassword(!showResetConfirmPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg p-1.5 focus:outline-none cursor-pointer transition-colors flex items-center justify-center z-10"
+                          title={showResetConfirmPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                          aria-label={showResetConfirmPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                        >
+                          {showResetConfirmPassword ? (
+                            <EyeOff className="w-4 h-4 text-slate-600" />
+                          ) : (
+                            <Eye className="w-4 h-4 text-slate-500" />
+                          )}
+                        </button>
+                      </div>
                     </div>
 
                     <button
@@ -2472,91 +2588,219 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             ) : (
               /* STANDARD REGISTER & LOGIN FORM */
               <form onSubmit={handleFormSubmit} className="space-y-3.5">
-                {authMode === 'register' && (
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                      Nama Lengkap Anda
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Contoh: Budi Santoso"
-                      value={authName}
-                      onChange={(e) => setAuthName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
-                    />
+                {authMode === 'register' ? (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          Nama Lengkap Anda
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="Contoh: Budi Santoso"
+                          value={authName}
+                          onChange={(e) => setAuthName(e.target.value)}
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all text-slate-900"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          Nomor WhatsApp (Aktif)
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          placeholder="Contoh: 081234567890"
+                          value={authWhatsapp}
+                          onChange={(e) => setAuthWhatsapp(e.target.value)}
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all text-slate-900 font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          Alamat Email Aktif
+                        </label>
+                        <input
+                          type="email"
+                          required
+                          placeholder="nama@email.com"
+                          value={authEmail}
+                          onChange={(e) => setAuthEmail(e.target.value)}
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all text-slate-900"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          Kata Sandi Baru
+                        </label>
+                        <div className="relative">
+                          <input
+                            type={showAuthPassword ? 'text' : 'password'}
+                            required
+                            placeholder="Min. 6 karakter"
+                            value={authPassword}
+                            onChange={(e) => setAuthPassword(e.target.value)}
+                            className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all text-slate-900"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowAuthPassword(!showAuthPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 cursor-pointer transition-colors"
+                            title={showAuthPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                            aria-label={showAuthPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                          >
+                            {showAuthPassword ? (
+                              <EyeOff className="w-4 h-4 text-slate-500" />
+                            ) : (
+                              <Eye className="w-4 h-4 text-slate-400" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3.5">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        Alamat Email Aktif
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        placeholder="nama@email.com"
+                        value={authEmail}
+                        onChange={(e) => setAuthEmail(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all text-slate-900"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-[11px] font-bold text-slate-700">
+                          Kata Sandi
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAuthMode('forgot-password');
+                            setResetStep(1);
+                            setAuthError('');
+                            setResetSuccessMsg('');
+                            setResetCode('');
+                            setResetPreviewCode(null);
+                          }}
+                          className="text-[11px] font-bold text-[#00A651] hover:text-[#008F45] hover:underline cursor-pointer"
+                        >
+                          Lupa kata sandi?
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <input
+                          type={showAuthPassword ? 'text' : 'password'}
+                          required
+                          placeholder="Minimal 6 karakter"
+                          value={authPassword}
+                          onChange={(e) => setAuthPassword(e.target.value)}
+                          className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all text-slate-900"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowAuthPassword(!showAuthPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 cursor-pointer transition-colors"
+                          title={showAuthPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                          aria-label={showAuthPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                        >
+                          {showAuthPassword ? (
+                            <EyeOff className="w-4 h-4 text-slate-500" />
+                          ) : (
+                            <Eye className="w-4 h-4 text-slate-400" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
-
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                    Alamat Email Aktif
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="nama@email.com"
-                    value={authEmail}
-                    onChange={(e) => setAuthEmail(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
-                  />
-                </div>
-
-                {authMode === 'register' && (
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                      Nomor WhatsApp (Untuk Notifikasi VIP)
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="Contoh: 081234567890"
-                      value={authWhatsapp}
-                      onChange={(e) => setAuthWhatsapp(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
-                    />
-                  </div>
-                )}
-
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-[11px] font-bold text-slate-700">
-                      Kata Sandi
-                    </label>
-                    {authMode === 'login' && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setAuthMode('forgot-password');
-                          setResetStep(1);
-                          setAuthError('');
-                          setResetSuccessMsg('');
-                          setResetCode('');
-                          setResetPreviewCode(null);
-                        }}
-                        className="text-[11px] font-bold text-[#00A651] hover:text-[#008F45] hover:underline cursor-pointer"
-                      >
-                        Lupa kata sandi?
-                      </button>
-                    )}
-                  </div>
-                  <input
-                    type="password"
-                    required
-                    placeholder="Minimal 6 karakter"
-                    value={authPassword}
-                    onChange={(e) => setAuthPassword(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651] outline-hidden transition-all"
-                  />
-                </div>
 
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-md shadow-[#00A651]/20 transition-all cursor-pointer mt-2"
+                  className="w-full py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-md shadow-[#00A651]/20 transition-all cursor-pointer mt-2 flex items-center justify-center gap-2"
                 >
-                  {authMode === 'login' ? 'Masuk ke Dashboard' : 'Daftar Akun Sekarang'}
+                  <span>
+                    {pendingCheckoutPlan
+                      ? authMode === 'login'
+                        ? 'Masuk & Lanjut ke Pembayaran QRIS →'
+                        : 'Daftar & Lanjut ke Pembayaran QRIS →'
+                      : authMode === 'login'
+                      ? 'Masuk ke Dashboard'
+                      : 'Daftar Akun Sekarang'}
+                  </span>
                 </button>
+
+                {/* Google Sign-In Divider & Button */}
+                <div className="relative my-3">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-slate-200" />
+                  </div>
+                  <div className="relative flex justify-center text-[10px] uppercase">
+                    <span className="bg-white px-2 text-slate-400 font-bold tracking-wider">
+                      {authMode === 'register' ? 'atau daftar dengan' : 'atau masuk dengan'}
+                    </span>
+                  </div>
+                </div>
+
+                <GoogleLoginButton
+                  mode={authMode === 'register' ? 'register' : 'login'}
+                  buttonText={
+                    pendingCheckoutPlan
+                      ? authMode === 'register'
+                        ? 'Daftar dengan Google & Lanjut Bayar'
+                        : 'Masuk dengan Google & Lanjut Bayar'
+                      : undefined
+                  }
+                  onSuccess={() => {
+                    setShowAuthModal(false);
+                    if (pendingCheckoutPlan) {
+                      const targetPlan = pendingCheckoutPlan;
+                      setPendingCheckoutPlan(null);
+                      setTimeout(() => {
+                        openPaymentModal(targetPlan);
+                      }, 350);
+                    }
+                  }}
+                  onError={(err) => setAuthError(err)}
+                />
+
+                {/* 1-Click Demo Login Helper */}
+                {authMode === 'login' && (
+                  <div className="pt-2 text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        login('trader@realistisfx.com', 'trader123');
+                        setShowAuthModal(false);
+                        if (pendingCheckoutPlan) {
+                          const targetPlan = pendingCheckoutPlan;
+                          setPendingCheckoutPlan(null);
+                          setTimeout(() => {
+                            openPaymentModal(targetPlan);
+                          }, 350);
+                        }
+                      }}
+                      className="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 hover:underline cursor-pointer bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors inline-flex items-center gap-1.5"
+                    >
+                      <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                      <span>Klik Cepat: Masuk Akun Demo (trader@realistisfx.com)</span>
+                    </button>
+                  </div>
+                )}
               </form>
             )}
           </div>
