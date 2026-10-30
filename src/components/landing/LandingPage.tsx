@@ -1935,7 +1935,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Analisis Teknikal Baku &amp; Simulasi Money Management (MM)</strong></span>
+                    <span><strong>Ujian Akhir SOP RealistisFx</strong> (Evaluasi Pemahaman Teknikal &amp; MM)</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />

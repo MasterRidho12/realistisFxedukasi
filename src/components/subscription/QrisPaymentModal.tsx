@@ -122,7 +122,7 @@ export default function QrisPaymentModal() {
         'Metode Baku Fixed Stop Loss 30 Pips & Risk Reward 1:2',
         'Kalkulator Lot Unlimited (Semua Pair Forex & XAUUSD Gold)',
         'Checklist SOP Anti-FOMO & Jurnal Trading Interaktif',
-        'Analisis Teknikal Baku & Simulasi Money Management Terapan',
+        'Ujian Akhir SOP (Evaluasi Pemahaman Analisis Teknikal & Money Management)',
         'Akses materi selamanya tanpa biaya bulanan (Lifetime)',
       ],
     },
@@ -977,7 +977,7 @@ export default function QrisPaymentModal() {
                         </div>
                         <div className="flex items-start gap-1.5">
                           <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
-                          <span className="leading-tight">Analisis Teknikal Baku &amp; Simulasi Money Management Terapan</span>
+                          <span className="leading-tight">Ujian Akhir SOP (Evaluasi Pemahaman Teknikal &amp; MM)</span>
                         </div>
                       </div>
                     </div>

@@ -102,15 +102,15 @@ const MODULES: AcademyModule[] = [
   {
     id: 'm5',
     level: 5,
-    title: 'Master Analisis Teknikal & Simulasi Money Management (MM)',
+    title: 'Master Analisis Teknikal & Ujian Akhir SOP',
     duration: '90 Menit',
-    summary: 'Penguasaan analisis teknikal multi-timeframe, eksekusi entry baku, simulasi Money Management 1%, dan compounding modal.',
+    summary: 'Penguasaan analisis teknikal multi-timeframe, eksekusi entry baku, evaluasi pemahaman SOP 1%, dan compounding modal.',
     isCompleted: false,
     proOnly: true,
     lessons: [
       'Pelajaran 1: Rencana Compounding Modal & Manajemen Penarikan Profit (Withdrawal Routine)',
       'Pelajaran 2: Integrasi Multi-Timeframe (H4 Trend, H1 Area SND, M15 Entry Trigger)',
-      'Pelajaran 3: Studi Kasus Eksekusi Teknikal Baku & Simulasi Money Management Terapan',
+      'Pelajaran 3: Ujian Akhir SOP (Evaluasi Pemahaman Analisis Teknikal & Money Management)',
     ],
   },
 ];
