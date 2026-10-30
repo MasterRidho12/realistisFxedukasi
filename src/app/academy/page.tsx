@@ -138,91 +138,75 @@ export default function AcademyPage() {
   };
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-5">
+    <div className="space-y-4 pb-12">
+      {/* Top Header & Compact Progress */}
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
               <GraduationCap className="w-5 h-5" />
             </span>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-              Gamified Academy — Kurikulum Trader Realistis
+            <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
+              Modul Edukasi Trader Realistis
             </h1>
+            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-[#00A651] border border-emerald-200">
+              Level 0 - 5
+            </span>
           </div>
-          <p className="text-xs text-slate-600 max-w-2xl">
-            Modul Dasar-Dasar Forex Gratis untuk pemula &amp; Modul Lanjutan Level 1-5 SOP Anti-MC untuk trader mandiri.
+          <p className="text-xs text-slate-600">
+            Dasar Forex Gratis untuk pemula &amp; Modul Lanjutan Level 1-5 SOP Anti-Margin Call (Rp 100.000 sekali bayar).
           </p>
         </div>
 
-        {!hasAcademyAccess ? (
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 shrink-0">
+          {/* Progress Indicator */}
+          <div className="space-y-1 min-w-[160px] sm:min-w-[180px]">
+            <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+              <span>Kemajuan Belajar</span>
+              <span className="text-[#00A651] font-bold">{completedCount}/{MODULES.length} Selesai</span>
+            </div>
+            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
+              <div
+                className="h-full bg-[#00A651] rounded-full transition-all duration-300"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          </div>
+
+          {!hasAcademyAccess ? (
             <button
               onClick={() => openPaymentModal('EDUKASI')}
-              className="px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+              className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all"
             >
-              <Sparkles className="w-3.5 h-3.5" /> Beli Paket Edukasi Lengkap (Rp 100.000)
+              <Sparkles className="w-3.5 h-3.5" /> Buka Edukasi Lvl 1-5 (Rp 100k)
             </button>
-          </div>
-        ) : (
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
-            <ShieldCheck className="w-4 h-4 text-[#00A651]" />
-            <span>Akses Edukasi Terbuka Penuh</span>
-          </div>
-        )}
+          ) : (
+            <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+              <ShieldCheck className="w-4 h-4 text-[#00A651]" />
+              <span>Akses Penuh Terbuka</span>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Notice Banner */}
+      {/* Slim Notice Pill for Unpaid Users */}
       {!hasAcademyAccess && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-          <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-[#00A651] text-white shadow-sm shrink-0">
-              <GraduationCap className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-black uppercase text-emerald-950 tracking-wider">
-                  Modul Dasar Forex Gratis • Modul Lanjutan Level 1-5 (Rp 100.000)
-                </span>
-                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-300">
-                  SEKALI BAYAR SEUMUR HIDUP
-                </span>
-              </div>
-              <p className="text-xs text-slate-700 mt-1 max-w-2xl leading-relaxed">
-                Anda dapat mempelajari materi <strong>Dasar-Dasar Forex gratis</strong>. Untuk membuka seluruh 5 modul lanjutan (SOP Money Management 1%, Fixed SL 30 Pips, Supply-Demand Zone, dan Analisis Teknikal Baku), aktifkan Paket Edukasi Realistis hanya Rp 100.000 via QRIS.
-              </p>
-            </div>
+        <div className="px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50/50 to-emerald-50 border border-emerald-200 text-xs text-emerald-950 flex flex-wrap items-center justify-between gap-2 shadow-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#00A651] animate-pulse" />
+            <span>
+              <strong>Modul Level 0 Gratis untuk Anda.</strong> Buka seluruh Modul Lanjutan Level 1-5 &amp; SOP Anti-MC hanya <strong>Rp 100.000</strong> (sekali bayar seumur hidup).
+            </span>
           </div>
           <button
             onClick={() => openPaymentModal('EDUKASI')}
-            className="shrink-0 px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-98 transition-all cursor-pointer"
+            className="font-extrabold text-[#00A651] hover:text-[#008F45] hover:underline cursor-pointer flex items-center gap-1 shrink-0 ml-auto"
           >
-            <Sparkles className="w-4 h-4" /> Beli Akses Edukasi (Rp 100k)
+            <span>Beli Rp 100k via QRIS</span>
+            <Sparkles className="w-3 h-3" />
           </button>
         </div>
       )}
-
-      {/* Progress Bar Header */}
-      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="text-xs text-slate-500">Kemajuan Belajar Anda:</div>
-          <div className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <span>{completedCount} dari 5 Modul Selesai ({progressPercent}%)</span>
-            {completedCount >= 1 && (
-              <span className="text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold border border-emerald-200">
-                Level {completedCount} Lulus
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="w-full sm:w-64 bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
-          <div
-            className="h-full bg-[#00A651] rounded-full transition-all duration-300"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </div>
 
       {/* Modules List & Active Viewer */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

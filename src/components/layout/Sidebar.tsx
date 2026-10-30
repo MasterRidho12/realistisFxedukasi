@@ -34,6 +34,13 @@ const navigationItems = [
     badgeColor: 'blue',
   },
   {
+    name: 'Modul Edukasi Trader',
+    href: '/academy',
+    icon: GraduationCap,
+    badge: 'Gratis & 100k',
+    badgeColor: 'green',
+  },
+  {
     name: 'Risk & Lot Calculator',
     href: '/calculator',
     icon: Calculator,
@@ -80,13 +87,6 @@ const navigationItems = [
     icon: AlertTriangle,
     badge: 'PRO',
     proOnly: true,
-  },
-  {
-    name: 'Gamified Academy',
-    href: '/academy',
-    icon: GraduationCap,
-    badge: 'Rp 100k',
-    badgeColor: 'amber',
   },
   {
     name: 'Bot Assistant (Telegram)',

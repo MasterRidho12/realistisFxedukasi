@@ -112,6 +112,17 @@ export default function DashboardOverviewPage() {
 
   const coreFeatures = [
     {
+      title: 'Modul Edukasi Trader (Academy)',
+      description: 'Materi Dasar-Dasar Forex Gratis untuk pemula & Modul Lanjutan Level 1-5 SOP Anti-MC.',
+      href: '/academy',
+      icon: GraduationCap,
+      freeStatus: 'Modul Dasar Gratis (Terbuka)',
+      proStatus: 'Akses Penuh Lvl 1-5 + Teknikal & MM',
+      isProFeature: false,
+      badge: 'Gratis & 100k',
+      badgeColor: 'green',
+    },
+    {
       title: 'Risk & Lot Calculator',
       description: 'Hitung lot aman otomatis berdasarkan toleransi risiko 1-2% modal dan jarak SL pips.',
       href: '/calculator',
@@ -197,17 +208,6 @@ export default function DashboardOverviewPage() {
       proStatus: 'Simulasi Titik MC Realtime',
       isProFeature: true,
       badge: 'Anti-MC',
-      badgeColor: 'amber',
-    },
-    {
-      title: 'Gamified Academy',
-      description: 'Kurikulum trading realistis langkah demi langkah untuk membangun mental trader profesional.',
-      href: '/academy',
-      icon: GraduationCap,
-      freeStatus: 'Terkunci (Paket Rp 100k)',
-      proStatus: 'Akses Penuh Lvl 1-5 + Teknikal & MM',
-      isProFeature: true,
-      badge: 'Rp 100k',
       badgeColor: 'amber',
     },
     {
