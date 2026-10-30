@@ -132,7 +132,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Buka Edukasi (Rp100k)</span>
+                <span>Buka Edukasi (Rp250k)</span>
               </>
             )}
           </button>

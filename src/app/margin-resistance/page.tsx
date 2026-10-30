@@ -95,13 +95,13 @@ export default function MarginResistancePage() {
             Kalkulator Ketahanan Margin (Anti-MC) Khusus Member PRO
           </h2>
           <p className="text-xs text-slate-600 leading-relaxed font-normal">
-            Mengetahui titik harga pasti likuidasi Margin Call menyelamatkan ribuan trader dari kehancuran modal akun. Buka akses penuh dengan Paket Edukasi Realistis hanya <span className="text-[#00A651] font-bold">Rp 100.000 sekali bayar</span>.
+            Mengetahui titik harga pasti likuidasi Margin Call menyelamatkan ribuan trader dari kehancuran modal akun. Buka akses penuh dengan Paket Edukasi Realistis hanya <span className="text-[#00A651] font-bold">Promo Rp 250.000/bulan</span> (Normal <span className="line-through text-slate-400">Rp 800.000</span>).
           </p>
           <button
             onClick={() => openPaymentModal('EDUKASI')}
             className="px-5 py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
           >
-            Aktivasi Paket Edukasi (Rp 100k) Sekarang
+            Aktivasi Paket Edukasi (Rp 250k) Sekarang
           </button>
         </div>
       ) : (

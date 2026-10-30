@@ -119,7 +119,7 @@ export default function DashboardOverviewPage() {
       freeStatus: 'Modul Dasar Gratis (Terbuka)',
       proStatus: 'Akses Penuh Lvl 1-5 + Teknikal & MM',
       isProFeature: false,
-      badge: 'Gratis & 100k',
+      badge: 'Gratis & 250k',
       badgeColor: 'green',
     },
     {
@@ -405,7 +405,7 @@ export default function DashboardOverviewPage() {
                   className="w-full py-2.5 px-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-extrabold shadow-md shadow-[#00A651]/20 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Buka Edukasi Lengkap (Rp 100.000)</span>
+                  <span>Buka Edukasi Lengkap (Rp 250.000 / Bln)</span>
                 </button>
               )}
             </div>
@@ -456,7 +456,7 @@ export default function DashboardOverviewPage() {
                 className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs border border-slate-300 transition-all flex items-center gap-2 cursor-pointer text-center"
               >
                 <Sparkles className="w-4 h-4 text-emerald-600" />
-                <span>Buka Edukasi (Rp100k)</span>
+                <span>Buka Edukasi (Rp250k)</span>
               </button>
             )}
           </div>
@@ -869,7 +869,7 @@ export default function DashboardOverviewPage() {
             </p>
           </div>
           <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200 self-start sm:self-auto">
-            Freemium (Dasar Forex Gratis &amp; Edukasi Lengkap Rp 100.000)
+            Freemium (Dasar Forex Gratis &amp; Edukasi Lengkap Rp 250.000 / Bulan)
           </span>
         </div>
 

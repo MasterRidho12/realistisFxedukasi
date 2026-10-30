@@ -37,7 +37,7 @@ const navigationItems = [
     name: 'Modul Edukasi Trader',
     href: '/academy',
     icon: GraduationCap,
-    badge: 'Gratis & 100k',
+    badge: 'Gratis & 250k',
     badgeColor: 'green',
   },
   {
@@ -188,7 +188,7 @@ export default function Sidebar() {
               <p className="text-[10px] text-slate-500">
                 {isPending
                   ? 'Bukti bayar sedang diverifikasi admin via WA'
-                  : 'Aktivasi Paket Edukasi Rp 100.000 sekali bayar untuk akses materi & tools tanpa batas'}
+                  : 'Aktivasi Paket Edukasi Rp 250.000/bulan untuk akses materi & tools tanpa batas'}
               </p>
             </div>
           ) : (
@@ -271,14 +271,28 @@ export default function Sidebar() {
         {!isPro ? (
           <div className="p-3 m-3 rounded-2xl bg-gradient-to-br from-emerald-50 via-white to-emerald-50/50 border border-emerald-200 relative overflow-hidden shadow-sm">
             <div className="relative z-10 space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="p-1 rounded-md bg-emerald-100 text-[#00A651]">
-                  <Sparkles className="w-4 h-4" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <div className="p-1 rounded-md bg-emerald-100 text-[#00A651]">
+                    <Sparkles className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-xs font-bold text-slate-900 tracking-wide">Edukasi RealistisFx</span>
                 </div>
-                <span className="text-xs font-bold text-slate-900 tracking-wide">Edukasi RealistisFx</span>
+                <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-600 border border-rose-200">
+                  Hemat 69%
+                </span>
+              </div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-[11px] line-through text-slate-400 font-semibold decoration-rose-500">
+                  Rp 800.000
+                </span>
+                <span className="text-sm font-black text-[#00A651]">
+                  Rp 250.000
+                </span>
+                <span className="text-[10px] text-slate-500 font-medium">/bln</span>
               </div>
               <p className="text-[11px] text-slate-600 leading-relaxed">
-                Hanya <span className="text-[#00A651] font-bold">Rp100.000</span> sekali bayar seumur hidup via QRIS. Buka Modul Lvl 1-5, Kalkulator Unlimited, &amp; SOP Anti-MC.
+                Akses seluruh Modul Video Lvl 1-5, Kalkulator Lot Unlimited, &amp; SOP Anti-MC.
               </p>
               <button
                 type="button"
@@ -286,7 +300,7 @@ export default function Sidebar() {
                 className="w-full py-2 px-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                {isPending ? 'Lihat Bukti QRIS' : 'Aktivasi Edukasi (Rp100k)'}
+                {isPending ? 'Lihat Bukti QRIS' : 'Aktivasi Edukasi (Rp250k)'}
               </button>
             </div>
           </div>

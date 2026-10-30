@@ -1290,7 +1290,7 @@ export default function NewsRadarPage() {
                                 className="px-6 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
                               >
                                 <Sparkles className="w-4 h-4" />
-                                <span>Buka Playbook Berita (Paket Edukasi Rp 100.000)</span>
+                                <span>Buka Playbook Berita (Paket Edukasi Rp 250k)</span>
                               </button>
                             </div>
                           </div>

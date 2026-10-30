@@ -220,7 +220,7 @@ export default function CalculatorPage() {
                 <span className="font-bold text-slate-900">Status Kuota Harian Free:</span> Tersisa {Math.max(0, 3 - user.dailyCalculatorCount)} dari 3 kalkulasi hari ini.
               </p>
               <p className="text-[11px] text-slate-500">
-                Aktivasi Paket Edukasi Realistis Rp 100.000 sekali bayar untuk kalkulasi tanpa batas + buka seluruh modul SOP Anti-MC.
+                Aktivasi Paket Edukasi Realistis Promo Rp 250.000/bulan (Normal Rp 800.000) untuk kalkulasi tanpa batas + buka seluruh modul SOP Anti-MC.
               </p>
             </div>
           </div>
@@ -228,7 +228,7 @@ export default function CalculatorPage() {
             onClick={() => openPaymentModal('EDUKASI')}
             className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs whitespace-nowrap shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
           >
-            Aktivasi Edukasi Rp 100k
+            Aktivasi Edukasi (Rp 250k)
           </button>
         </div>
       ) : (
@@ -272,7 +272,7 @@ export default function CalculatorPage() {
             <div>
               <h4 className="text-xs font-bold text-slate-900">Kuota Harian (3x) Telah Habis!</h4>
               <p className="text-[11px] text-slate-600">
-                Aktivasi Paket Edukasi hanya Rp 100.000 sekali bayar untuk kalkulasi tanpa batas + modul SOP Anti-MC.
+                Aktivasi Paket Edukasi hanya Rp 250.000/bulan (Normal Rp 800.000) untuk kalkulasi tanpa batas + modul SOP Anti-MC.
               </p>
             </div>
           </div>
@@ -280,7 +280,7 @@ export default function CalculatorPage() {
             onClick={() => openPaymentModal('EDUKASI')}
             className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs cursor-pointer shadow-xs"
           >
-            Aktivasi Edukasi via QRIS (Rp 100k)
+            Aktivasi Edukasi via QRIS (Rp 250k)
           </button>
         </div>
       )}

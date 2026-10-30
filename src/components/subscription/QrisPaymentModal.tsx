@@ -108,29 +108,35 @@ export default function QrisPaymentModal() {
       desc: string;
       features: string[];
       savings?: string;
+      originalPrice?: string;
     }
   > = {
     EDUKASI: {
-      name: 'Paket Edukasi Trader Realistis (Modul Lengkap Lvl 1-5)',
-      amount: 100000,
-      label: 'Rp 100.000',
-      badge: 'Sekali Bayar • Akses Selamanya',
-      desc: 'Akses penuh selamanya ke seluruh 5 modul Gamified Academy, SOP Money Management 1%, dan Analisis Teknikal Baku.',
+      name: 'Paket Edukasi Trader Realistis & SOP Anti-MC',
+      amount: 250000,
+      label: 'Rp 250.000 / bulan',
+      originalPrice: 'Rp 800.000',
+      badge: 'PROMO BULAN INI • DISKON 69%',
+      savings: 'Hemat Rp 550.000',
+      desc: 'Akses penuh seluruh 5 video masterclass kurikulum, SOP Money Management 1%, kalkulator unlimited, dan bimbingan tanya jawab materi.',
       features: [
-        '5 Modul Edukasi Lengkap (Pondasi MM 1%, Key Level S&R, Anti-FOMO, News, Teknikal & MM)',
-        'SOP Baku Money Management 1% & Aturan Ketat Anti-Margin Call',
-        'Metode Baku Fixed Stop Loss 30 Pips & Risk Reward 1:2',
-        'Kalkulator Lot Unlimited (Semua Pair Forex & XAUUSD Gold)',
+        'Akses Penuh Seluruh Modul Edukasi (Level 1 - 5)',
+        'SOP Baku Money Management 1% & Aturan Ketat Anti-MC',
+        'Metode Baku Fixed Stop Loss 30 Pips (Risk:Reward Min. 1:2)',
+        'Struktur Market H1/H4 & Supply-Demand Zone Valid',
+        'Psikologi Trading Anti-FOMO & Melawan Revenge Trading',
+        'Kalkulator Lot Unlimited (Semua Pair Forex & Emas XAUUSD)',
         'Checklist SOP Anti-FOMO & Jurnal Trading Interaktif',
-        'Ujian Akhir SOP (Evaluasi Pemahaman Analisis Teknikal & Money Management)',
-        'Akses materi selamanya tanpa biaya bulanan (Lifetime)',
+        'Ujian Akhir SOP RealistisFx (Evaluasi Pemahaman Teknikal & MM)',
+        'Konsultasi & Tanya Jawab Materi via WhatsApp Admin',
       ],
     },
     '1_MONTH': {
-      name: 'Paket Edukasi Trader Realistis (Modul Lengkap Lvl 1-5)',
-      amount: 100000,
-      label: 'Rp 100.000',
-      badge: 'Sekali Bayar • Akses Selamanya',
+      name: 'Paket Edukasi Trader Realistis (1 Bulan)',
+      amount: 250000,
+      label: 'Rp 250.000 / bulan',
+      originalPrice: 'Rp 800.000',
+      badge: 'PROMO BULAN INI',
       desc: 'Akses penuh ke seluruh modul edukasi dan kalkulator.',
       features: [
         '5 Modul Edukasi Lengkap (Lvl 1-5)',
@@ -140,17 +146,19 @@ export default function QrisPaymentModal() {
     },
     '3_MONTHS': {
       name: 'Paket Edukasi Trader Realistis',
-      amount: 100000,
-      label: 'Rp 100.000',
-      badge: 'Sekali Bayar',
+      amount: 250000,
+      label: 'Rp 250.000 / bulan',
+      originalPrice: 'Rp 800.000',
+      badge: 'PROMO BULAN INI',
       desc: 'Akses seluruh modul edukasi.',
       features: ['5 Modul Edukasi Lengkap'],
     },
     '1_YEAR': {
       name: 'Paket Edukasi Trader Realistis',
-      amount: 100000,
-      label: 'Rp 100.000',
-      badge: 'Sekali Bayar',
+      amount: 250000,
+      label: 'Rp 250.000 / bulan',
+      originalPrice: 'Rp 800.000',
+      badge: 'PROMO BULAN INI',
       desc: 'Akses seluruh modul edukasi.',
       features: ['5 Modul Edukasi Lengkap'],
     },
@@ -857,7 +865,7 @@ export default function QrisPaymentModal() {
             )}
 
             {/* =========================================================================
-                SLIDE 2: PILIH PAKET EDUKASI (FOKUS EDUKASI 100K & GRATIS DASAR FOREX)
+                SLIDE 2: PILIH PAKET EDUKASI (FOKUS EDUKASI 250K & GRATIS DASAR FOREX)
                ========================================================================= */}
             {step === 2 && (
               <div className="space-y-5 animate-in fade-in duration-150">
@@ -931,8 +939,13 @@ export default function QrisPaymentModal() {
                     </div>
                   </div>
 
-                  {/* Card 2: Paket Edukasi Realistis Rp 100.000 (Rekomendasi Utama) */}
-                  <div className="p-5 rounded-2xl border-2 border-[#00A651] bg-emerald-50/70 shadow-md ring-2 ring-[#00A651]/20 flex flex-col justify-between space-y-4 relative">
+                  {/* Card 2: Paket Edukasi Realistis Rp 250.000 / Bulan (Rekomendasi Utama) */}
+                  <div className="p-5 rounded-2xl border-2 border-[#00A651] bg-emerald-50/70 shadow-lg ring-2 ring-[#00A651]/20 flex flex-col justify-between space-y-4 relative">
+                    {/* Badge Promo Diskon */}
+                    <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-[#00A651] to-emerald-600 text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
+                      ★ PROMO SPESIAL • DISKON 69%
+                    </div>
+
                     <div className="space-y-3">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-2.5">
@@ -941,11 +954,13 @@ export default function QrisPaymentModal() {
                           </div>
                           <div>
                             <h4 className="font-extrabold text-sm text-slate-900">
-                              Paket Edukasi Lengkap Realistis
+                              Paket Edukasi Lengkap &amp; SOP Anti-MC
                             </h4>
-                            <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider mt-1 bg-[#00A651] text-white">
-                              Sekali Bayar • Akses Selamanya
-                            </span>
+                            <div className="flex items-center gap-1.5 mt-1">
+                              <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 border border-rose-200">
+                                Hemat Rp 550.000
+                              </span>
+                            </div>
                           </div>
                         </div>
 
@@ -954,14 +969,32 @@ export default function QrisPaymentModal() {
                         </div>
                       </div>
 
-                      <p className="text-[11px] text-slate-600 leading-relaxed">
-                        Kurikulum lengkap SOP Anti Margin Call, Money Management 1%, dan seluruh tools trading tanpa batas.
-                      </p>
+                      {/* Harga Asli Coret & Harga Promo */}
+                      <div className="bg-white/90 p-3 rounded-xl border border-emerald-200/80 space-y-1">
+                        <div className="flex items-center gap-2 text-slate-400">
+                          <span className="text-[11px] font-semibold">Harga Normal:</span>
+                          <span className="text-sm line-through font-bold text-slate-400 decoration-rose-500 decoration-2">
+                            Rp 800.000
+                          </span>
+                          <span className="text-[10px] font-black text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100">
+                            -69%
+                          </span>
+                        </div>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-2xl font-black font-mono text-[#00A651]">
+                            Rp 250.000
+                          </span>
+                          <span className="text-xs text-slate-600 font-bold">/ bulan</span>
+                        </div>
+                        <p className="text-[10px] text-emerald-800 font-semibold">
+                          Investasi terbaik melindungi modal trading Anda dari kehancuran Margin Call
+                        </p>
+                      </div>
 
-                      <div className="space-y-1 text-[11px] text-slate-800 pt-1 font-medium">
+                      <div className="space-y-1.5 text-[11px] text-slate-800 pt-1 font-medium">
                         <div className="flex items-start gap-1.5">
                           <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
-                          <span className="leading-tight">Akses Penuh Seluruh Modul Lvl 1 - 5</span>
+                          <span className="leading-tight">Akses Penuh Seluruh Modul Edukasi Lvl 1 - 5</span>
                         </div>
                         <div className="flex items-start gap-1.5">
                           <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
@@ -969,7 +1002,7 @@ export default function QrisPaymentModal() {
                         </div>
                         <div className="flex items-start gap-1.5">
                           <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
-                          <span className="leading-tight">Kalkulator Lot Unlimited (Semua Pair + XAUUSD)</span>
+                          <span className="leading-tight">Kalkulator Lot Unlimited (Semua Pair Forex &amp; XAUUSD)</span>
                         </div>
                         <div className="flex items-start gap-1.5">
                           <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
@@ -977,21 +1010,20 @@ export default function QrisPaymentModal() {
                         </div>
                         <div className="flex items-start gap-1.5">
                           <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
-                          <span className="leading-tight">Ujian Akhir SOP (Evaluasi Pemahaman Teknikal &amp; MM)</span>
+                          <span className="leading-tight">Ujian Akhir SOP RealistisFx (Evaluasi Teknikal &amp; MM)</span>
+                        </div>
+                        <div className="flex items-start gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
+                          <span className="leading-tight">Konsultasi &amp; Tanya Jawab Materi via WhatsApp Admin</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="pt-3 border-t border-emerald-200 flex items-baseline justify-between">
-                      <div>
-                        <div className="text-xl font-black font-mono text-[#00A651]">
-                          Rp 100.000
-                        </div>
-                        <span className="text-[10px] text-emerald-800 font-extrabold block">
-                          Sekali bayar seumur hidup (Tanpa iuran bulanan)
-                        </span>
-                      </div>
-                      <span className="text-[11px] font-bold text-[#00A651] bg-white px-2 py-0.5 rounded-full border border-emerald-300">
+                    <div className="pt-3 border-t border-emerald-200 flex items-center justify-between">
+                      <span className="text-[11px] text-emerald-900 font-bold">
+                        Status Paket:
+                      </span>
+                      <span className="text-[11px] font-bold text-[#00A651] bg-white px-2.5 py-1 rounded-full border border-emerald-300 shadow-xs">
                         Terpilih ✓
                       </span>
                     </div>
@@ -1013,7 +1045,7 @@ export default function QrisPaymentModal() {
                     onClick={() => setStep(3)}
                     className="flex-1 py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <span>Lanjut ke Scan QRIS (Rp 100.000)</span>
+                    <span>Lanjut ke Scan QRIS (Rp 250.000 / Bulan)</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

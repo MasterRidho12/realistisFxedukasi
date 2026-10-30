@@ -103,14 +103,14 @@ export default function WatchlistPage() {
           <div className="flex items-center gap-2.5">
             <Lock className="w-5 h-5 text-amber-600 flex-shrink-0" />
             <p className="text-xs text-slate-700">
-              Anda berada di <span className="font-bold text-slate-900">Edukasi Dasar</span> (hanya menampilkan 1 pair acak AUDUSD). Buka Paket Edukasi Realistis (Rp 100.000 sekali bayar) untuk membuka analisa lengkap <span className="text-emerald-800 font-bold">XAUUSD, EURUSD, dan GBPUSD</span>.
+              Anda berada di <span className="font-bold text-slate-900">Edukasi Dasar</span> (hanya menampilkan 1 pair acak AUDUSD). Buka Paket Edukasi Realistis (Promo Rp 250.000/bulan dari harga normal Rp 800.000) untuk membuka analisa lengkap <span className="text-emerald-800 font-bold">XAUUSD, EURUSD, dan GBPUSD</span>.
             </p>
           </div>
           <button
             onClick={() => openPaymentModal('EDUKASI')}
             className="px-3.5 py-1.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-bold whitespace-nowrap cursor-pointer shadow-sm shadow-[#00A651]/20"
           >
-            Aktivasi Edukasi Rp 100k
+            Aktivasi Edukasi (Rp 250k)
           </button>
         </div>
       )}
@@ -138,7 +138,7 @@ export default function WatchlistPage() {
                     Analisa Zona {item.pair} Terkunci
                   </h3>
                   <p className="text-xs text-slate-600 max-w-xs leading-relaxed">
-                    Khusus member Paket Edukasi Realistis Rp 100.000 (sekali bayar seumur hidup) untuk mendapatkan Buy/Sell Zone presisi.
+                    Khusus member Paket Edukasi Realistis Promo Rp 250.000/bulan (Normal Rp 800.000) untuk mendapatkan Buy/Sell Zone presisi.
                   </p>
                   <button
                     onClick={() => openPaymentModal('EDUKASI')}

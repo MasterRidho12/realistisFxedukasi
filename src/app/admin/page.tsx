@@ -86,8 +86,8 @@ export default function AdminDashboardPage() {
   // Form State for VIP & Free Menu Configuration
   const [menuForm, setMenuForm] = useState({
     freeDailyCalculatorLimit: siteSettings.freeDailyCalculatorLimit ?? 3,
-    vipMonthlyPrice: siteSettings.vipMonthlyPrice ?? 100000,
-    academyPrice: siteSettings.academyPrice ?? 100000,
+    vipMonthlyPrice: siteSettings.vipMonthlyPrice ?? 250000,
+    academyPrice: siteSettings.academyPrice ?? 250000,
     botAssistantVipOnly: siteSettings.botAssistantVipOnly ?? false,
     newsScenarioVipOnly: siteSettings.newsScenarioVipOnly ?? false,
     marginResistanceVipOnly: siteSettings.marginResistanceVipOnly ?? false,
@@ -98,10 +98,10 @@ export default function AdminDashboardPage() {
 
   // Form State for Landing Page Configuration
   const [landingForm, setLandingForm] = useState({
-    landingAnnouncement: siteSettings.landingAnnouncement ?? '🔥 Paket Edukasi RealistisFx (Rp 100.000 Sekali Bayar) — Akses Modul Lengkap & SOP Anti Margin Call',
+    landingAnnouncement: siteSettings.landingAnnouncement ?? '🔥 Promo Terbatas: Paket Edukasi Realistis Cuma Rp 250.000/bln (Normal Rp 800.000) — Hemat Rp 550.000!',
     isAnnouncementActive: siteSettings.isAnnouncementActive ?? true,
     adminWhatsAppNumber: siteSettings.adminWhatsAppNumber ?? '6287774229255',
-    copyTradeWaMessage: siteSettings.copyTradeWaMessage ?? 'Halo Admin RealistisFx, saya tertarik aktivasi Paket Edukasi Realistis (Rp 100.000 sekali bayar).',
+    copyTradeWaMessage: siteSettings.copyTradeWaMessage ?? 'Halo Admin RealistisFx, saya tertarik aktivasi Paket Edukasi Realistis (Promo Rp 250.000/bulan dari normal Rp 800.000).',
     vipRegistrationOpen: siteSettings.vipRegistrationOpen ?? true,
   });
 
@@ -109,8 +109,8 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     setMenuForm({
       freeDailyCalculatorLimit: siteSettings.freeDailyCalculatorLimit ?? 3,
-      vipMonthlyPrice: siteSettings.vipMonthlyPrice ?? 100000,
-      academyPrice: siteSettings.academyPrice ?? 100000,
+      vipMonthlyPrice: siteSettings.vipMonthlyPrice ?? 250000,
+      academyPrice: siteSettings.academyPrice ?? 250000,
       botAssistantVipOnly: siteSettings.botAssistantVipOnly ?? false,
       newsScenarioVipOnly: siteSettings.newsScenarioVipOnly ?? false,
       marginResistanceVipOnly: siteSettings.marginResistanceVipOnly ?? false,
@@ -206,7 +206,7 @@ export default function AdminDashboardPage() {
   const approvedRequests = subscriptionRequests.filter((r) => r.status === 'APPROVED');
   const totalProMembers = allUsers.filter((u) => u.tier === 'PRO').length;
   const totalFreeMembers = allUsers.filter((u) => u.tier === 'FREE').length;
-  const totalRevenue = approvedRequests.reduce((acc, r) => acc + (r.amount || 100000), 0);
+  const totalRevenue = approvedRequests.reduce((acc, r) => acc + (r.amount || 250000), 0);
 
   const handleApprove = (requestId: string, userName: string) => {
     approveSubscription(requestId);

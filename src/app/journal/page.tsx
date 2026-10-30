@@ -432,7 +432,7 @@ export default function JournalPage() {
             onClick={() => openPaymentModal('EDUKASI')}
             className="text-xs text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1 cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5" /> Buka Akses Unlimited Jurnal (Paket Edukasi Rp 100k)
+            <Sparkles className="w-3.5 h-3.5" /> Buka Akses Unlimited Jurnal (Paket Edukasi Rp 250k)
           </button>
         </div>
       ) : (

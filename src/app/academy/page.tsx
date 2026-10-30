@@ -119,7 +119,7 @@ const MODULES: AcademyModule[] = [
     duration: '57 Menit',
     summary: 'Memahami cara kerja leverage broker, margin, dan kenapa 90% retail trader bangkrut karena over-lot.',
     isCompleted: false,
-    proOnly: true, // Paket Edukasi 100k
+    proOnly: true, // Paket Edukasi 250k/bln
     lessons: [
       {
         id: 'm1_l1',
@@ -508,7 +508,7 @@ export default function AcademyPage() {
             </span>
           </div>
           <p className="text-xs text-slate-600">
-            Dasar Forex Gratis untuk pemula &amp; Video Modul Lanjutan Level 1-5 SOP Anti-Margin Call (Rp 100.000 sekali bayar).
+            Dasar Forex Gratis untuk pemula &amp; Video Modul Lanjutan Level 1-5 SOP Anti-Margin Call (Rp 250.000 / bulan).
           </p>
         </div>
 
@@ -532,7 +532,7 @@ export default function AcademyPage() {
               onClick={() => openPaymentModal('EDUKASI')}
               className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all"
             >
-              <Sparkles className="w-3.5 h-3.5" /> Buka Edukasi Lvl 1-5 (Rp 100k)
+              <Sparkles className="w-3.5 h-3.5" /> Buka Edukasi Lvl 1-5 (Rp 250k/bln)
             </button>
           ) : (
             <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
@@ -549,14 +549,14 @@ export default function AcademyPage() {
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#00A651] animate-pulse" />
             <span>
-              <strong>Video Modul Level 0 Gratis untuk Anda.</strong> Buka seluruh Video Modul Lanjutan Level 1-5 &amp; SOP Anti-MC hanya <strong>Rp 100.000</strong> (sekali bayar seumur hidup).
+              <strong>Video Modul Level 0 Gratis untuk Anda.</strong> Buka seluruh Video Modul Lanjutan Level 1-5 &amp; SOP Anti-MC hanya <strong>Rp 250.000 / bulan</strong> (Normal <span className="line-through decoration-rose-500 font-bold">Rp 800.000</span> — Hemat Rp 550.000).
             </span>
           </div>
           <button
             onClick={() => openPaymentModal('EDUKASI')}
             className="font-extrabold text-[#00A651] hover:text-[#008F45] hover:underline cursor-pointer flex items-center gap-1 shrink-0 ml-auto"
           >
-            <span>Beli Rp 100k via QRIS</span>
+            <span>Beli Rp 250k via QRIS</span>
             <Sparkles className="w-3 h-3" />
           </button>
         </div>
@@ -628,7 +628,7 @@ export default function AcademyPage() {
                       </span>
                     ) : isLocked ? (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1">
-                        <Lock className="w-3 h-3" /> Rp 100K
+                        <Lock className="w-3 h-3" /> Rp 250K/bln
                       </span>
                     ) : (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase bg-emerald-100 text-emerald-800 border border-emerald-200">
@@ -738,20 +738,25 @@ export default function AcademyPage() {
                 </div>
               </div>
 
-              {/* OVERLAY 1: IF MODULE IS LOCKED (User hasn't bought Rp 100k yet) */}
+              {/* OVERLAY 1: IF MODULE IS LOCKED (User hasn't bought Rp 250k yet) */}
               {isModuleLocked ? (
                 <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-20 space-y-3.5">
                   <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-400/30 text-amber-400 flex items-center justify-center shadow-lg shadow-amber-500/10 animate-bounce">
                     <Lock className="w-7 h-7" />
                   </div>
 
-                  <div className="max-w-md space-y-1">
+                  <div className="max-w-md space-y-1.5">
                     <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
                       ★ VIDEO MATERI EKSKLUSIF BERBAYAR
                     </span>
                     <h3 className="text-base sm:text-lg font-black text-white pt-1">
                       {currentLesson.title}
                     </h3>
+                    <div className="flex items-center justify-center gap-2 text-xs">
+                      <span className="text-slate-400">Harga Normal:</span>
+                      <span className="line-through text-slate-400 font-bold decoration-rose-500 decoration-2">Rp 800.000</span>
+                      <span className="text-emerald-400 font-black bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/40">Promo Rp 250.000 / Bln</span>
+                    </div>
                     <p className="text-xs text-slate-300 leading-relaxed">
                       Video modul Level {activeModule.level} ({currentLesson.duration} Menit) dilengkapi studi kasus grafik live MT5 &amp; SOP Baku Anti-MC. Buka akses instan melalui QRIS.
                     </p>
@@ -763,10 +768,10 @@ export default function AcademyPage() {
                       className="px-5 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs flex items-center gap-2 shadow-lg shadow-[#00A651]/30 hover:scale-105 active:scale-95 transition-all cursor-pointer"
                     >
                       <Sparkles className="w-4 h-4" />
-                      <span>Buka Akses Video (Rp 100.000 Sekali Bayar)</span>
+                      <span>Buka Akses Video (Rp 250.000 / Bulan)</span>
                     </button>
-                    <span className="text-[11px] text-slate-400 font-medium">
-                      ✓ Akses Seumur Hidup
+                    <span className="text-[11px] text-emerald-400 font-semibold">
+                      ✓ Hemat Rp 550.000 (Diskon 69%)
                     </span>
                   </div>
                 </div>

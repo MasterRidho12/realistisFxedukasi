@@ -744,7 +744,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             </a>
             <a href="#pricing" className="hover:text-[#00A651] transition-colors flex items-center gap-1">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              <span>Paket Edukasi (Rp100k)</span>
+              <span>Paket Edukasi (Rp250k)</span>
             </a>
             <a href="#free-education" className="hover:text-[#00A651] transition-colors flex items-center gap-1">
               <GraduationCap className="w-3.5 h-3.5 text-emerald-600" />
@@ -871,7 +871,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-900 font-extrabold">Paket Edukasi Lengkap (Rp 100.000)</div>
+                  <div className="text-slate-900 font-extrabold">Paket Edukasi Lengkap (Rp 250.000 / Bln)</div>
                   <div className="text-[10px] text-slate-400 font-normal">Akses penuh modul Lvl 1-5, SOP Anti-MC &amp; kalkulator</div>
                 </div>
               </a>
@@ -885,7 +885,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   <GraduationCap className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-900 font-extrabold">Paket Edukasi (Rp 100.000)</div>
+                  <div className="text-slate-900 font-extrabold">Paket Edukasi (Rp 250.000 / Bln)</div>
                   <div className="text-[10px] text-slate-500 font-normal">Kurikulum lengkap MM, margin, &amp; leverage Lvl 1-5</div>
                 </div>
               </a>
@@ -1117,7 +1117,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   Sinyal Trading Aktif &amp; Level Eksekusi Khusus Paket Edukasi Realistis
                 </span>
                 <span className="text-[11px] text-slate-600">
-                  Sinyal dan skenario trading aktif dapat diakses setelah mengaktifkan Paket Edukasi Realistis (Rp 100.000 sekali bayar seumur hidup). Anda dapat melihat rekap riwayat performa resmi di bawah ini.
+                  Sinyal dan skenario trading aktif dapat diakses setelah mengaktifkan Paket Edukasi Realistis (Promo Rp 250.000/bulan dari harga normal Rp 800.000). Anda dapat melihat rekap riwayat performa resmi di bawah ini.
                 </span>
               </div>
             </div>
@@ -1126,7 +1126,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs whitespace-nowrap shadow-xs transition-all shrink-0 flex items-center gap-1.5"
             >
               <Sparkles className="w-3.5 h-3.5 text-white" />
-              <span>Akses Edukasi (Rp100k)</span>
+              <span>Akses Edukasi (Rp250k)</span>
             </a>
           </div>
 
@@ -1338,7 +1338,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                                 className="w-full py-2.5 px-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-[#00A651]/20 transition-all text-center cursor-pointer"
                               >
                                 <Sparkles className="w-3.5 h-3.5 text-white" />
-                                <span>Aktivasi Paket Edukasi untuk Buka Akses (Rp 100.000)</span>
+                                <span>Aktivasi Paket Edukasi untuk Buka Akses (Rp 250k)</span>
                               </a>
                             )}
                           </div>
@@ -1793,7 +1793,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               </ul>
 
               <div className="p-2.5 rounded-xl bg-white border border-emerald-200 text-xs font-semibold text-slate-800 text-center">
-                Investasi Paket Edukasi: <strong className="text-[#00A651]">Rp 100.000 (Sekali Bayar Seumur Hidup)</strong>
+                Investasi Paket Edukasi: <span className="line-through text-slate-400 mr-1.5 font-bold">Rp 800.000</span><strong className="text-[#00A651]">Promo Rp 250.000 / Bulan</strong>
               </div>
 
               <a
@@ -1807,7 +1807,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         </div>
       </section>
 
-      {/* 8. Pricing Section (Edukasi Dasar Gratis vs Paket Edukasi Rp 100k) */}
+      {/* 8. Pricing Section (Edukasi Dasar Gratis vs Paket Edukasi Rp 250k/bln) */}
       <section id="pricing" className="py-16 sm:py-20 bg-slate-50 border-b border-slate-200 scroll-mt-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-3">
@@ -1815,10 +1815,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               PILIHAN AKSES BELAJAR TRADING
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              Edukasi Dasar Gratis atau Paket Edukasi Lengkap (Rp 100.000)
+              Edukasi Dasar Gratis atau Paket Edukasi Lengkap (Promo Rp 250.000 / Bulan)
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
-              Pelajari dasar-dasar forex secara gratis, atau buka seluruh kurikulum terstruktur Level 1 sampai 5 (SOP Anti-MC, Money Management 1%, dan Kalkulator Unlimited) hanya Rp 100.000 sekali bayar seumur hidup tanpa biaya langganan bulanan.
+              Pelajari dasar-dasar forex secara gratis, atau buka seluruh kurikulum terstruktur Level 1 sampai 5 (SOP Anti-MC, Money Management 1%, dan Kalkulator Unlimited) dengan harga promo spesial Rp 250.000 / bulan (Harga Normal <span className="line-through decoration-rose-500 font-semibold">Rp 800.000</span> — Hemat Rp 550.000).
             </p>
           </div>
 
@@ -1882,25 +1882,43 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               </button>
             </div>
 
-            {/* Edukasi Paid Tier Card (Rp 100.000 Sekali Bayar) - Recommended */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#00A651] shadow-xl relative flex flex-col justify-between space-y-6">
+            {/* Edukasi Paid Tier Card (Rp 250.000 / Bulan) - Recommended */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#00A651] shadow-2xl relative flex flex-col justify-between space-y-6">
               {/* Most Popular Badge */}
-              <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-[#00A651] text-white text-[10px] font-black tracking-widest uppercase shadow-md shadow-[#00A651]/20">
-                ★ PILIHAN TERBAIK • SEKALI BAYAR
+              <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-gradient-to-r from-[#00A651] to-emerald-600 text-white text-[10px] font-black tracking-widest uppercase shadow-md shadow-[#00A651]/25">
+                ★ PROMO SPESIAL BULAN INI • DISKON 69%
               </div>
 
               <div className="space-y-4">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-black">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  PAKET EDUKASI LENGKAP &amp; SOP ANTI-MC
-                </div>
-                <div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-black text-slate-900">Rp 100.000</span>
-                    <span className="text-xs text-slate-500 font-semibold">/ Sekali Bayar (Permanen)</span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-black">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    PAKET EDUKASI LENGKAP &amp; SOP ANTI-MC
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Kurikulum komprehensif trader mandiri bebas MC, fondasi money management 1%, dan SOP disiplin eksekusi Level 1 sampai 5.
+                  <span className="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-black uppercase tracking-wider">
+                    Hemat Rp 550.000
+                  </span>
+                </div>
+
+                <div>
+                  {/* Harga Normal Coret */}
+                  <div className="flex items-center gap-2 text-slate-400">
+                    <span className="text-xs font-semibold">Harga Normal:</span>
+                    <span className="text-base sm:text-lg line-through font-bold text-slate-400 decoration-rose-500 decoration-2">
+                      Rp 800.000
+                    </span>
+                    <span className="text-[10px] font-black text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100">
+                      -69%
+                    </span>
+                  </div>
+
+                  {/* Harga Promo Sekarang */}
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-3xl sm:text-4xl font-black text-slate-900">Rp 250.000</span>
+                    <span className="text-xs text-slate-500 font-semibold">/ bulan</span>
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                    Investasi proteksi modal trading Anda dari kehancuran Margin Call. Akses penuh ke seluruh kurikulum video masterclass Level 1-5, SOP baku Money Management 1%, kalkulator lot unlimited, dan bimbingan tanya jawab materi.
                   </p>
                 </div>
 
@@ -1950,7 +1968,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 className="w-full py-4 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-lg shadow-[#00A651]/25 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Aktivasi Paket Edukasi (Rp 100.000) via QRIS →</span>
+                <span>Aktivasi Paket Edukasi (Rp 250.000 / Bln) via QRIS →</span>
               </button>
             </div>
           </div>
@@ -1962,13 +1980,13 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="px-3 py-1 rounded-full bg-emerald-100 text-[#00A651] text-xs font-black uppercase tracking-wider">
-              KURIKULUM EDUKASI BERBAYAR (RP 100.000)
+              KURIKULUM EDUKASI BERBAYAR (RP 250.000 / BULAN)
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
               Pondasi yang Wajib Dikuasai Sebelum Menggunakan Sinyal
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
-              Kami percaya trader hebat lahir dari pemahaman risiko yang benar. Seluruh materi Level 1-5 berbayar Rp 100.000 sekali bayar untuk memastikan komitmen penuh tanpa distraksi.
+              Kami percaya trader hebat lahir dari pemahaman risiko yang benar. Seluruh materi Level 1-5 dirancang sistematis dengan harga promo Rp 250.000 / bulan (Normal Rp 800.000) untuk memastikan komitmen disiplin Anda.
             </p>
           </div>
 
@@ -2009,7 +2027,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               onClick={() => handleBuyPlan('EDUKASI')}
               className="px-6 py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs inline-flex items-center gap-2 shadow-lg shadow-[#00A651]/20 cursor-pointer transition-all hover:scale-[1.02] active:scale-98"
             >
-              <Sparkles className="w-4 h-4" /> Buka Akses Seluruh Modul Edukasi (Rp 100.000 via QRIS)
+              <Sparkles className="w-4 h-4" /> Buka Akses Seluruh Modul Edukasi (Rp 250.000 / Bln via QRIS)
             </button>
           </div>
         </div>
@@ -2109,8 +2127,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 a: 'Sama sekali TIDAK ADA jaminan profit pasti atau penggandaan modal. Nama kami "RealistisFx" karena kami menjunjung tinggi kejujuran dan edukasi realistis: pasar finansial selalu memiliki risiko fluktuasi harga. Layanan kami adalah alat bantu analisis probabilitas statistik, edukasi money management ketat (risk 1-2% per trade), dan sinyal dengan Stop Loss terukur demi melindungi modal Anda dari kehancuran Margin Call.',
               },
               {
-                q: 'Bagaimana cara pembayaran Paket Edukasi Rp 100.000?',
-                a: 'Pembayaran sangat mudah dan instan menggunakan QRIS (BCA, Mandiri, BRI, BNI, GoPay, OVO, Dana) melalui platform. Akses modul dan seluruh tools edukasi Anda akan langsung aktif permanen seumur hidup tanpa iuran bulanan.',
+                q: 'Bagaimana cara pembayaran Paket Edukasi Rp 250.000 / bulan?',
+                a: 'Pembayaran sangat mudah dan instan menggunakan QRIS (BCA, Mandiri, BRI, BNI, GoPay, OVO, Dana) melalui platform. Sistem akan menampilkan kode QRIS resmi Rp 250.000 (diskon dari harga normal Rp 800.000). Akses modul video masterclass dan seluruh tools edukasi Anda akan langsung aktif.',
               },
             ].map((faq, idx) => (
               <div
@@ -2203,7 +2221,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-400 font-semibold">
               <a href="#track-record" className="hover:text-white transition-colors">Riwayat Sinyal Berita</a>
               <a href="#news-playbook" className="hover:text-white transition-colors">Playbook Berita</a>
-              <a href="#pricing" className="hover:text-white transition-colors">Paket Edukasi Rp 100k</a>
+              <a href="#pricing" className="hover:text-white transition-colors">Paket Edukasi Rp 250k</a>
               <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
               <a
                 href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
@@ -2283,7 +2301,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   <div className="text-[11px] text-slate-600 leading-relaxed">
                     Untuk melanjutkan pembayaran{' '}
                     <strong className="text-[#00A651]">
-                      Paket Edukasi Realistis (Rp 100.000)
+                      Paket Edukasi Realistis (Promo Rp 250.000 / Bulan)
                     </strong>
                     , silakan masuk ke akun Anda atau daftar baru. Setelah berhasil masuk, Anda akan langsung diarahkan ke pembayaran QRIS.
                   </div>

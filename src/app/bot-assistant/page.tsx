@@ -53,7 +53,7 @@ export default function BotAssistantPage() {
             onClick={() => openPaymentModal('EDUKASI')}
             className="px-3.5 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
           >
-            <Sparkles className="w-3.5 h-3.5" /> Buka Akses Edukasi (Rp 100k)
+            <Sparkles className="w-3.5 h-3.5" /> Buka Akses Edukasi (Rp 250k)
           </button>
         ) : (
           <div className="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1.5">
@@ -78,7 +78,7 @@ export default function BotAssistantPage() {
             onClick={() => openPaymentModal('EDUKASI')}
             className="px-5 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-sm hover:shadow transition-all cursor-pointer"
           >
-            Aktivasi Paket Edukasi Rp 100k Sekarang
+            Aktivasi Paket Edukasi (Rp 250k) Sekarang
           </button>
         </div>
       ) : (

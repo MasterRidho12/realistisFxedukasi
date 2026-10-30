@@ -92,9 +92,9 @@ export interface AdminSiteSettings {
 
 const defaultSiteSettings: AdminSiteSettings = {
   freeDailyCalculatorLimit: 3,
-  vipMonthlyPrice: 100000,
-  academyPrice: 100000,
-  landingAnnouncement: '🔥 Paket Edukasi RealistisFx (Rp 100.000 Sekali Bayar) — Akses Modul Lengkap & SOP Anti Margin Call',
+  vipMonthlyPrice: 250000,
+  academyPrice: 250000,
+  landingAnnouncement: '🔥 Promo Terbatas: Paket Edukasi Realistis Cuma Rp 250.000/bln (Normal Rp 800.000) — Hemat Rp 550.000 (Diskon 69%)!',
   isAnnouncementActive: true,
   adminWhatsAppNumber: '6287774229255',
   vipRegistrationOpen: true,
@@ -102,7 +102,7 @@ const defaultSiteSettings: AdminSiteSettings = {
   newsScenarioVipOnly: false,
   marginResistanceVipOnly: false,
   compoundingVipOnly: false,
-  copyTradeWaMessage: 'Halo Admin RealistisFx, saya tertarik aktivasi Paket Edukasi Realistis (Rp 100.000 sekali bayar). Mohon panduan konfirmasi pembayaran QRIS.',
+  copyTradeWaMessage: 'Halo Admin RealistisFx, saya tertarik aktivasi Paket Edukasi Realistis (Promo Rp 250.000/bulan dari harga normal Rp 800.000). Mohon panduan konfirmasi pembayaran QRIS.',
   qrisMerchantName: 'REALISTISFX EDUKASI SAAS',
   qrisNmid: 'ID102439281729',
 };
@@ -204,12 +204,12 @@ const initialRequests: SubscriptionRequest[] = [
     userEmail: 'trader@realistisfx.com',
     userPhone: '081234567890',
     planName: 'Paket Edukasi Realistis',
-    amount: 100000,
+    amount: 250000,
     paymentMethod: 'QRIS',
     proofScreenshot: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
     status: 'APPROVED',
     createdAt: '16 Okt 2026, 18.39 WIB',
-    notes: 'Disetujui Admin - Status Edukasi Lengkap Aktif',
+    notes: 'Disetujui Admin - Status Edukasi Lengkap Aktif (Promo Rp 250k/bln)',
   },
   {
     id: 'sub-req-101',
@@ -218,7 +218,7 @@ const initialRequests: SubscriptionRequest[] = [
     userEmail: 'dimas.forex@gmail.com',
     userPhone: '081234567899',
     planName: 'Paket Edukasi Realistis',
-    amount: 100000,
+    amount: 250000,
     paymentMethod: 'QRIS',
     proofScreenshot: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
     status: 'PENDING',
@@ -775,7 +775,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       year: 'numeric',
     });
 
-    const isEdukasiOnly = req.amount === 100000 || req.planName.toLowerCase().includes('edukasi');
+    const isEdukasiOnly = req.amount === 250000 || req.amount === 100000 || req.planName.toLowerCase().includes('edukasi');
 
     // Update the target user in allUsers
     const updatedAllUsers = allUsers.map((u) => {
@@ -785,7 +785,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           tier: 'PRO' as UserTier,
           hasAcademyAccess: true,
           subscriptionStatus: 'ACTIVE' as const,
-          proExpiryDate: 'Akses Permanen (Lifetime)',
+          proExpiryDate: `${expiryStr} (30 Hari)`,
         };
       }
       return u;
