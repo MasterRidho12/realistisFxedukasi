@@ -205,7 +205,7 @@ export default function DashboardOverviewPage() {
       href: '/academy',
       icon: GraduationCap,
       freeStatus: 'Terkunci (Paket Rp 100k)',
-      proStatus: 'Akses Penuh Lvl 1-5 + Sertifikat',
+      proStatus: 'Akses Penuh Lvl 1-5 + Teknikal & MM',
       isProFeature: true,
       badge: 'Rp 100k',
       badgeColor: 'amber',

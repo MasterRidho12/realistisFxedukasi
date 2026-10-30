@@ -102,15 +102,15 @@ const MODULES: AcademyModule[] = [
   {
     id: 'm5',
     level: 5,
-    title: 'Master Realistis Trader & Sertifikasi Disiplin',
+    title: 'Master Analisis Teknikal & Simulasi Money Management (MM)',
     duration: '90 Menit',
-    summary: 'Rencana jangka panjang menuju konsistensi profit, compounding modal, dan manajemen penarikan profit.',
+    summary: 'Penguasaan analisis teknikal multi-timeframe, eksekusi entry baku, simulasi Money Management 1%, dan compounding modal.',
     isCompleted: false,
     proOnly: true,
     lessons: [
-      'Pelajaran 1: Rencana Compounding 12 Bulan Terukur',
-      'Pelajaran 2: Manajemen Penarikan (Withdrawal Routine)',
-      'Pelajaran 3: Ujian Akhir SOP & Sertifikat Kelulusan RealistisFx',
+      'Pelajaran 1: Rencana Compounding Modal & Manajemen Penarikan Profit (Withdrawal Routine)',
+      'Pelajaran 2: Integrasi Multi-Timeframe (H4 Trend, H1 Area SND, M15 Entry Trigger)',
+      'Pelajaran 3: Studi Kasus Eksekusi Teknikal Baku & Simulasi Money Management Terapan',
     ],
   },
 ];
@@ -189,7 +189,7 @@ export default function AcademyPage() {
                 </span>
               </div>
               <p className="text-xs text-slate-700 mt-1 max-w-2xl leading-relaxed">
-                Anda dapat mempelajari materi <strong>Dasar-Dasar Forex gratis</strong>. Untuk membuka seluruh 5 modul lanjutan (SOP Money Management 1%, Fixed SL 30 Pips, Supply-Demand Zone, dan Ujian Sertifikasi), aktifkan Paket Edukasi Realistis hanya Rp 100.000 via QRIS.
+                Anda dapat mempelajari materi <strong>Dasar-Dasar Forex gratis</strong>. Untuk membuka seluruh 5 modul lanjutan (SOP Money Management 1%, Fixed SL 30 Pips, Supply-Demand Zone, dan Analisis Teknikal Baku), aktifkan Paket Edukasi Realistis hanya Rp 100.000 via QRIS.
               </p>
             </div>
           </div>
@@ -310,7 +310,7 @@ export default function AcademyPage() {
                 <div>
                   <h4 className="text-sm font-black text-slate-900">Materi Edukasi Lanjutan Terkunci</h4>
                   <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                    Modul Level 1 sampai 5 (SOP Anti-Margin Call &amp; Ujian Sertifikasi) memerlukan <strong className="text-slate-900">Paket Edukasi Realistis (Rp 100.000 sekali bayar seumur hidup)</strong>. Buka akses instan melalui QRIS.
+                    Modul Level 1 sampai 5 (SOP Anti-Margin Call &amp; Analisis Teknikal Lanjutan) memerlukan <strong className="text-slate-900">Paket Edukasi Realistis (Rp 100.000 sekali bayar seumur hidup)</strong>. Buka akses instan melalui QRIS.
                   </p>
                 </div>
                 <div className="pt-1">

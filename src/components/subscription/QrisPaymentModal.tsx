@@ -115,14 +115,14 @@ export default function QrisPaymentModal() {
       amount: 100000,
       label: 'Rp 100.000',
       badge: 'Sekali Bayar • Akses Selamanya',
-      desc: 'Akses penuh selamanya ke seluruh 5 modul Gamified Academy, SOP Money Management 1%, dan Ujian Sertifikasi.',
+      desc: 'Akses penuh selamanya ke seluruh 5 modul Gamified Academy, SOP Money Management 1%, dan Analisis Teknikal Baku.',
       features: [
-        '5 Modul Edukasi Lengkap (Pondasi MM 1%, Key Level S&R, Anti-FOMO, News, Sertifikasi)',
+        '5 Modul Edukasi Lengkap (Pondasi MM 1%, Key Level S&R, Anti-FOMO, News, Teknikal & MM)',
         'SOP Baku Money Management 1% & Aturan Ketat Anti-Margin Call',
         'Metode Baku Fixed Stop Loss 30 Pips & Risk Reward 1:2',
         'Kalkulator Lot Unlimited (Semua Pair Forex & XAUUSD Gold)',
         'Checklist SOP Anti-FOMO & Jurnal Trading Interaktif',
-        'Ujian Sertifikasi Kelulusan Trader Realistis & Digital Badge',
+        'Analisis Teknikal Baku & Simulasi Money Management Terapan',
         'Akses materi selamanya tanpa biaya bulanan (Lifetime)',
       ],
     },
@@ -977,7 +977,7 @@ export default function QrisPaymentModal() {
                         </div>
                         <div className="flex items-start gap-1.5">
                           <Check className="w-3.5 h-3.5 text-[#00A651] shrink-0 mt-0.5" />
-                          <span className="leading-tight">Ujian Kelulusan Trader &amp; Sertifikat Digital</span>
+                          <span className="leading-tight">Analisis Teknikal Baku &amp; Simulasi Money Management Terapan</span>
                         </div>
                       </div>
                     </div>
