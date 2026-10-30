@@ -682,16 +682,16 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 flex-wrap">
             <span className="inline-flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold">
               <Sparkles className="w-3 h-3 text-amber-300" />
-              PENGUMUMAN RESMI
+              AKADEMI BISNIS FOREX
             </span>
             <span className="text-[11px] sm:text-xs">
               {siteSettings?.landingAnnouncement ||
-                'Riwayat Sinyal Terverifikasi | Win Rate AI 84.6% di XAUUSD & Rilis Berita NFP/CPI'}
+                'Edukasi Bisnis Trading Forex dari 0 Bertahap, Terarah & Terkonsep | Kuasai SOP Money Management 1% Anti-MC'}
             </span>
             <span className="hidden lg:inline text-emerald-200">|</span>
             <span className="hidden lg:inline-flex items-center gap-1 text-emerald-100 font-medium text-xs">
               <Users className="w-3.5 h-3.5" />
-              1,480+ Member VIP Aktif
+              1,480+ Trader Belajar Mandiri
             </span>
           </div>
         </div>
@@ -715,11 +715,11 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <div className="font-black text-sm sm:text-base lg:text-lg tracking-tight text-slate-900 flex items-center gap-1 sm:gap-1.5">
                 REALISTIS<span className="text-[#00A651]"> FX</span>
                 <span className="text-[9px] sm:text-[10px] font-extrabold px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-50 text-[#00A651] border border-emerald-200 uppercase tracking-wider">
-                  AI VIP
+                  AKADEMI
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 hidden md:block font-medium">
-                Sinyal Harian, Sinyal Berita &amp; Tools AI Terintegrasi Website
+                Edukasi Bisnis Trading Forex Bertahap, Terarah &amp; Terkonsep
               </p>
             </div>
           </Link>
@@ -771,8 +771,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               onClick={() => openAuth('register')}
               className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-extrabold shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
             >
-              <Crown className="w-3.5 h-3.5" />
-              <span>Gabung VIP</span>
+              <GraduationCap className="w-3.5 h-3.5" />
+              <span>Mulai Belajar</span>
             </button>
 
             {/* Mobile Hamburger Button */}
@@ -857,8 +857,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   <Send className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-900 font-extrabold">Private Channel Telegram VIP</div>
-                  <div className="text-[10px] text-slate-400 font-normal">Sinyal real-time 1 arah (Bebas Drama &amp; Anti-Debat)</div>
+                  <div className="text-slate-900 font-extrabold">Kanal Edukasi RealistisFx</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Materi &amp; sinyal 1 arah (Bebas Drama &amp; Anti-Debat)</div>
                 </div>
               </a>
 
@@ -885,8 +885,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   <GraduationCap className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-900 font-extrabold">Paket Edukasi (Rp 250.000 / Bln)</div>
-                  <div className="text-[10px] text-slate-500 font-normal">Kurikulum lengkap MM, margin, &amp; leverage Lvl 1-5</div>
+                  <div className="text-slate-900 font-extrabold">Dasar Forex Gratis (Level 0)</div>
+                  <div className="text-[10px] text-slate-500 font-normal">Materi pengenalan pasar untuk pemula</div>
                 </div>
               </a>
 
@@ -920,15 +920,15 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 onClick={() => openAuth('register')}
                 className="w-full py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs text-center cursor-pointer transition-all shadow-md shadow-[#00A651]/20 flex items-center justify-center gap-1.5"
               >
-                <Crown className="w-3.5 h-3.5" />
-                <span>Daftar VIP</span>
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>Mulai Belajar</span>
               </button>
             </div>
 
             {/* Admin WhatsApp Direct Link */}
             <a
               href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
-                siteSettings?.copyTradeWaMessage || 'Halo Admin RealistisFx, saya ingin konsultasi mengenai langganan VIP Sinyal AI.'
+                siteSettings?.copyTradeWaMessage || 'Halo Admin RealistisFx, saya ingin konsultasi mengenai paket Edukasi Bisnis Forex Realistis.'
               )}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -949,50 +949,51 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           {/* Top Pill Badges */}
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] sm:text-xs text-[#00A651] font-bold shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#00A651] animate-pulse shrink-0" />
-            <span className="truncate">PLATFORM EDUKASI &amp; SINYAL TRADING AI #1 DI INDONESIA</span>
+            <span className="truncate">AKADEMI EDUKASI BISNIS FOREX INDONESIA</span>
             <span className="text-emerald-300 hidden sm:inline">|</span>
-            <span className="text-slate-600 font-semibold hidden sm:inline">Fokus Emas &amp; Kalender Berita</span>
+            <span className="text-slate-600 font-semibold hidden sm:inline">Kurikulum Terarah dari Nol Hingga Mandiri</span>
           </div>
 
           {/* Main Hero Headline */}
           <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4">
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.2] sm:leading-[1.15]">
-              Raih Sinyal Presisi AI di{' '}
+              Edukasi Bisnis Trading Forex dari 0 —{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00A651] via-[#008F45] to-emerald-700">
-                XAUUSD &amp; Rilis Berita NFP/CPI
+                Bertahap, Terarah &amp; Terkonsep
               </span>
-              , Bebas dari Jebakan Margin Call.
+              .
             </h1>
-            <p className="text-xs sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
-              Tinggalkan tebak-tebakan saat trading. Dapatkan sinyal harian dan sinyal rilis berita ekonomi (NFP, CPI, FOMC) presisi tinggi berbasis AI, peta watchlist Support &amp; Resistance, kalkulator lot aman anti-MC, serta evaluasi psikologi trading langsung di platform website RealistisFx.
+            <p className="text-xs sm:text-base md:text-lg text-slate-600 max-w-3xl mx-auto font-normal leading-relaxed">
+              Buka mindset awal Anda memahami bisnis trading forex yang sesungguhnya. Trading adalah bisnis pengelolaan probabilitas dan disiplin risiko terukur, bukan perjudian cepat kaya. Bangun fondasi dari nol dengan SOP Money Management 1%, metode baku Fixed SL 30 Pips, pemetaan zona supply-demand valid, dan psikologi eksekusi tenang untuk mencetak trader mandiri bebas Margin Call.
             </p>
           </div>
 
           {/* Hero CTAs */}
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href="#pricing"
+            <button
+              type="button"
+              onClick={() => handleBuyPlan('EDUKASI')}
               className="w-full sm:w-auto px-7 py-3.5 sm:py-4 rounded-2xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs sm:text-sm shadow-xl shadow-[#00A651]/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Crown className="w-4 h-4" />
-              <span>Daftar VIP Member Area (Rp 500rb/bln)</span>
+              <GraduationCap className="w-4 h-4" />
+              <span>Mulai Belajar Sekarang (Promo Rp 250k/bln)</span>
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
 
             <a
-              href="#ai-backtest"
+              href="#free-education"
               className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-[#00A651] font-extrabold text-xs sm:text-sm border border-emerald-300 shadow-xs active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <LineChart className="w-4 h-4 text-[#00A651]" />
-              <span>Hasil Backtest AI 10 Tahun (2015 - Sekarang)</span>
+              <BookOpenCheck className="w-4 h-4 text-[#00A651]" />
+              <span>Pelajari Modul Dasar Gratis (Level 0)</span>
             </a>
 
             <a
-              href="#track-record"
+              href="#pricing"
               className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs sm:text-sm border border-slate-300 shadow-xs hover:border-slate-400 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Zap className="w-4 h-4 text-emerald-600 fill-emerald-600" />
-              <span>Lihat Sinyal Berita yang Baru Keluar</span>
+              <LineChart className="w-4 h-4 text-[#00A651]" />
+              <span>Lihat Kurikulum Lengkap Level 1 - 5</span>
             </a>
           </div>
 
@@ -1000,20 +1001,20 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           <div className="pt-6 sm:pt-8 max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-left">
             <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
               <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">WIN RATE AI</span>
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">KURIKULUM BERTAHAP</span>
                 <Award className="w-3.5 h-3.5 text-emerald-600" />
               </div>
-              <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">84.6%</p>
-              <p className="text-[10px] sm:text-[11px] text-[#00A651] font-semibold mt-0.5">Audit 312 Sinyal Real</p>
+              <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">Level 0 - 5</p>
+              <p className="text-[10px] sm:text-[11px] text-[#00A651] font-semibold mt-0.5">Dari Pemula Hingga Mandiri</p>
             </div>
 
             <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
               <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">TOTAL PIPS GAIN</span>
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">SOP MONEY MANAGEMENT</span>
                 <TrendingUp className="w-3.5 h-3.5 text-[#00A651]" />
               </div>
-              <p className="text-xl sm:text-3xl font-black text-[#00A651] tracking-tight">+4,120</p>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5">Akumulasi Q1-Q3 2026</p>
+              <p className="text-xl sm:text-3xl font-black text-[#00A651] tracking-tight">Maks 1%</p>
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5">Aturan Ketat Proteksi Modal</p>
             </div>
 
             <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
@@ -1021,17 +1022,17 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">RISK TO REWARD</span>
                 <Target className="w-3.5 h-3.5 text-amber-500" />
               </div>
-              <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">1 : 3.2</p>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5">Fixed SL 40 Pips Emas</p>
+              <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">1 : 2.0+</p>
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5">Fixed SL 30-40 Pips Emas</p>
             </div>
 
             <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
               <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">MEMBER VIP AKTIF</span>
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">TRADER BELAJAR AKTIF</span>
                 <Users className="w-3.5 h-3.5 text-indigo-500" />
               </div>
               <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">1,480+</p>
-              <p className="text-[10px] sm:text-[11px] text-[#00A651] font-semibold mt-0.5">Trader Indonesia Terdaftar</p>
+              <p className="text-[10px] sm:text-[11px] text-[#00A651] font-semibold mt-0.5">Member Edukasi Terdaftar</p>
             </div>
           </div>
 
@@ -1290,7 +1291,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                                 Level Sinyal Disensor
                               </span>
                               <span className="text-[10px] font-extrabold text-[#00A651] bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200">
-                                Khusus Member VIP
+                                Khusus Member Pro Edukasi
                               </span>
                             </div>
 
@@ -1312,7 +1313,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                               <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-[2px] p-2 text-center">
                                 <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold text-xs shadow-xs">
                                   <Lock className="w-3.5 h-3.5 text-amber-400" />
-                                  <span>[DISENSOR] Sinyal Hanya Terbuka untuk Member VIP</span>
+                                  <span>[TERKUNCI] Terbuka untuk Member Pro Edukasi</span>
                                 </div>
                                 <span className="text-[10px] text-slate-400 mt-1">
                                   Level harga Buy/Sell, SL, &amp; TP otomatis disensor di Landing Page
@@ -1321,7 +1322,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                             </div>
 
                             <p className="text-[11px] text-slate-600 leading-relaxed font-normal">
-                              Level Entry presisi, Stop Loss proteksi, dan target TP1/TP2 otomatis disensor untuk umum. Sinyal hanya dapat dilihat setelah berlangganan VIP di Member Area &amp; Channel Telegram VIP.
+                              Level Entry presisi, Stop Loss proteksi, dan target TP1/TP2 otomatis disensor untuk umum. Sinyal hanya dapat dilihat setelah bergabung di Member Area Edukasi &amp; Kanal Telegram RealistisFx.
                             </p>
 
                             {user.tier === 'PRO' && user.isAuthenticated ? (
@@ -1329,8 +1330,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                                 href="/news-radar"
                                 className="w-full py-2.5 px-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-[#00A651]/20 transition-all text-center"
                               >
-                                <Crown className="w-3.5 h-3.5 text-amber-300" />
-                                <span>Buka Sinyal Lengkap di News Radar (Member VIP) →</span>
+                                <GraduationCap className="w-3.5 h-3.5 text-white" />
+                                <span>Buka Sinyal Lengkap di News Radar (Member Pro) →</span>
                               </Link>
                             ) : (
                               <a
@@ -1358,7 +1359,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                             href="#pricing"
                             className="font-extrabold text-[#00A651] hover:underline flex items-center gap-1"
                           >
-                            <span>Buka Sinyal VIP (Berlangganan)</span>
+                            <span>Aktivasi Edukasi (Rp 250k)</span>
                             <ArrowUpRight className="w-3.5 h-3.5" />
                           </a>
                         </div>
@@ -1551,7 +1552,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   Transparansi Penuh &amp; Rekapitulasi Sinyal Terverifikasi
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Setiap order sinyal AI tercatat di kanal Telegram VIP &amp; Dashboard Member sebelum order terpicu.
+                  Setiap order sinyal AI tercatat di kanal Telegram RealistisFx &amp; Dashboard Member sebelum order terpicu.
                 </p>
               </div>
             </div>
@@ -1571,7 +1572,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 href="#pricing"
                 className="w-full md:w-auto px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 transition-all text-center"
               >
-                Langganan VIP →
+                Mulai Belajar (Rp 250k) →
               </a>
             </div>
           </div>
@@ -1638,7 +1639,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 Menit ke-1 s/d 15: Eksekusi Bersih &amp; Trailing
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Ketika konfirmasi candle M5 terbentuk, sinyal push alert dikirim ke Telegram VIP dan Web Member Area secara instan dengan panduan <strong>Take Profit bertingkat (TP1 +80 pips, TP2 +160 pips)</strong>.
+                Ketika konfirmasi candle M5 terbentuk, sinyal push alert dikirim ke Kanal Edukasi Telegram dan Web Member Area secara instan dengan panduan <strong>Take Profit bertingkat (TP1 +80 pips, TP2 +160 pips)</strong>.
               </p>
               <div className="p-3 rounded-xl bg-white border border-slate-200 text-[11px] font-mono text-[#00A651] font-bold">
                 Rata-rata Gain Event News: +140 s/d +280 Pips
@@ -1648,20 +1649,20 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         </div>
       </section>
 
-      {/* 6. Akses Private Channel Edukasi & Sinyal Telegram VIP (1 Arah Bebas Drama) */}
+      {/* 6. Akses Private Channel Edukasi & Sinyal Telegram (1 Arah Bebas Drama) */}
       <section id="channel" className="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden scroll-mt-14">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#00A651]/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-black uppercase tracking-wider">
-              PRIVATE CHANNEL TELEGRAM VIP (1 ARAH)
+              KANAL EDUKASI RESMI TELEGRAM (1 ARAH)
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
               Murni Edukasi &amp; Sinyal Presisi: Bebas Drama, Tanpa Debat Pro-Kontra
             </h2>
             <p className="text-xs sm:text-sm text-slate-300">
-              Kami secara tegas <strong className="text-emerald-400">TIDAK menyediakan grup obrolan Telegram maupun grup WhatsApp</strong>. Tujuannya murni untuk menghindari debat kusir, kebisingan opini (noise), dan pro-kontra yang merusak psikologi trading Anda. Seluruh sinyal valid, chart setup, dan panduan edukasi disiarkan secara tertib melalui <strong>Private Channel Telegram 1 Arah</strong>.
+              Kami secara tegas <strong className="text-emerald-400">TIDAK menyediakan grup obrolan Telegram maupun grup WhatsApp</strong>. Tujuannya murni untuk menghindari debat kusir, kebisingan opini (noise), dan pro-kontra yang merusak psikologi trading Anda. Seluruh materi edukasi, sinyal valid, chart setup, dan panduan Money Management disiarkan secara tertib melalui <strong>Kanal Telegram Edukasi 1 Arah</strong>.
             </p>
           </div>
 
@@ -1670,7 +1671,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <div className="w-10 h-10 rounded-2xl bg-[#00A651]/20 text-[#00A651] flex items-center justify-center font-bold">
                 <Send className="w-5 h-5" />
               </div>
-              <h3 className="font-extrabold text-sm text-white">Private Channel 1 Arah</h3>
+              <h3 className="font-extrabold text-sm text-white">Kanal Edukasi 1 Arah</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Notifikasi sinyal real-time langsung ke ponsel Anda dengan parameter lengkap: Pair, Action, Entry, SL, TP1, TP2, dan chart setup tanpa gangguan obrolan.
               </p>
@@ -1702,7 +1703,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               </div>
               <h3 className="font-extrabold text-sm text-white">Admin Support 1-on-1</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Bantuan aktivasi VIP, integrasi bot notifikasi, atau pertanyaan akun dilayani secara personal 1-on-1 via WhatsApp Admin Resmi (bukan grup publik).
+                Bantuan aktivasi paket edukasi, integrasi bot notifikasi, atau pertanyaan materi dilayani secara personal 1-on-1 via WhatsApp Admin Resmi (bukan grup publik).
               </p>
             </div>
           </div>
@@ -1788,7 +1789,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#00A651] font-bold">✓</span>
-                  <span><strong>Disiplin &amp; Evaluasi Edukatif:</strong> Private Channel VIP berorientasi pada evaluasi jurnal trading, ketenangan mental, dan eksekusi sesuai rencana (trading plan).</span>
+                  <span><strong>Disiplin &amp; Evaluasi Edukatif:</strong> Kanal Edukasi berorientasi pada evaluasi jurnal trading, ketenangan mental, dan eksekusi sesuai rencana (trading plan).</span>
                 </li>
               </ul>
 
@@ -2038,7 +2039,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="px-3 py-1 rounded-full bg-emerald-100 text-[#00A651] text-xs font-black uppercase tracking-wider">
-              CERITA DARI MEMBER VIP
+              CERITA DARI MEMBER EDUKASI
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
               Apa Kata Trader Indonesia yang Sudah Bergabung?
@@ -2051,7 +2052,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 ★★★★★
               </div>
               <p className="text-xs text-slate-600 leading-relaxed italic">
-                &ldquo;Dulu setiap rilis NFP pasti akun saya babak belur karena panik tebak arah. Sejak ikut playbook berita RealistisFx, saya tahu kapan harus sabar dan kapan entry. Kemarin NFP ambil +140 pips di emas, biaya VIP Rp 500rb tertutup dalam 1 jam!&rdquo;
+                &ldquo;Dulu setiap rilis NFP pasti akun saya babak belur karena panik tebak arah. Sejak ikut kurikulum edukasi RealistisFx, saya paham pentingnya menunggu fakeout selesai dan batasan resiko. Biaya paket edukasi Rp 250rb sangat sepadan dengan ilmu yang didapat!&rdquo;
               </p>
               <div className="border-t border-slate-100 pt-3">
                 <p className="text-xs font-bold text-slate-900">Rendra Wijaya</p>
@@ -2064,7 +2065,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 ★★★★★
               </div>
               <p className="text-xs text-slate-600 leading-relaxed italic">
-                &ldquo;Yang paling saya suka dari sinyal AI ini adalah adanya Stop Loss ketat dan alasan teknikalnya jelas. Bukan sekadar buy/sell buta. Private Channel Telegram VIP-nya juga sangat tertib—sinyal satu arah tanpa obrolan yang membingungkan atau debat pro-kontra.&rdquo;
+                &ldquo;Yang paling saya suka dari akademi ini adalah adanya SOP Stop Loss ketat 30 pips dan alasan teknikalnya jelas. Bukan sekadar sinyal buta. Kanal Telegram-nya juga sangat tertib—murni edukasi dan sinyal satu arah tanpa obrolan yang membingungkan atau debat pro-kontra.&rdquo;
               </p>
               <div className="border-t border-slate-100 pt-3">
                 <p className="text-xs font-bold text-slate-900">Denny Kurniawan</p>
@@ -2077,7 +2078,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 ★★★★★
               </div>
               <p className="text-xs text-slate-600 leading-relaxed italic">
-                &ldquo;Materi edukasi manajemen lot di member area sangat membuka mata saya. Dulu deposit sering MC karena overtrade. Sekarang dengan sinyal AI RealistisFx dan lot disiplin, akun saya tumbuh stabil 18% bulan ini tanpa deg-degan.&rdquo;
+                &ldquo;Materi edukasi manajemen lot di member area sangat membuka mata saya. Dulu deposit sering MC karena overtrade. Sekarang dengan kalkulator lot disiplin RealistisFx, akun saya tumbuh stabil tanpa rasa cemas berlebihan.&rdquo;
               </p>
               <div className="border-t border-slate-100 pt-3">
                 <p className="text-xs font-bold text-slate-900">Hendra Saputra</p>
@@ -2096,7 +2097,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               PERTANYAAN UMUM
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              Semua yang Perlu Anda Ketahui Tentang Sinyal &amp; Private Channel VIP
+              Semua yang Perlu Anda Ketahui Tentang Akademi &amp; Kanal Edukasi
             </h2>
           </div>
 
@@ -2104,27 +2105,27 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             {[
               {
                 q: 'Apakah ada grup obrolan atau grup diskusi di Telegram / WhatsApp?',
-                a: 'TIDAK ADA grup obrolan publik (baik di Telegram maupun WhatsApp). Kami sengaja meniadakan grup obrolan untuk menghindari perdebatan pro-kontra, opini spekulatif yang berlawanan, dan kebisingan (noise) yang sering merusak psikologi serta objektivitas trading Anda. Di RealistisFx, Anda menerima sinyal presisi dan materi edukasi langsung di Private Channel Telegram 1 Arah. Bantuan teknis dan verifikasi langganan dilayani secara personal 1-on-1 via WhatsApp Admin Resmi.',
+                a: 'TIDAK ADA grup obrolan publik (baik di Telegram maupun WhatsApp). Kami sengaja meniadakan grup obrolan untuk menghindari perdebatan pro-kontra, opini spekulatif yang berlawanan, dan kebisingan (noise) yang sering merusak psikologi serta objektivitas trading Anda. Di RealistisFx, Anda menerima materi edukasi dan sinyal presisi langsung di Kanal Telegram 1 Arah. Bantuan teknis dan tanya jawab modul dilayani secara personal 1-on-1 via WhatsApp Admin Resmi.',
               },
               {
                 q: 'Apakah saya wajib pindah atau daftar broker tertentu?',
                 a: 'Sama sekali TIDAK. Anda bebas menggunakan broker lokal (Bappebti) maupun internasional mana pun yang sudah Anda percayai. Sinyal kami berbasis harga spot pasar global yang dapat diaplikasikan di MetaTrader 4, MetaTrader 5, maupun TradingView.',
               },
               {
-                q: 'Berapa modal minimum yang dibutuhkan untuk mengikuti sinyal AI?',
-                a: 'Anda bisa memulai dari modal terjangkau mulai dari $100 s/d $500 untuk Akun Standard dengan lot aman 0.01-0.02. Panduan pemilihan ukuran lot dan kalkulator risiko sudah terintegrasi di sistem.',
+                q: 'Berapa modal minimum yang dibutuhkan untuk mengikuti materi edukasi?',
+                a: 'Anda bisa memulai dari modal terjangkau mulai dari $100 s/d $500 untuk Akun Standard atau Akun Cent dengan lot aman 0.01. Panduan pemilihan ukuran lot dan kalkulator risiko sudah terintegrasi di sistem.',
               },
               {
-                q: 'Bagaimana cara sinyal dikirimkan ke saya?',
-                a: 'Sinyal langsung dikirimkan melalui 2 saluran instan: (1) Push Notification di Private Channel Telegram VIP Real-Time, dan (2) Live Feed di Web Member Area RealistisFx. Anda akan menerima titik Entry, Stop Loss, TP1, dan TP2.',
+                q: 'Bagaimana cara sinyal & materi dikirimkan ke saya?',
+                a: 'Materi dan sinyal langsung dikirimkan melalui 2 saluran instan: (1) Push Notification di Kanal Edukasi Telegram Real-Time, dan (2) Live Feed di Web Member Area RealistisFx. Anda akan menerima titik Entry, Stop Loss, TP1, dan TP2.',
               },
               {
                 q: 'Apakah ada strategi Martingale atau Averaging tanpa batas?',
-                a: 'TIDAK ADA. Kami sangat menentang Martingale. Seluruh sinyal kami memiliki Stop Loss fixed yang terukur (30-50 pips di XAUUSD) dengan Risk-to-Reward minimum 1:2 hingga 1:3. Prioritas nomor 1 kami adalah proteksi modal.',
+                a: 'TIDAK ADA. Kami sangat menentang Martingale. Seluruh sistem kami memiliki Stop Loss fixed yang terukur (30-50 pips di XAUUSD) dengan Risk-to-Reward minimum 1:2 hingga 1:3. Prioritas nomor 1 kami adalah proteksi modal.',
               },
               {
                 q: 'Apakah RealistisFx menjamin profit pasti atau melipatgandakan modal?',
-                a: 'Sama sekali TIDAK ADA jaminan profit pasti atau penggandaan modal. Nama kami "RealistisFx" karena kami menjunjung tinggi kejujuran dan edukasi realistis: pasar finansial selalu memiliki risiko fluktuasi harga. Layanan kami adalah alat bantu analisis probabilitas statistik, edukasi money management ketat (risk 1-2% per trade), dan sinyal dengan Stop Loss terukur demi melindungi modal Anda dari kehancuran Margin Call.',
+                a: 'Sama sekali TIDAK ADA jaminan profit pasti atau penggandaan modal. Nama kami "RealistisFx" karena kami menjunjung tinggi kejujuran dan edukasi realistis: pasar finansial selalu memiliki risiko fluktuasi harga. Layanan kami adalah edukasi bisnis, analisis probabilitas statistik, money management ketat (risk 1-2% per trade), dan tools dengan Stop Loss terukur demi melindungi modal Anda dari kehancuran Margin Call.',
               },
               {
                 q: 'Bagaimana cara pembayaran Paket Edukasi Rp 250.000 / bulan?',
@@ -2162,25 +2163,26 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
       <section className="py-16 sm:py-20 bg-gradient-to-br from-[#008F45] via-[#00A651] to-[#046132] text-white text-center relative overflow-hidden">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold">
-            <Crown className="w-4 h-4 text-amber-300" />
-            MULAI TRADING DENGAN KEPUTUSAN BERBASIS DATA
+            <GraduationCap className="w-4 h-4 text-white" />
+            MULAI TRADING DENGAN KEPUTUSAN BERBASIS DATA &amp; SOP
           </div>
 
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
-            Tinggalkan Tebak-tebakan. Dapatkan Akses ke Private Channel VIP RealistisFx Hari Ini.
+            Tinggalkan Tebak-tebakan. Bangun Mindset Bisnis Trading Forex Bersama RealistisFx.
           </h2>
 
           <p className="text-xs sm:text-base text-emerald-100 max-w-2xl mx-auto font-normal">
-            Dapatkan akses langsung ke Sinyal Presisi AI XAUUSD, Playbook Berita NFP/CPI, dan Private Channel Telegram 1 arah untuk menguasai manajemen risiko dan membangun konsistensi trading yang realistis.
+            Buka mindset awal Anda bahwa trading adalah bisnis pengelolaan risiko terukur. Dapatkan akses penuh ke seluruh modul video edukasi Level 1-5, SOP Money Management 1%, dan tools kalkulator anti-MC hari ini.
           </p>
 
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               type="button"
-              onClick={() => handleBuyPlan('1_MONTH')}
-              className="w-full sm:w-auto px-7 py-3.5 sm:py-4 rounded-2xl bg-white text-[#00A651] font-black text-xs sm:text-sm shadow-xl hover:bg-emerald-50 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+              onClick={() => handleBuyPlan('EDUKASI')}
+              className="w-full sm:w-auto px-7 py-3.5 sm:py-4 rounded-2xl bg-white text-[#00A651] font-black text-xs sm:text-sm shadow-xl hover:bg-emerald-50 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              Langganan VIP Member Area (Rp 500rb/bln)
+              <GraduationCap className="w-4 h-4" />
+              <span>Aktivasi Paket Edukasi (Rp 250.000 / Bln)</span>
             </button>
 
             <button
@@ -2188,7 +2190,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               onClick={() => openAuth('register')}
               className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-2xl bg-emerald-800/80 hover:bg-emerald-800 text-white font-extrabold text-xs sm:text-sm border border-emerald-400/40 transition-all cursor-pointer"
             >
-              Coba Akun Gratis Dulu
+              Coba Akun Dasar Gratis Dulu
             </button>
           </div>
         </div>
@@ -2225,7 +2227,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
               <a
                 href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
-                  siteSettings?.copyTradeWaMessage || 'Halo Admin RealistisFx, saya ingin konsultasi mengenai langganan VIP.'
+                  siteSettings?.copyTradeWaMessage || 'Halo Admin RealistisFx, saya ingin konsultasi mengenai paket Edukasi Bisnis Forex Realistis.'
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -2279,8 +2281,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   : pendingCheckoutPlan
                   ? 'Akun trader diperlukan agar modul & fasilitas aktif ke akun Anda'
                   : authMode === 'login'
-                  ? 'Akses dashboard sinyal AI & panduan trading Anda'
-                  : 'Mulai dengan Akun Gratis atau bersiap untuk VIP Member'}
+                  ? 'Akses dashboard akademi & panduan trading Anda'
+                  : 'Mulai dengan Akun Edukasi Dasar Gratis atau Akses Modul Penuh'}
               </p>
             </div>
 

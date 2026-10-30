@@ -360,7 +360,7 @@ export default function QrisPaymentModal() {
                     >
                       2. Pilihan Paket
                     </span>
-                    <span className="text-[10px] text-slate-400 font-medium">Edukasi &amp; VIP</span>
+                    <span className="text-[10px] text-slate-400 font-medium">Edukasi &amp; SOP</span>
                   </div>
                   <span
                     className={`sm:hidden text-[11px] font-bold ${

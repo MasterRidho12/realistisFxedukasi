@@ -119,10 +119,10 @@ export default function AdminDashboardPage() {
       qrisNmid: siteSettings.qrisNmid ?? 'ID102439281729',
     });
     setLandingForm({
-      landingAnnouncement: siteSettings.landingAnnouncement ?? '🔥 Pendaftaran VIP PRO Edukasi RealistisFx Dibuka — Dapatkan Akses Sinyal AI & SOP Anti Margin Call',
+      landingAnnouncement: siteSettings.landingAnnouncement ?? '🔥 Akademi Edukasi Bisnis Forex RealistisFx Dibuka — Buka Mindset, Kuasai SOP 1%, & Sistem Anti-MC',
       isAnnouncementActive: siteSettings.isAnnouncementActive ?? true,
       adminWhatsAppNumber: siteSettings.adminWhatsAppNumber ?? '6287774229255',
-      copyTradeWaMessage: siteSettings.copyTradeWaMessage ?? 'Halo Admin RealistisFx, saya tertarik bergabung Copy-Trade & VIP Member Area.',
+      copyTradeWaMessage: siteSettings.copyTradeWaMessage ?? 'Halo Admin RealistisFx, saya tertarik bergabung Paket Edukasi Realistis & Diskusi Trader.',
       vipRegistrationOpen: siteSettings.vipRegistrationOpen ?? true,
     });
   }, [siteSettings]);
@@ -385,7 +385,7 @@ export default function AdminDashboardPage() {
           }`}
         >
           <Users className="w-4 h-4" />
-          <span>Pantau Akun VIP &amp; FREE ({allUsers.length})</span>
+          <span>Pantau Akun Pro &amp; FREE ({allUsers.length})</span>
         </button>
 
         <button
@@ -397,7 +397,7 @@ export default function AdminDashboardPage() {
           }`}
         >
           <Sliders className="w-4 h-4" />
-          <span>Kontrol Menu VIP &amp; Gratis</span>
+          <span>Kontrol Menu Pro &amp; Gratis</span>
         </button>
 
         <button
@@ -456,7 +456,7 @@ export default function AdminDashboardPage() {
                 }`}
               >
                 <Crown className="w-3 h-3" />
-                <span>Akun VIP PRO ({totalProMembers})</span>
+                <span>Akun Edukasi Pro ({totalProMembers})</span>
               </button>
 
               <button
@@ -606,12 +606,12 @@ export default function AdminDashboardPage() {
                                   type="button"
                                   onClick={() => {
                                     updateUserTierManually(u.id, 'PRO');
-                                    showNotification(`Akun ${u.name} berhasil diaktifkan menjadi VIP PRO!`);
+                                    showNotification(`Akun ${u.name} berhasil diaktifkan menjadi Edukasi Pro!`);
                                   }}
                                   className="px-2.5 py-1 rounded-lg bg-[#00A651] hover:bg-[#008F45] text-white text-[10px] font-bold shadow-xs cursor-pointer transition-colors"
-                                  title="Upgrade langsung ke VIP PRO"
+                                  title="Upgrade langsung ke Edukasi Pro"
                                 >
-                                  Jadikan VIP
+                                  Jadikan Pro
                                 </button>
                               )}
 

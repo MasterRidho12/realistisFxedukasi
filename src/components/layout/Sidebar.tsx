@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -14,95 +14,125 @@ import {
   AlertTriangle,
   GraduationCap,
   Bot,
-  Crown,
   Sparkles,
   ChevronRight,
-  Zap,
+  ChevronDown,
   X,
-  Shield,
   Clock,
-  Globe
+  User,
+  MessageCircle,
+  ExternalLink,
+  BookOpen,
+  CheckCircle2,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
-const navigationItems = [
-  {
-    name: 'Dashboard Overview',
-    href: '/',
-    icon: LayoutDashboard,
-    badge: 'Live',
-    badgeColor: 'blue',
-  },
-  {
-    name: 'Modul Edukasi Trader',
-    href: '/academy',
-    icon: GraduationCap,
-    badge: 'Gratis & 250k',
-    badgeColor: 'green',
-  },
-  {
-    name: 'Risk & Lot Calculator',
-    href: '/calculator',
-    icon: Calculator,
-    badge: 'Core SOP',
-    badgeColor: 'green',
-  },
-  {
-    name: 'News Sentiment Radar',
-    href: '/news-radar',
-    icon: Radar,
-    badge: 'NFP & CPI',
-    badgeColor: 'blue',
-  },
-  {
-    name: 'Smart Trading Journal',
-    href: '/journal',
-    icon: BookOpenCheck,
-    badge: 'AI Review',
-    badgeColor: 'amber',
-  },
-  {
-    name: 'Anti-FOMO Checklist',
-    href: '/checklist',
-    icon: ShieldAlert,
-    badge: 'Strict Mode',
-    badgeColor: 'green',
-  },
-  {
-    name: 'Recovery & Compounding',
-    href: '/compounding',
-    icon: TrendingUp,
-    badge: 'PRO',
-    proOnly: true,
-  },
-  {
-    name: 'Daily Watchlist (S&R)',
-    href: '/watchlist',
-    icon: LineChart,
-    badge: 'XAU & Forex',
-  },
-  {
-    name: 'Margin Resistance (Anti-MC)',
-    href: '/margin-resistance',
-    icon: AlertTriangle,
-    badge: 'PRO',
-    proOnly: true,
-  },
-  {
-    name: 'Bot Assistant (Telegram)',
-    href: '/bot-assistant',
-    icon: Bot,
-    badge: 'H-30 Alert',
-    proOnly: true,
-  },
-];
-
 export default function Sidebar() {
   const pathname = usePathname();
-  const { user, isSidebarOpen, setIsSidebarOpen, openPaymentModal } = useUser();
+  const { user, isSidebarOpen, setIsSidebarOpen, openPaymentModal, siteSettings } = useUser();
 
   const isPro = user.tier === 'PRO';
   const isPending = user.subscriptionStatus === 'PENDING';
+
+  // Collapsible dropdown for "Edukasi Trader" (ala TF Education)
+  const [educationOpen, setEducationOpen] = useState(true);
+
+  const educationModules = [
+    {
+      level: 'Level 0',
+      title: 'Dasar Bisnis Forex (Gratis)',
+      href: '/academy?modul=0',
+      isFree: true,
+    },
+    {
+      level: 'Level 1',
+      title: 'SOP Money Management 1%',
+      href: '/academy?modul=1',
+      isFree: false,
+    },
+    {
+      level: 'Level 2',
+      title: 'Struktur Market & S&R Zone',
+      href: '/academy?modul=2',
+      isFree: false,
+    },
+    {
+      level: 'Level 3',
+      title: 'Psikologi Trading Anti-FOMO',
+      href: '/academy?modul=3',
+      isFree: false,
+    },
+    {
+      level: 'Level 4',
+      title: 'Menghadapi Volatilitas Berita',
+      href: '/academy?modul=4',
+      isFree: false,
+    },
+    {
+      level: 'Level 5',
+      title: 'Analisis Teknikal & Simulasi MM',
+      href: '/academy?modul=5',
+      isFree: false,
+    },
+  ];
+
+  const toolNavigationItems = [
+    {
+      name: 'Risk & Lot Calculator',
+      href: '/calculator',
+      icon: Calculator,
+      badge: 'Core SOP',
+      badgeColor: 'green',
+    },
+    {
+      name: 'Analisa Market (S&R)',
+      href: '/watchlist',
+      icon: LineChart,
+      badge: 'XAU & Forex',
+    },
+    {
+      name: 'News Sentiment Radar',
+      href: '/news-radar',
+      icon: Radar,
+      badge: 'NFP & CPI',
+      badgeColor: 'blue',
+    },
+    {
+      name: 'Anti-FOMO Checklist',
+      href: '/checklist',
+      icon: ShieldAlert,
+      badge: 'Strict Mode',
+      badgeColor: 'green',
+    },
+    {
+      name: 'Smart Trading Journal',
+      href: '/journal',
+      icon: BookOpenCheck,
+      badge: 'Evaluasi',
+      badgeColor: 'amber',
+    },
+    {
+      name: 'Ketahanan Margin (Anti-MC)',
+      href: '/margin-resistance',
+      icon: AlertTriangle,
+      badge: 'PRO',
+      proOnly: true,
+    },
+    {
+      name: 'Recovery & Compounding',
+      href: '/compounding',
+      icon: TrendingUp,
+      badge: 'PRO',
+      proOnly: true,
+    },
+    {
+      name: 'Bot Telegram Webhook',
+      href: '/bot-assistant',
+      icon: Bot,
+      badge: 'Alert H-30',
+      proOnly: true,
+    },
+  ];
 
   return (
     <>
@@ -119,35 +149,41 @@ export default function Sidebar() {
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Header / Brand */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-200 bg-white">
-          <Link href="/" className="flex items-center gap-2.5 group min-w-0">
-            <div className="relative flex items-center justify-center w-9 h-9 rounded-xl overflow-hidden border border-emerald-500/40 shadow-sm group-hover:scale-105 group-hover:border-[#00A651] transition-all bg-[#0a1f18] shrink-0">
-              <img
-                alt="REALISTIS FX Logo"
-                width={36}
-                height={36}
-                className="w-full h-full object-cover"
-                src="/images/logo.png"
-              />
+        {/* Header: User Profile Terminal Header (ala Traders Family) */}
+        <div className="p-4 border-b border-slate-200 bg-gradient-to-b from-slate-900 to-slate-800 text-white flex items-center justify-between">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="relative w-10 h-10 rounded-2xl bg-gradient-to-br from-[#00A651] to-emerald-800 flex items-center justify-center font-black text-sm text-white shadow-md shadow-[#00A651]/30 shrink-0">
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name || 'User'}
+                  className="w-full h-full object-cover rounded-2xl"
+                />
+              ) : (
+                <span>{user.name ? user.name.slice(0, 2).toUpperCase() : 'TR'}</span>
+              )}
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-slate-900" />
             </div>
+
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 group-hover:text-[#00A651] transition-colors">
-                  REALISTIS<span className="text-[#00A651]"> FX</span>
-                </span>
-                <span className="text-[9px] font-bold tracking-widest px-1.5 py-0.5 rounded bg-emerald-50 text-[#00A651] border border-emerald-200 uppercase">
-                  Edukasi
+              <h3 className="font-extrabold text-xs sm:text-sm text-white truncate">
+                {user.name || 'Trader Realistis'}
+              </h3>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                <span className="text-[11px] font-semibold text-emerald-300">Online</span>
+                <span className="text-slate-500">•</span>
+                <span className="text-[10px] font-mono text-slate-300 truncate">
+                  {user.accountType || 'Standard'}
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 font-medium truncate">SOP &amp; Anti Margin Call</p>
             </div>
-          </Link>
+          </div>
 
-          {/* Close button for mobile */}
           <button
+            type="button"
             onClick={() => setIsSidebarOpen(false)}
-            className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 lg:hidden cursor-pointer shrink-0"
+            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-700 lg:hidden cursor-pointer shrink-0"
             aria-label="Tutup Menu"
           >
             <X className="w-5 h-5" />
@@ -155,29 +191,29 @@ export default function Sidebar() {
         </div>
 
         {/* Tier Status Widget */}
-        <div className="px-5 py-4 border-b border-slate-200 bg-slate-50">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-slate-500">Status Akun:</span>
+        <div className="px-4 py-3 border-b border-slate-200 bg-emerald-50/50">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold text-slate-500">Status Edukasi:</span>
             {isPro ? (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-[#00A651] border border-emerald-200">
-                <GraduationCap className="w-3 h-3 text-[#00A651]" /> EDUKASI PRO
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#00A651] text-white shadow-xs">
+                <CheckCircle2 className="w-3 h-3 text-white" /> EDUKASI PRO (AKTIF)
               </span>
             ) : isPending ? (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                <Clock className="w-3 h-3 text-amber-600 animate-spin" /> Menunggu Konfirmasi
+                <Clock className="w-3 h-3 text-amber-600 animate-spin" /> Verifikasi QRIS
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-700 border border-slate-300">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-200 text-slate-700 border border-slate-300">
                 EDUKASI DASAR (FREE)
               </span>
             )}
           </div>
 
           {!isPro ? (
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-[11px] text-slate-600">
+            <div className="mt-2 space-y-1">
+              <div className="flex justify-between text-[10px] text-slate-600">
                 <span>Kuota Lot Calculator Hari Ini</span>
-                <span className="text-slate-900 font-bold">{user.dailyCalculatorCount}/3</span>
+                <span className="font-bold text-slate-900">{user.dailyCalculatorCount}/3</span>
               </div>
               <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
                 <div
@@ -185,99 +221,229 @@ export default function Sidebar() {
                   style={{ width: `${Math.min((user.dailyCalculatorCount / 3) * 100, 100)}%` }}
                 />
               </div>
-              <p className="text-[10px] text-slate-500">
-                {isPending
-                  ? 'Bukti bayar sedang diverifikasi admin via WA'
-                  : 'Aktivasi Paket Edukasi Rp 250.000/bulan untuk akses materi & tools tanpa batas'}
-              </p>
             </div>
-          ) : (
-            <div className="flex items-center justify-between text-[11px] text-emerald-800 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-200">
-              <span className="flex items-center gap-1.5 font-medium">
-                <Sparkles className="w-3.5 h-3.5 text-[#00A651]" />
-                Seluruh Materi &amp; Tools Terbuka
-              </span>
-              <span className="font-bold text-[#00A651]">Aktif</span>
-            </div>
-          )}
+          ) : null}
         </div>
 
-        {/* Navigation Links */}
-        <div className="flex-1 px-3 py-3 overflow-y-auto space-y-1 bg-white">
-          <div className="px-3 py-1.5 text-[11px] font-bold tracking-wider text-slate-400 uppercase">
-            Fitur &amp; Trading Tools
+        {/* Navigation Links Scrollable Area */}
+        <div className="flex-1 px-3 py-3 overflow-y-auto space-y-3 bg-white">
+          {/* Main Top Nav */}
+          <div className="space-y-1">
+            <Link
+              href="/"
+              onClick={() => setIsSidebarOpen(false)}
+              className={`group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                pathname === '/'
+                  ? 'bg-emerald-50 text-[#00A651] border border-emerald-200 font-bold shadow-xs'
+                  : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <div
+                  className={`p-1.5 rounded-lg ${
+                    pathname === '/' ? 'bg-[#00A651] text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'
+                  }`}
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                </div>
+                <span>Beranda (Dashboard)</span>
+              </div>
+              {pathname === '/' && <ChevronRight className="w-3.5 h-3.5 text-[#00A651]" />}
+            </Link>
+
+            <Link
+              href="/#profile"
+              onClick={() => setIsSidebarOpen(false)}
+              className="group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-all"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-slate-100 text-slate-500 group-hover:bg-slate-200">
+                  <User className="w-4 h-4" />
+                </div>
+                <span>Profil Trader</span>
+              </div>
+            </Link>
           </div>
 
-          {navigationItems.map((item) => {
-            const isActive = pathname === item.href;
-            const Icon = item.icon;
+          {/* EDUKASI TRADER DROPDOWN (Gaya "TF Education" di Traders Family) */}
+          <div className="rounded-2xl border border-emerald-200/80 bg-gradient-to-b from-emerald-50/70 to-white overflow-hidden shadow-xs">
+            <button
+              type="button"
+              onClick={() => setEducationOpen(!educationOpen)}
+              className="w-full flex items-center justify-between px-3.5 py-2.5 bg-[#00A651] text-white font-extrabold text-xs cursor-pointer hover:bg-[#008F45] transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <GraduationCap className="w-4 h-4" />
+                <span>EDUKASI TRADER</span>
+              </div>
+              {educationOpen ? (
+                <ChevronDown className="w-4 h-4 transition-transform" />
+              ) : (
+                <ChevronRight className="w-4 h-4 transition-transform" />
+              )}
+            </button>
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsSidebarOpen(false)}
-                className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 ${
-                  isActive
-                    ? 'bg-emerald-50 text-[#00A651] border border-emerald-200 font-bold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                }`}
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div
-                    className={`p-1.5 rounded-lg transition-colors ${
-                      isActive
-                        ? 'bg-[#00A651] text-white shadow-xs'
-                        : 'bg-slate-100 text-slate-500 group-hover:text-slate-900 group-hover:bg-slate-200'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
+            {educationOpen && (
+              <div className="p-1.5 space-y-0.5">
+                <Link
+                  href="/academy"
+                  onClick={() => setIsSidebarOpen(false)}
+                  className={`flex items-center justify-between px-3 py-1.5 rounded-xl text-xs transition-colors ${
+                    pathname === '/academy'
+                      ? 'bg-emerald-100 text-emerald-900 font-bold'
+                      : 'text-slate-800 hover:bg-emerald-50/80 font-semibold'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-3.5 h-3.5 text-[#00A651]" />
+                    <span>Semua Modul Video</span>
                   </div>
-                  <span className="truncate">{item.name}</span>
-                </div>
+                  <span className="text-[10px] font-bold text-[#00A651]">Buka →</span>
+                </Link>
 
-                <div className="flex items-center gap-1.5 flex-shrink-0">
-                  {item.proOnly ? (
-                    <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider ${
-                        isPro
-                          ? 'bg-emerald-50 text-[#00A651] border border-emerald-200'
-                          : 'bg-amber-50 text-amber-800 border border-amber-200'
-                      }`}
+                <div className="pt-1 border-t border-emerald-100/60 space-y-0.5">
+                  {educationModules.map((mod) => (
+                    <Link
+                      key={mod.level}
+                      href={mod.href}
+                      onClick={() => setIsSidebarOpen(false)}
+                      className="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11px] text-slate-600 hover:text-slate-900 hover:bg-white transition-all group"
                     >
-                      {isPro ? 'PRO' : 'PRO ONLY'}
-                    </span>
-                  ) : item.badge ? (
-                    <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
-                        item.badgeColor === 'green'
-                          ? 'bg-emerald-50 text-[#00A651] border border-emerald-200'
-                          : item.badgeColor === 'amber'
-                          ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                          : 'bg-sky-50 text-sky-800 border border-sky-200'
-                      }`}
-                    >
-                      {item.badge}
-                    </span>
-                  ) : null}
-                  {isActive && <ChevronRight className="w-3.5 h-3.5 text-[#00A651]" />}
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="font-mono font-bold text-[#00A651] shrink-0 text-[10px]">
+                          {mod.level}:
+                        </span>
+                        <span className="truncate group-hover:text-[#00A651]">{mod.title}</span>
+                      </div>
+                      <span
+                        className={`text-[9px] px-1.5 py-0.2 rounded font-bold shrink-0 ${
+                          mod.isFree
+                            ? 'bg-emerald-100 text-[#00A651]'
+                            : isPro
+                            ? 'bg-emerald-50 text-[#00A651]'
+                            : 'bg-amber-100 text-amber-800'
+                        }`}
+                      >
+                        {mod.isFree ? 'Gratis' : isPro ? 'Aktif' : 'Pro'}
+                      </span>
+                    </Link>
+                  ))}
                 </div>
-              </Link>
-            );
-          })}
+              </div>
+            )}
+          </div>
+
+          {/* TRADING TOOLS & ANALISA SECTION */}
+          <div className="space-y-1">
+            <div className="px-3 py-1 text-[10px] font-black tracking-wider text-slate-400 uppercase">
+              Trading Tools &amp; Analisa
+            </div>
+
+            {toolNavigationItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsSidebarOpen(false)}
+                  className={`group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                    isActive
+                      ? 'bg-emerald-50 text-[#00A651] border border-emerald-200 font-bold shadow-xs'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div
+                      className={`p-1.5 rounded-lg transition-colors ${
+                        isActive
+                          ? 'bg-[#00A651] text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200 group-hover:text-slate-800'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="truncate">{item.name}</span>
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    {item.proOnly ? (
+                      <span
+                        className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${
+                          isPro
+                            ? 'bg-emerald-50 text-[#00A651] border border-emerald-200'
+                            : 'bg-amber-50 text-amber-800 border border-amber-200'
+                        }`}
+                      >
+                        {isPro ? 'PRO' : 'PRO ONLY'}
+                      </span>
+                    ) : item.badge ? (
+                      <span
+                        className={`text-[9px] px-1.5 py-0.5 rounded font-medium ${
+                          item.badgeColor === 'green'
+                            ? 'bg-emerald-50 text-[#00A651] border border-emerald-200'
+                            : item.badgeColor === 'amber'
+                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                            : 'bg-sky-50 text-sky-800 border border-sky-200'
+                        }`}
+                      >
+                        {item.badge}
+                      </span>
+                    ) : null}
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 text-[#00A651]" />}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* BANTUAN & KOMUNITAS */}
+          <div className="space-y-1 pt-2 border-t border-slate-100">
+            <div className="px-3 py-1 text-[10px] font-black tracking-wider text-slate-400 uppercase">
+              Bantuan &amp; Konsultasi
+            </div>
+
+            <a
+              href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
+                `Halo Admin RealistisFx, saya ${user.name} (ID: ${user.id}). Saya ingin konsultasi materi edukasi / bantuan akun.`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-[#00A651] hover:bg-emerald-50/50 transition-all"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-emerald-50 text-[#00A651]">
+                  <MessageCircle className="w-3.5 h-3.5" />
+                </div>
+                <span>Tanya Jawab WhatsApp</span>
+              </div>
+              <ExternalLink className="w-3 h-3 text-slate-400" />
+            </a>
+
+            <a
+              href="https://www.mql5.com/en/signals/2388343?source=Site+Signals+My"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-all"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-slate-100 text-slate-500">
+                  <LineChart className="w-3.5 h-3.5" />
+                </div>
+                <span>Live MQL5 Signal</span>
+              </div>
+              <ExternalLink className="w-3 h-3 text-slate-400" />
+            </a>
+          </div>
         </div>
 
         {/* Upgrade Callout Card (visible when Free) */}
         {!isPro ? (
-          <div className="p-3 m-3 rounded-2xl bg-gradient-to-br from-emerald-50 via-white to-emerald-50/50 border border-emerald-200 relative overflow-hidden shadow-sm">
-            <div className="relative z-10 space-y-2">
+          <div className="p-3 m-3 rounded-2xl bg-gradient-to-br from-emerald-50 via-white to-emerald-50 border border-emerald-200 relative overflow-hidden shadow-xs">
+            <div className="relative z-10 space-y-1.5">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <div className="p-1 rounded-md bg-emerald-100 text-[#00A651]">
-                    <Sparkles className="w-3.5 h-3.5" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-900 tracking-wide">Edukasi RealistisFx</span>
-                </div>
+                <span className="text-xs font-black text-slate-900 tracking-wide">Paket Edukasi Lengkap</span>
                 <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-50 text-rose-600 border border-rose-200">
                   Hemat 69%
                 </span>
@@ -292,46 +458,24 @@ export default function Sidebar() {
                 <span className="text-[10px] text-slate-500 font-medium">/bln</span>
               </div>
               <p className="text-[11px] text-slate-600 leading-relaxed">
-                Akses seluruh Modul Video Lvl 1-5, Kalkulator Lot Unlimited, &amp; SOP Anti-MC.
+                Akses seluruh video Level 1-5, SOP Money Management 1%, &amp; kalkulator lot tanpa batas.
               </p>
               <button
                 type="button"
                 onClick={() => openPaymentModal('EDUKASI')}
-                className="w-full py-2 px-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                className="w-full py-2 px-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                {isPending ? 'Lihat Bukti QRIS' : 'Aktivasi Edukasi (Rp250k)'}
+                <span>{isPending ? 'Lihat Bukti QRIS' : 'Aktivasi Edukasi (Rp 250k)'}</span>
               </button>
             </div>
           </div>
         ) : (
           <div className="p-3 m-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
-            <p className="text-xs font-bold text-emerald-800">Akun Anda: EDUKASI LENGKAP AKTIF</p>
-            <p className="text-[11px] text-slate-600 mt-0.5">Semua modul &amp; kalkulator terbuka selamanya</p>
+            <p className="text-xs font-bold text-emerald-800">AKUN EDUKASI LENGKAP AKTIF</p>
+            <p className="text-[10px] text-slate-600 mt-0.5">Seluruh kurikulum &amp; kalkulator terbuka</p>
           </div>
         )}
-
-        {/* User Footer Profile */}
-        <div className="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="relative w-8 h-8 rounded-full bg-[#00A651] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs overflow-hidden">
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user.name || 'User Avatar'}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span>{user.name ? user.name.slice(0, 2).toUpperCase() : 'TR'}</span>
-              )}
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-white" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs font-bold text-slate-900 truncate">{user.name}</p>
-              <p className="text-[10px] text-slate-500 truncate">{user.id || user.email}</p>
-            </div>
-          </div>
-        </div>
       </aside>
     </>
   );

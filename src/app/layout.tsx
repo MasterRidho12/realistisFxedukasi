@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'RealistisFx — Platform Edukasi & Sinyal Trading AI XAUUSD Premium Indonesia',
+  title: 'RealistisFx — Akademi Edukasi Bisnis Trading Forex dari Nol & SOP Anti-MC',
   description:
-    'Platform edukasi dan penyedia sinyal trading AI presisi tinggi untuk XAUUSD & rilis berita ekonomi NFP/CPI dengan private channel Telegram VIP dan playbook anti-fakeout terverifikasi.',
+    'Edukasi bisnis trading forex dari 0 secara bertahap, terarah, dan terkonsep untuk membuka mindset awal memahami bisnis trading forex. Kuasai SOP Money Management 1%, analisis teknikal supply-demand, dan tools manajemen risiko anti-Margin Call.',
 };
 
 export default function RootLayout({
