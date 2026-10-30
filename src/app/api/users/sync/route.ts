@@ -217,6 +217,26 @@ export async function POST(req: Request) {
       if (!exists) {
         serverRequests.unshift(request);
       }
+    } else if (action === 'UPDATE_PROFILE' && user) {
+      serverUsers = serverUsers.map((u) =>
+        u.id === user.id || (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase())
+          ? { ...u, ...user }
+          : u
+      );
+      if (hasDbUrl && user.email) {
+        try {
+          await prisma.user.updateMany({
+            where: { email: user.email.toLowerCase() },
+            data: {
+              name: user.name,
+              whatsapp: user.whatsapp,
+              accountType: user.accountType === 'CENT' ? 'CENT' : 'STANDARD',
+            },
+          });
+        } catch (dbErr) {
+          console.warn('[Sync API] DB update user profile warning:', dbErr);
+        }
+      }
     } else if (action === 'UPDATE_USER_TIER' && userId && newTier) {
       serverUsers = serverUsers.map((u) => {
         if (u.id === userId) {

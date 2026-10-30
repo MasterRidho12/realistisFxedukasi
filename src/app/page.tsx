@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import {
   ShieldAlert,
@@ -35,11 +35,15 @@ import {
   BookOpen,
   Award,
   HelpCircle,
+  Pencil,
+  Camera,
+  Trash2,
+  UserCheck,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 
 export default function DashboardOverviewPage() {
-  const { user, journals, openPaymentModal, updateUserPasswordLocal, siteSettings } = useUser();
+  const { user, journals, openPaymentModal, updateUserPasswordLocal, updateUserProfile, siteSettings } = useUser();
   const isPro = user.tier === 'PRO';
 
   // Dynamic statistics from user's real journals
@@ -52,6 +56,91 @@ export default function DashboardOverviewPage() {
   const totalPnL = journals.reduce((acc, curr) => acc + curr.pnl, 0);
   const winPct = totalTrades > 0 ? Math.round((winningTrades / totalTrades) * 100) : 0;
   const lossPct = totalTrades > 0 ? Math.round((losingTrades / totalTrades) * 100) : 0;
+
+  // Edit Profile Modal State
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [profileName, setProfileName] = useState(user.name || '');
+  const [profileWhatsapp, setProfileWhatsapp] = useState(user.whatsapp || '');
+  const [profileAccountType, setProfileAccountType] = useState<'STANDARD' | 'CENT'>(user.accountType || 'STANDARD');
+  const [profileAvatar, setProfileAvatar] = useState<string>(user.avatar || '');
+  const [profileSuccessMsg, setProfileSuccessMsg] = useState('');
+  const [profileErrorMsg, setProfileErrorMsg] = useState('');
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Preset professional trader avatars
+  const presetAvatars = [
+    { label: 'Trader Pria', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=faces&q=80' },
+    { label: 'Trader Wanita', url: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=faces&q=80' },
+    { label: 'Analisa Pro', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces&q=80' },
+    { label: 'Trader Modern', url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=faces&q=80' },
+    { label: 'Executive', url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=faces&q=80' },
+    { label: 'Gold Trader', url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=faces&q=80' },
+  ];
+
+  const handleOpenEditProfile = () => {
+    setProfileName(user.name || '');
+    setProfileWhatsapp(user.whatsapp || '');
+    setProfileAccountType(user.accountType || 'STANDARD');
+    setProfileAvatar(user.avatar || '');
+    setProfileSuccessMsg('');
+    setProfileErrorMsg('');
+    setShowEditProfileModal(true);
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setProfileErrorMsg('Harap pilih file gambar yang valid (JPG, PNG, WEBP).');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setProfileErrorMsg('Ukuran file gambar maksimal 5 MB.');
+      return;
+    }
+
+    setIsUploadingPhoto(true);
+    setProfileErrorMsg('');
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setProfileAvatar(result);
+      setIsUploadingPhoto(false);
+    };
+    reader.onerror = () => {
+      setProfileErrorMsg('Gagal memproses file foto.');
+      setIsUploadingPhoto(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfileErrorMsg('');
+    setProfileSuccessMsg('');
+
+    if (!profileName.trim()) {
+      setProfileErrorMsg('Nama lengkap tidak boleh kosong.');
+      return;
+    }
+
+    updateUserProfile({
+      name: profileName.trim(),
+      whatsapp: profileWhatsapp.trim(),
+      accountType: profileAccountType,
+      avatar: profileAvatar || undefined,
+    });
+
+    setProfileSuccessMsg('✅ Profil akun Anda berhasil diperbarui!');
+    setTimeout(() => {
+      setShowEditProfileModal(false);
+      setProfileSuccessMsg('');
+    }, 1200);
+  };
 
   // Password Change Modal State
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -113,7 +202,8 @@ export default function DashboardOverviewPage() {
       title: 'Profil',
       href: '#profile',
       icon: User,
-      description: 'Detail Akun Trader',
+      description: 'Ubah Nama, Foto & Info',
+      onClick: handleOpenEditProfile,
     },
     {
       title: 'Edukasi Video',
@@ -312,6 +402,19 @@ export default function DashboardOverviewPage() {
               </div>
             );
 
+            if (menu.onClick) {
+              return (
+                <button
+                  key={menu.title}
+                  type="button"
+                  onClick={menu.onClick}
+                  className="block h-full text-left w-full cursor-pointer"
+                >
+                  {content}
+                </button>
+              );
+            }
+
             if (menu.isExternal) {
               return (
                 <a
@@ -433,15 +536,47 @@ export default function DashboardOverviewPage() {
         <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 divide-y md:divide-y-0 md:divide-x divide-slate-100">
           {/* Column 1: Trader Identity */}
           <div className="space-y-3 pt-2 md:pt-0">
-            <div className="flex items-center gap-3">
-              <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00A651] to-emerald-800 text-white flex items-center justify-center font-black text-base shadow-md shadow-[#00A651]/20 flex-shrink-0">
-                {user.name ? user.name.slice(0, 2).toUpperCase() : 'TR'}
-                <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 ring-2 ring-white" />
+            <div className="flex items-center gap-3.5">
+              <div
+                onClick={handleOpenEditProfile}
+                className="relative group/avatar cursor-pointer shrink-0"
+                title="Klik untuk ubah foto profil & nama"
+              >
+                <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00A651] to-emerald-800 text-white flex items-center justify-center font-black text-base shadow-md shadow-[#00A651]/20 overflow-hidden ring-2 ring-emerald-500/20 group-hover/avatar:ring-[#00A651] transition-all">
+                  {user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span>{user.name ? user.name.slice(0, 2).toUpperCase() : 'TR'}</span>
+                  )}
+                  {/* Hover Camera Overlay */}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[9px] font-bold">
+                    <Camera className="w-4 h-4 mb-0.5 text-emerald-300" />
+                    <span>Ubah</span>
+                  </div>
+                </div>
+                <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 ring-2 ring-white flex items-center justify-center shadow-xs">
+                  <Pencil className="w-2.5 h-2.5 text-white" />
+                </span>
               </div>
-              <div className="min-w-0">
-                <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight truncate">
-                  {user.name}
-                </h2>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight truncate">
+                    {user.name}
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={handleOpenEditProfile}
+                    className="p-1 rounded-lg text-slate-400 hover:text-[#00A651] hover:bg-emerald-50 transition-colors cursor-pointer"
+                    title="Ubah Nama & Profil"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+                </div>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                     {user.id}
@@ -548,14 +683,25 @@ export default function DashboardOverviewPage() {
             </div>
 
             <div className="space-y-1.5 pt-1">
-              <div className="flex gap-2">
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={handleOpenEditProfile}
+                  className="py-2 px-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#00A651] text-xs font-bold flex items-center justify-center gap-1 border border-emerald-200 transition-colors cursor-pointer shadow-2xs"
+                  title="Ubah Nama, Foto Profil, & Kontak"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span>Edit Profil</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => setShowPasswordModal(true)}
-                  className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 border border-slate-200 transition-colors cursor-pointer"
+                  className="py-2 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center justify-center gap-1 border border-slate-200 transition-colors cursor-pointer"
+                  title="Perbarui Kata Sandi Akun"
                 >
                   <KeyRound className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Ganti Password</span>
+                  <span>Password</span>
                 </button>
 
                 <a
@@ -564,10 +710,10 @@ export default function DashboardOverviewPage() {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#00A651] text-xs font-bold flex items-center justify-center gap-1.5 border border-emerald-200 transition-colors cursor-pointer"
+                  className="py-2 px-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center gap-1 border border-slate-200 transition-colors cursor-pointer"
                   title="Hubungi Admin / CS via WhatsApp"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" />
+                  <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
                   <span>CS WA</span>
                 </a>
               </div>
@@ -886,6 +1032,260 @@ export default function DashboardOverviewPage() {
               >
                 Simpan Kata Sandi Baru
               </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Profile Modal (Ubah Nama, Foto Profil & Info Akun) */}
+      {showEditProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+            <button
+              type="button"
+              onClick={() => setShowEditProfileModal(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-100 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#00A651] border border-emerald-200 text-[10px] font-bold uppercase tracking-wider">
+                <UserCheck className="w-3 h-3" />
+                Pengaturan Akun Trader
+              </div>
+              <h3 className="text-lg font-black text-slate-900">Edit Profil Trader</h3>
+              <p className="text-xs text-slate-500">Perbarui nama tampilan, foto profil, nomor kontak, dan spesifikasi akun Anda.</p>
+            </div>
+
+            {profileErrorMsg && (
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{profileErrorMsg}</span>
+              </div>
+            )}
+
+            {profileSuccessMsg && (
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>{profileSuccessMsg}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSaveProfile} className="space-y-4">
+              {/* SECTION: FOTO PROFIL */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                <label className="block text-xs font-bold text-slate-800">
+                  Foto Profil (Avatar)
+                </label>
+
+                <div className="flex items-center gap-4">
+                  {/* Avatar Preview */}
+                  <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-[#00A651] to-emerald-800 text-white flex items-center justify-center font-black text-xl shadow-md shadow-[#00A651]/20 overflow-hidden ring-2 ring-emerald-500/20 shrink-0">
+                    {profileAvatar ? (
+                      <img
+                        src={profileAvatar}
+                        alt="Preview Foto"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span>{profileName ? profileName.slice(0, 2).toUpperCase() : 'TR'}</span>
+                    )}
+                  </div>
+
+                  <div className="space-y-2 flex-1">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handlePhotoUpload}
+                      accept="image/*"
+                      className="hidden"
+                    />
+
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploadingPhoto}
+                        className="px-3 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer transition-colors"
+                      >
+                        <Camera className="w-3.5 h-3.5" />
+                        <span>{isUploadingPhoto ? 'Memproses...' : 'Unggah Foto'}</span>
+                      </button>
+
+                      {profileAvatar && (
+                        <button
+                          type="button"
+                          onClick={() => setProfileAvatar('')}
+                          className="px-3 py-2 rounded-xl bg-slate-200 hover:bg-rose-50 hover:text-rose-600 text-slate-700 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Hapus Foto</span>
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-slate-400">
+                      Format: JPG, PNG, atau WEBP. Maks 5 MB.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Preset Avatars Selector */}
+                <div className="pt-2 border-t border-slate-200/60">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
+                    Atau Pilih Avatar Trader Profesional:
+                  </span>
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                    {presetAvatars.map((preset, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setProfileAvatar(preset.url)}
+                        className={`relative w-10 h-10 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                          profileAvatar === preset.url
+                            ? 'border-[#00A651] ring-2 ring-[#00A651]/30 scale-105'
+                            : 'border-slate-200 hover:border-slate-400 opacity-80 hover:opacity-100'
+                        }`}
+                        title={preset.label}
+                      >
+                        <img
+                          src={preset.url}
+                          alt={preset.label}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* SECTION: NAMA LENGKAP */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Nama Lengkap / Tampilan Trader
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={profileName}
+                    onChange={(e) => setProfileName(e.target.value)}
+                    placeholder="Masukkan nama lengkap Anda"
+                    className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 font-medium focus:bg-white focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* SECTION: WHATSAPP */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Nomor WhatsApp
+                </label>
+                <div className="relative">
+                  <Smartphone className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="tel"
+                    value={profileWhatsapp}
+                    onChange={(e) => setProfileWhatsapp(e.target.value)}
+                    placeholder="Contoh: 081234567890"
+                    className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 font-medium focus:bg-white focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] outline-none"
+                  />
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1">
+                  Untuk konfirmasi aktivasi paket edukasi &amp; konsultasi 1-on-1 via WhatsApp.
+                </p>
+              </div>
+
+              {/* SECTION: TIPE AKUN TRADING */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  Tipe Akun Trading Utama
+                </label>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <label
+                    onClick={() => setProfileAccountType('STANDARD')}
+                    className={`p-3 rounded-xl border-2 flex items-center gap-2.5 cursor-pointer transition-all ${
+                      profileAccountType === 'STANDARD'
+                        ? 'border-[#00A651] bg-emerald-50/50 text-slate-900'
+                        : 'border-slate-200 hover:border-slate-300 text-slate-600'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="accountType"
+                      checked={profileAccountType === 'STANDARD'}
+                      onChange={() => setProfileAccountType('STANDARD')}
+                      className="hidden"
+                    />
+                    <div className="w-4 h-4 rounded-full border-2 border-slate-300 flex items-center justify-center">
+                      {profileAccountType === 'STANDARD' && (
+                        <div className="w-2 h-2 rounded-full bg-[#00A651]" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold">STANDARD</div>
+                      <div className="text-[10px] text-slate-400">Akun USD / IDRC</div>
+                    </div>
+                  </label>
+
+                  <label
+                    onClick={() => setProfileAccountType('CENT')}
+                    className={`p-3 rounded-xl border-2 flex items-center gap-2.5 cursor-pointer transition-all ${
+                      profileAccountType === 'CENT'
+                        ? 'border-[#00A651] bg-emerald-50/50 text-slate-900'
+                        : 'border-slate-200 hover:border-slate-300 text-slate-600'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="accountType"
+                      checked={profileAccountType === 'CENT'}
+                      onChange={() => setProfileAccountType('CENT')}
+                      className="hidden"
+                    />
+                    <div className="w-4 h-4 rounded-full border-2 border-slate-300 flex items-center justify-center">
+                      {profileAccountType === 'CENT' && (
+                        <div className="w-2 h-2 rounded-full bg-[#00A651]" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold">CENT</div>
+                      <div className="text-[10px] text-slate-400">Akun Mikro Cent</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* READONLY ACCOUNT IDENTIFIERS */}
+              <div className="p-3 rounded-xl bg-slate-100/70 border border-slate-200/80 grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">ID Trader</span>
+                  <span className="font-mono font-bold text-slate-800">{user.id}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Email Terdaftar</span>
+                  <span className="text-slate-800 font-medium truncate block">{user.email}</span>
+                </div>
+              </div>
+
+              {/* SUBMIT BUTTONS */}
+              <div className="pt-2 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowEditProfileModal(false)}
+                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-extrabold text-xs shadow-md shadow-[#00A651]/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>Simpan Perubahan</span>
+                </button>
+              </div>
             </form>
           </div>
         </div>

@@ -66,6 +66,7 @@ interface UserContextType {
   updateUserTierManually: (userId: string, newTier: UserTier) => void;
   resetUserCalculatorCount: (userId: string) => void;
   updateUserPasswordLocal: (email: string, newPassword: string) => void;
+  updateUserProfile: (data: Partial<UserState>) => void;
   adminResetPassword: (email: string, newPassword: string) => Promise<boolean>;
 
   // Site Wide Admin Controls (Landing Page & Menu VIP/Free)
@@ -894,6 +895,37 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateUserProfile = (data: Partial<UserState>) => {
+    const updatedUser: UserState = {
+      ...user,
+      ...data,
+    };
+    saveUser(updatedUser);
+
+    const updatedAll = allUsers.map((u) => {
+      if (u.id === user.id || (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase())) {
+        return { ...u, ...data };
+      }
+      return u;
+    });
+    setAllUsers(updatedAll);
+    try {
+      localStorage.setItem('realistisfx_all_users', JSON.stringify(updatedAll));
+    } catch {}
+
+    // Synchronize to server API in background
+    try {
+      fetch('/api/users/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'UPDATE_PROFILE',
+          user: updatedUser,
+        }),
+      }).catch(() => {});
+    } catch {}
+  };
+
   const adminResetPassword = async (email: string, newPassword: string): Promise<boolean> => {
     try {
       const res = await fetch('/api/auth/reset-password', {
@@ -964,6 +996,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         updateUserTierManually,
         resetUserCalculatorCount,
         updateUserPasswordLocal,
+        updateUserProfile,
         adminResetPassword,
         siteSettings,
         updateSiteSettings,
