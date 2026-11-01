@@ -34,9 +34,9 @@ if (dbUrl) {
 // 3. Run Next.js production build
 console.log('[Build] Running Next.js build...');
 try {
-  execSync('next build', { stdio: 'inherit' });
+  execSync('npx next build', { stdio: 'inherit' });
 } catch {
   console.warn('[Build] Standard build encountered a subprocess issue, falling back to webpack build...');
-  execSync('next build --webpack', { stdio: 'inherit' });
+  execSync('npx next build --webpack', { stdio: 'inherit' });
 }
 console.log('[Build] Next.js build finished successfully!');

@@ -252,55 +252,55 @@ export default function DashboardOverviewPage() {
     },
   ];
 
-  // 6 Structured Education Modules for Mindset & Business
+  // 6 Structured Saga & Season Highlights for Adventure Journey (20 Seasons Total)
   const educationModulesOverview = [
     {
-      level: 'LEVEL 0',
-      title: 'Dasar-Dasar Bisnis Forex untuk Pemula',
-      description: 'Membuka mindset awal: pasar uang, cara kerja spread/lot/pips, leverage, dan menghindari ilusi cepat kaya.',
-      duration: '35 Menit',
+      level: 'SAGA 1 (SEASON 1 - 4)',
+      title: 'Sejarah Perjalanan Uang & Dasar Forex Modern',
+      description: 'Membuka mindset awal: dari zaman barter purba, Bretton Woods, peran Bank Sentral & Retail Trader, hingga istilah pips, lot, dan leverage. (Season 1 & 2 Gratis).',
+      duration: '4 Season • 40 Episode',
       isFree: true,
-      href: '/academy?modul=0',
+      href: '/academy?season=1',
     },
     {
-      level: 'LEVEL 1',
-      title: 'Fondasi Baku Money Management 1% & Anti-MC',
-      description: 'Aturan mutlak proteksi modal: alokasi toleransi risiko 1% per posisi dan simulasi skenario drawdown.',
-      duration: '45 Menit',
+      level: 'SAGA 2 (SEASON 5 - 8)',
+      title: 'Galangan Kapal Broker & Kemudi MetaTrader 4/5',
+      description: 'Membedakan broker legal vs scammer, liquidity provider, cara pasang SL/TP otomatis di MT4/MT5, dan memahami pergerakan harga.',
+      duration: '4 Season • 46 Episode',
       isFree: false,
-      href: '/academy?modul=1',
+      href: '/academy?season=5',
     },
     {
-      level: 'LEVEL 2',
-      title: 'Struktur Market H1/H4 & Supply-Demand Zone',
-      description: 'Menemukan area likuiditas institusional yang valid dan teknik entry di titik harga terkonfirmasi.',
-      duration: '50 Menit',
+      level: 'SAGA 3 (SEASON 9 - 14)',
+      title: 'Ilmu Analisis Pasar, Candlestick & Price Action',
+      description: 'Membaca arah pasar tanpa overload: Candlestick Pattern, S&R, Indikator (EMA/RSI), Smart Money Concept (BOS, CHOCH, FVG), dan 4 Sesi Trading.',
+      duration: '6 Season • 60 Episode',
       isFree: false,
-      href: '/academy?modul=2',
+      href: '/academy?season=9',
     },
     {
-      level: 'LEVEL 3',
-      title: 'Psikologi Trading Anti-FOMO & Disiplin Eksekusi',
-      description: 'Melawan nafsu revenge trading, mengendalikan stres saat floating loss, dan menjaga ketenangan mental.',
-      duration: '40 Menit',
+      level: 'SAGA 4 (SEASON 15 - 18)',
+      title: 'Perisai Anti-MC, SOP Money Management 1% & Gold',
+      description: 'Benteng pertahanan wajib: Risk Management 1%, Fixed SL 30 Pips, strategi menaklukkan XAUUSD (Gold), serta membunuh iblis mental FOMO & Revenge Trading.',
+      duration: '4 Season • 45 Episode',
       isFree: false,
-      href: '/academy?modul=3',
+      href: '/academy?season=15',
     },
     {
-      level: 'LEVEL 4',
-      title: 'Menghadapi Volatilitas Berita Besar (NFP/CPI)',
-      description: 'Playbook 3 fase rilis berita: menghindari slippage detik awal dan menyaring fakeout wick candle.',
-      duration: '45 Menit',
+      level: 'SAGA 5 (SEASON 19 - 20)',
+      title: 'Backtesting Poneglyph, Algoritma AI & Trader Mandiri',
+      description: 'Membuktikan strategi dengan data 100 trade objektif, jurnal evaluasi, pengenalan EA & algoritma, hingga wisuda menjadi Trader Mandiri Realistis.',
+      duration: '2 Season • 20 Episode',
       isFree: false,
-      href: '/academy?modul=4',
+      href: '/academy?season=19',
     },
     {
-      level: 'LEVEL 5',
-      title: 'Analisis Teknikal Lanjutan & Simulasi MM Baku',
-      description: 'Integrasi sistematis seluruh SOP: dari jurnal transaksi terarah hingga evaluasi compounding jangka panjang.',
-      duration: '60 Menit',
+      level: 'SPESIAL XAUUSD & EMAS',
+      title: 'Masterclass Emas XAUUSD & Sesi London-NY Overlap',
+      description: 'Mengenal karakteristik emas spot, pengaruh korelasi Dolar AS & suku bunga, serta simulasi eksekusi disiplin di zona volatilitas tinggi.',
+      duration: 'Season 17 • 10 Episode',
       isFree: false,
-      href: '/academy?modul=5',
+      href: '/academy?season=17',
     },
   ];
 
@@ -449,11 +449,11 @@ export default function DashboardOverviewPage() {
                 <GraduationCap className="w-5 h-5" />
               </span>
               <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-                Kurikulum Edukasi Bisnis Forex Realistis (Level 0 - 5)
+                Serial Petualangan Edukasi Forex Realistis (20 Season • 211 Episode)
               </h2>
             </div>
             <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
-              Materi disusun bertahap, terarah, &amp; terkonsep untuk membuka mindset awal memahami bisnis trading forex. Mulai dari pemahaman dasar hingga penerapan SOP Money Management ketat.
+              Materi disusun berseri seperti petualangan per season (ala One Piece) yang terarah &amp; membuka mindset bisnis forex dari nol. Mulai dari sejarah uang purba hingga kemandirian merakit sistem trading bebas Margin Call.
             </p>
           </div>
 

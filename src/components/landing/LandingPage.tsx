@@ -872,7 +872,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 </div>
                 <div>
                   <div className="text-slate-900 font-extrabold">Paket Edukasi Lengkap (Rp 250.000 / Bln)</div>
-                  <div className="text-[10px] text-slate-400 font-normal">Akses penuh modul Lvl 1-5, SOP Anti-MC &amp; kalkulator</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Akses penuh 20 Season Edukasi, SOP Anti-MC &amp; kalkulator</div>
                 </div>
               </a>
 
@@ -885,7 +885,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   <GraduationCap className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-slate-900 font-extrabold">Dasar Forex Gratis (Level 0)</div>
+                  <div className="text-slate-900 font-extrabold">Dasar Forex Gratis (Season 1 &amp; 2)</div>
                   <div className="text-[10px] text-slate-500 font-normal">Materi pengenalan pasar untuk pemula</div>
                 </div>
               </a>
@@ -985,7 +985,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-[#00A651] font-extrabold text-xs sm:text-sm border border-emerald-300 shadow-xs active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <BookOpenCheck className="w-4 h-4 text-[#00A651]" />
-              <span>Pelajari Modul Dasar Gratis (Level 0)</span>
+              <span>Pelajari Season 1 &amp; 2 Gratis</span>
             </a>
 
             <a
@@ -993,7 +993,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs sm:text-sm border border-slate-300 shadow-xs hover:border-slate-400 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <LineChart className="w-4 h-4 text-[#00A651]" />
-              <span>Lihat Kurikulum Lengkap Level 1 - 5</span>
+              <span>Lihat Kurikulum 20 Season Lengkap</span>
             </a>
           </div>
 
@@ -1001,11 +1001,11 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           <div className="pt-6 sm:pt-8 max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-left">
             <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
               <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">KURIKULUM BERTAHAP</span>
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">KURIKULUM SERIAL</span>
                 <Award className="w-3.5 h-3.5 text-emerald-600" />
               </div>
-              <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">Level 0 - 5</p>
-              <p className="text-[10px] sm:text-[11px] text-[#00A651] font-semibold mt-0.5">Dari Pemula Hingga Mandiri</p>
+              <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">20 Season</p>
+              <p className="text-[10px] sm:text-[11px] text-[#00A651] font-semibold mt-0.5">211 Episode Petualangan</p>
             </div>
 
             <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
@@ -1926,7 +1926,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 <div className="space-y-3 pt-4 border-t border-slate-100 text-xs text-slate-800 font-medium">
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Akses Penuh Seluruh Modul Edukasi (Level 1 - 5)</strong></span>
+                    <span><strong>Akses Penuh Seluruh Kurikulum Edukasi (Season 1 - 20)</strong></span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
