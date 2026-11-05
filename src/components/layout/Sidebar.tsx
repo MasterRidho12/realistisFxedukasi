@@ -102,7 +102,7 @@ export default function Sidebar() {
 
   const toolNavigationItems = [
     {
-      name: 'Risk & Lot Calculator',
+      name: 'Kalkulator Lot Aman Anti-MC',
       href: '/calculator',
       icon: Calculator,
       badge: 'Core SOP',
@@ -173,8 +173,8 @@ export default function Sidebar() {
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Header: User Profile Terminal Header (ala Traders Family) */}
-        <div className="p-4 border-b border-slate-200 bg-gradient-to-b from-slate-900 to-slate-800 text-white flex items-center justify-between">
+        {/* Header: User Profile Terminal Header (TF Deep Green Gradient) */}
+        <div className="p-4 border-b border-emerald-950/20 bg-gradient-to-b from-[#00472B] to-[#005A36] text-white flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative w-10 h-10 rounded-2xl bg-gradient-to-br from-[#00A651] to-emerald-800 flex items-center justify-center font-black text-sm text-white shadow-md shadow-[#00A651]/30 shrink-0">
               {user.avatar ? (
@@ -422,7 +422,7 @@ export default function Sidebar() {
             })}
           </div>
 
-          {/* BANTUAN & KOMUNITAS */}
+          {/* BANTUAN & KONSULTASI */}
           <div className="space-y-1 pt-2 border-t border-slate-100">
             <div className="px-3 py-1 text-[10px] font-black tracking-wider text-slate-400 uppercase">
               Bantuan &amp; Konsultasi
@@ -430,7 +430,7 @@ export default function Sidebar() {
 
             <a
               href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
-                `Halo Admin RealistisFx, saya ${user.name} (ID: ${user.id}). Saya ingin konsultasi materi edukasi / bantuan akun.`
+                `Halo Admin RealistisFx, saya ${user.name} (ID: ${user.id}). Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya. Saya ingin konsultasi materi edukasi bisnis forex dan SOP Money Management 1%.`
               )}`}
               target="_blank"
               rel="noopener noreferrer"

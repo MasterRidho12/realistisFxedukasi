@@ -73,6 +73,8 @@ export default function QrisPaymentModal() {
   const [proofFile, setProofFile] = useState<string | null>(null);
   const [copiedNominal, setCopiedNominal] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isMidtransLoading, setIsMidtransLoading] = useState(false);
+  const [midtransError, setMidtransError] = useState('');
 
   // Sync state whenever modal opens or user authentication changes
   useEffect(() => {
@@ -166,6 +168,37 @@ export default function QrisPaymentModal() {
 
   const currentPlan = planPricing['EDUKASI'];
   const adminWhatsAppNumber = siteSettings?.adminWhatsAppNumber || '6287774229255';
+
+  const handleMidtransPayment = async () => {
+    setIsMidtransLoading(true);
+    setMidtransError('');
+    try {
+      const response = await fetch('/api/payment/midtrans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planKey: 'EDUKASI',
+          amount: currentPlan.amount,
+          user: {
+            id: user.id || accountId,
+            name: user.name || name,
+            email: user.email || email,
+            phone: phone || user.whatsapp,
+          },
+        }),
+      });
+      const data = await response.json();
+      if (data.success && data.redirect_url) {
+        window.open(data.redirect_url, '_blank') || (window.location.href = data.redirect_url);
+      } else {
+        setMidtransError(data.error || 'Gagal memproses Midtrans. Lanjutkan dengan Scan QRIS manual.');
+      }
+    } catch {
+      setMidtransError('Gagal terhubung ke Midtrans. Lanjutkan dengan Scan QRIS manual.');
+    } finally {
+      setIsMidtransLoading(false);
+    }
+  };
 
   const handleCopyNominal = () => {
     navigator.clipboard.writeText(currentPlan.amount.toString());
@@ -1030,24 +1063,51 @@ export default function QrisPaymentModal() {
                   </div>
                 </div>
 
-                {/* Bottom Navigation Buttons */}
-                <div className="flex gap-2 pt-2 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    className="py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
-                  >
-                    <ArrowLeft className="w-3.5 h-3.5" />
-                    <span>Kembali ke Akun</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStep(3)}
-                    className="flex-1 py-3.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span>Lanjut ke Scan QRIS (Rp 250.000 / Bulan)</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                {/* Midtrans & QRIS Action Buttons */}
+                {midtransError && (
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    <span>{midtransError}</span>
+                  </div>
+                )}
+
+                <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {/* Option 1: Midtrans Gateway */}
+                    <button
+                      type="button"
+                      onClick={handleMidtransPayment}
+                      disabled={isMidtransLoading}
+                      className="py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#005A36] to-[#00A651] hover:from-[#00472B] hover:to-[#008F45] text-white font-black text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      <span>{isMidtransLoading ? 'Menghubungkan Midtrans...' : 'Bayar Otomatis via Midtrans'}</span>
+                    </button>
+
+                    {/* Option 2: Scan QRIS Manual */}
+                    <button
+                      type="button"
+                      onClick={() => setStep(3)}
+                      className="py-3.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-300 font-bold text-xs shadow-xs hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <QrCode className="w-4 h-4 text-[#00A651]" />
+                      <span>Scan QRIS Manual (Resi WA)</span>
+                    </button>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      className="text-xs text-slate-500 hover:text-slate-800 font-semibold flex items-center gap-1 cursor-pointer py-1"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Kembali ke Akun</span>
+                    </button>
+                    <span className="text-[11px] text-slate-400 font-medium">
+                      BCA, Mandiri, BRI, BNI, GoPay, QRIS
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
@@ -1057,6 +1117,25 @@ export default function QrisPaymentModal() {
                ========================================================================= */}
             {step === 3 && (
               <div className="space-y-5 animate-in fade-in duration-150">
+                {/* Midtrans Alternative Banner in Step 3 */}
+                <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-2.5">
+                    <CreditCard className="w-5 h-5 text-[#00A651] shrink-0" />
+                    <div>
+                      <span className="font-extrabold text-slate-900 block">Ingin Bayar Otomatis Tanpa Upload Resi?</span>
+                      <p className="text-[11px] text-slate-600">Gunakan Virtual Account Bank (BCA, Mandiri, BRI, BNI) atau GoPay via Midtrans.</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleMidtransPayment}
+                    disabled={isMidtransLoading}
+                    className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-black text-xs shadow-xs transition-all shrink-0 cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <span>{isMidtransLoading ? 'Memproses...' : 'Bayar via Midtrans'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-[#00A651] border border-emerald-200 text-[11px] font-bold">
                     <QrCode className="w-3.5 h-3.5" /> LANGKAH 3: SCAN QRIS RESMI

@@ -344,7 +344,7 @@ export default function DashboardOverviewPage() {
             href="/academy"
             className="self-start sm:self-auto px-4 py-2 rounded-xl bg-white text-[#007043] hover:bg-emerald-50 text-xs font-black shadow-xs shrink-0 transition-all cursor-pointer flex items-center gap-1.5"
           >
-            <span>Buka Akademi Video</span>
+            <span>Buka Modul Edukasi</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>

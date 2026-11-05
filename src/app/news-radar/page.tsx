@@ -38,6 +38,7 @@ import {
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { EnrichedNewsItem } from '../api/news/route';
+import NewsImpactChart from '@/components/common/NewsImpactChart';
 
 const CURRENCIES = ['ALL', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'NZD', 'CHF'];
 type TimeframeOption = 'all' | 'today' | 'tomorrow' | 'upcoming';
@@ -999,6 +1000,21 @@ export default function NewsRadarPage() {
                           </span>
                         ))}
                       </div>
+
+                      {/* Visual Price Reaction Chart */}
+                      {news.actualData.hasReleased && (
+                        <NewsImpactChart
+                          pair={news.primaryAffectedPair}
+                          eventName={news.title}
+                          impact={news.impact as 'High' | 'Medium' | 'Low'}
+                          actual={news.actualData.actual}
+                          forecast={news.forecast}
+                          previous={news.previous}
+                          pipsGain={news.signal.averagePipMove}
+                          direction={news.signal.activeTrigger === 'BUY' ? 'BUY' : 'SELL'}
+                          dateStr={news.dateFormatted}
+                        />
+                      )}
 
                       {/* REAL-TIME DYNAMIC TWO-WAY SIGNALS SECTION */}
                       {isPro ? (

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Logo from '@/components/common/Logo';
 import {
   Menu,
   Crown,
@@ -58,20 +59,9 @@ export default function Navbar() {
         </button>
 
         {/* Mobile Brand Logo */}
-        <Link href="/" className="flex lg:hidden items-center gap-1.5 select-none shrink-0">
-          <div className="relative w-8 h-8 rounded-xl overflow-hidden border border-emerald-500/40 shadow-xs bg-[#0a1f18] flex items-center justify-center shrink-0">
-            <img
-              alt="REALISTIS FX Logo"
-              width={32}
-              height={32}
-              className="w-full h-full object-cover"
-              src="/images/logo.png"
-            />
-          </div>
-          <span className="font-extrabold text-xs sm:text-sm tracking-wider text-slate-900">
-            REALISTIS<span className="text-[#00A651]"> FX</span>
-          </span>
-        </Link>
+        <div className="flex lg:hidden items-center shrink-0">
+          <Logo variant="green" size="sm" href="/" />
+        </div>
 
         {/* Market Session Pill */}
         <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 shadow-xs shrink-0">
@@ -104,7 +94,7 @@ export default function Navbar() {
         {/* Copy-Trade WhatsApp Button */}
         <a
           href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
-            siteSettings?.copyTradeWaMessage || 'Halo Admin RealistisFx, saya tertarik untuk bergabung Copy Trade REALISTIS FX (Gold Breakout XAUUSD). Mohon panduan pendaftaran dan setup akunnya. Terima kasih.'
+            'Halo Admin RealistisFx, saya ingin konsultasi Edukasi Bisnis Trading Forex. Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya. Mohon informasi bimbingan SOP Money Management 1% dan metode Fixed SL 30 Pips. Terima kasih.'
           )}`}
           target="_blank"
           rel="noopener noreferrer"
