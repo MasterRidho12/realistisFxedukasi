@@ -57,9 +57,10 @@ import {
 import { useUser, PaymentPlanKey } from '@/context/UserContext';
 import { EnrichedNewsItem } from '@/app/api/news/route';
 import type { HistoricalSignalItem } from '@/app/api/signals/route';
+import AiBacktestSection from '@/components/landing/AiBacktestSection';
+import GoogleLoginButton from '@/components/auth/GoogleLoginButton';
 import Logo from '@/components/common/Logo';
 import NewsImpactChart from '@/components/common/NewsImpactChart';
-import GoogleLoginButton from '@/components/auth/GoogleLoginButton';
 
 interface LandingPageProps {
   onOpenAuth?: (initialMode?: 'login' | 'register') => void;
@@ -687,7 +688,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             </span>
             <span className="text-[11px] sm:text-xs">
               {siteSettings?.landingAnnouncement ||
-                'Edukasi Bisnis Trading Forex Bertahap, Terarah & Terkonsep | Kuasai SOP Money Management 1% Anti-MC'}
+                'Edukasi Bisnis Trading Forex dari 0 Bertahap, Terarah & Terkonsep | Kuasai SOP Money Management 1% Anti-MC'}
             </span>
             <span className="hidden lg:inline text-emerald-200">|</span>
             <span className="hidden lg:inline-flex items-center gap-1 text-emerald-100 font-medium text-xs">
@@ -701,8 +702,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
       {/* 2. Main Sticky Navigation Header with Mobile Drawer */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-3">
-          {/* Logo & Brand Identity (Hijau TF Version) */}
-          <Logo variant="green" size="md" href="/" />
+          {/* Logo & Brand Identity (2 Versions: Green / White configurable) */}
+          <div className="shrink-0">
+            <Logo variant="green" size="md" subtitleText="EDUKASI SOP ANTI-MC" />
+          </div>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-5 text-xs font-bold text-slate-600">
@@ -775,6 +778,20 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 <div>
                   <div className="text-slate-900 font-extrabold">Riwayat Sinyal Berita (Tanggal Lengkap)</div>
                   <div className="text-[10px] text-slate-400 font-normal">Audit rilis NFP, CPI, &amp; FOMC nyata</div>
+                </div>
+              </a>
+
+              <a
+                href="#track-record"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors"
+              >
+                <div className="p-1.5 rounded-lg bg-emerald-50 text-[#00A651] border border-emerald-200">
+                  <BarChart3 className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-slate-900 font-extrabold">Track Record AI (+4,120 Pips)</div>
+                  <div className="text-[10px] text-slate-400 font-normal">Audit performa sinyal terverifikasi</div>
                 </div>
               </a>
 
@@ -879,7 +896,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           {/* Top Pill Badges */}
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] sm:text-xs text-[#00A651] font-bold shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#00A651] animate-pulse shrink-0" />
-            <span className="truncate">PLATFORM EDUKASI BISNIS FOREX INDONESIA</span>
+            <span className="truncate">EDUKASI BISNIS FOREX INDONESIA</span>
             <span className="text-emerald-300 hidden sm:inline">|</span>
             <span className="text-slate-600 font-semibold hidden sm:inline">Kurikulum Terarah dari Nol Hingga Mandiri</span>
           </div>
@@ -887,14 +904,17 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           {/* Main Hero Headline */}
           <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4">
             <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.2] sm:leading-[1.15]">
-              Edukasi Bisnis Trading Forex{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00A651] via-[#008F45] to-[#005A36]">
-                Bertahap, Terarah &amp; Terkonsep
+              Trading Realistis:{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#005A36] via-[#00A651] to-emerald-700">
+                Fokus Menjaga Modal
               </span>
-              .
+              , Bukan Skema Cepat Kaya.
             </h1>
-            <p className="text-xs sm:text-base md:text-lg text-slate-600 max-w-3xl mx-auto font-normal leading-relaxed">
-              Bukan perjudian cepat kaya. Bangun fondasi dari nol dengan SOP Money Management 1%, metode baku Fixed SL 30 Pips, pemetaan zona supply-demand valid, dan psikologi eksekusi tenang untuk mencetak trader mandiri bebas Margin Call.
+            <p className="text-sm sm:text-lg md:text-xl font-bold text-[#005A36]">
+              Edukasi Bisnis Trading Forex Bertahap, Terarah &amp; Terkonsep.
+            </p>
+            <p className="text-xs sm:text-base md:text-base text-slate-600 max-w-3xl mx-auto font-normal leading-relaxed">
+              Bukan perjudian cepat kaya. Bangun fondasi dari nol dengan SOP Money Management 1%, metode baku Fixed SL 30 Pips, pemetaan zona supply-demand valid, dan psikologi eksekusi tenang untuk mencetak trader mandiri bebas Margin Call. Kami hadir bukan untuk menjanjikan profit instan, melainkan memberikan peta jalan terstruktur bagi Anda yang serius ingin menjadikan trading sebagai bisnis jangka panjang. Belajar merencanakan setiap eksekusi dengan logis, membatasi kerugian dengan disiplin, dan membangun mentalitas trader profesional.
             </p>
           </div>
 
@@ -1017,6 +1037,9 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           </div>
         </div>
       </section>
+
+      {/* 3b. AI QUANTITATIVE BACKTEST SECTION (Hidden per user request) */}
+      {/* <AiBacktestSection onOpenAuth={openAuth} onOpenPayment={() => handleBuyPlan('1_MONTH')} /> */}
 
       {/* 4. VERIFIED HISTORICAL NEWS SIGNALS & TRACK RECORD (Real Official BLS/Fed Data) */}
       <section id="track-record" className="py-16 sm:py-20 bg-slate-50 border-b border-slate-200 scroll-mt-20 sm:scroll-mt-24">
@@ -1447,7 +1470,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                         </div>
                       </div>
 
-                      {/* Visual Reaction Spike & Price Impact Chart (Point 8: Signal News di bikin grafik) */}
+                      {/* Visual Reaction Spike & Candlestick Impact Chart (Point 4: Grafik Visual Signal News) */}
                       <NewsImpactChart
                         pair={sig.pair}
                         eventName={sig.pair}
@@ -1584,67 +1607,6 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <div className="p-3 rounded-xl bg-white border border-slate-200 text-[11px] font-mono text-[#00A651] font-bold">
                 Rata-rata Gain Event News: +140 s/d +280 Pips
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Akses Private Channel Edukasi & Sinyal Telegram (1 Arah Bebas Drama) */}
-      <section id="channel" className="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden scroll-mt-14">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#00A651]/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12 relative z-10">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-black uppercase tracking-wider">
-              KANAL EDUKASI RESMI TELEGRAM (1 ARAH)
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-              Murni Edukasi &amp; Sinyal Presisi: Bebas Drama, Tanpa Debat Pro-Kontra
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-300">
-              Kami secara tegas <strong className="text-emerald-400">TIDAK menyediakan grup obrolan Telegram maupun grup WhatsApp</strong>. Tujuannya murni untuk menghindari debat kusir, kebisingan opini (noise), dan pro-kontra yang merusak psikologi trading Anda. Seluruh materi edukasi, sinyal valid, chart setup, dan panduan Money Management disiarkan secara tertib melalui <strong>Kanal Telegram Edukasi 1 Arah</strong>.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-            <div className="p-5 rounded-3xl bg-slate-800/80 border border-slate-700/80 space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#00A651]/20 text-[#00A651] flex items-center justify-center font-bold">
-                <Send className="w-5 h-5" />
-              </div>
-              <h3 className="font-extrabold text-sm text-white">Kanal Edukasi 1 Arah</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Notifikasi sinyal real-time langsung ke ponsel Anda dengan parameter lengkap: Pair, Action, Entry, SL, TP1, TP2, dan chart setup tanpa gangguan obrolan.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-slate-800/80 border border-slate-700/80 space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <h3 className="font-extrabold text-sm text-white">Anti-Drama &amp; Bebas Noise</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Tanpa grup chat publik, Anda terlindungi dari opini spekulatif yang berlawanan, rasa ragu (second-guessing), atau kepanikan massal saat berita rilis.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-slate-800/80 border border-slate-700/80 space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
-                <Clock className="w-5 h-5" />
-              </div>
-              <h3 className="font-extrabold text-sm text-white">Edukasi &amp; Briefing Berita</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Analisa teknikal XAUUSD harian, bedah setup NFP/CPI, dan panduan money management disiarkan secara terstruktur di channel untuk pembelajaran mandiri.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-slate-800/80 border border-slate-700/80 space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
-                <MessageCircle className="w-5 h-5" />
-              </div>
-              <h3 className="font-extrabold text-sm text-white">Admin Support 1-on-1</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Bantuan aktivasi paket edukasi, integrasi bot notifikasi, atau pertanyaan materi dilayani secara personal 1-on-1 via WhatsApp Admin Resmi (bukan grup publik).
-              </p>
             </div>
           </div>
         </div>
@@ -1858,9 +1820,19 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                     <span className="text-3xl sm:text-4xl font-black text-slate-900">Rp 250.000</span>
                     <span className="text-xs text-slate-500 font-semibold">/ bulan</span>
                   </div>
-                  <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                    Investasi cerdas proteksi modal trading Anda dari bahaya Margin Call. Akses penuh ke seluruh 20 Season Serial Edukasi Terkonsep (200+ Episode), SOP baku Money Management 1%, metode Fixed SL 30 Pips, Kalkulator Lot Aman Anti-MC Unlimited, dan bimbingan konsultasi materi langsung bersama tim RealistisFx.
-                  </p>
+
+                  {/* Copywriting Baru (Point 3) */}
+                  <div className="mt-3 p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/90 text-left space-y-2">
+                    <div className="text-xs font-black text-[#005A36] tracking-tight uppercase">
+                      Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya
+                    </div>
+                    <div className="text-[11px] font-extrabold text-slate-800">
+                      Edukasi Bisnis Trading Forex Bertahap, Terarah &amp; Terkonsep.
+                    </div>
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
+                      Bukan perjudian cepat kaya. Bangun fondasi dari nol dengan SOP Money Management 1%, metode baku Fixed SL 30 Pips, pemetaan zona supply-demand valid, dan psikologi eksekusi tenang untuk mencetak trader mandiri bebas Margin Call. Kami hadir bukan untuk menjanjikan profit instan, melainkan memberikan peta jalan terstruktur bagi Anda yang serius ingin menjadikan trading sebagai bisnis jangka panjang. Belajar merencanakan setiap eksekusi dengan logis, membatasi kerugian dengan disiplin, dan membangun mentalitas trader profesional.
+                    </p>
+                  </div>
                 </div>
 
                 <div className="space-y-3 pt-4 border-t border-slate-100 text-xs text-slate-800 font-medium">
@@ -1886,7 +1858,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
-                    <span><strong>Kalkulator Lot Aman Anti-MC (Meminimalisir Risiko) Unlimited</strong> (Semua Pair Forex &amp; Emas XAUUSD)</span>
+                    <span><strong>Kalkulator Lot Aman Anti-MC Meminimalisir Risiko (Unlimited)</strong></span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#00A651] shrink-0" />
@@ -2137,10 +2109,12 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
       </section>
 
       {/* 13. Modern Footer */}
-      <footer className="bg-[#002B19] text-slate-300 py-12 text-xs border-t border-emerald-950">
+      <footer className="bg-[#002B19] text-slate-300 py-12 text-xs border-t border-[#00472B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <Logo variant="white" size="md" href="/" />
+            <div className="shrink-0">
+              <Logo variant="white" size="md" subtitleText="EDUKASI BISNIS FOREX" />
+            </div>
 
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-300 font-semibold">
               <a href="#track-record" className="hover:text-white transition-colors">Riwayat Sinyal Berita</a>
@@ -2149,11 +2123,11 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
               <a
                 href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
-                  'Halo Admin RealistisFx, saya ingin konsultasi Edukasi Bisnis Trading Forex. Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya. Mohon informasi bimbingan SOP Money Management 1% dan metode Fixed SL 30 Pips. Terima kasih.'
+                  siteSettings?.copyTradeWaMessage || 'Halo Admin RealistisFx, saya ingin konsultasi mengenai paket Edukasi Bisnis Forex Realistis.'
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-emerald-300 text-[#4ADE80] font-bold transition-colors flex items-center gap-1"
+                className="hover:text-emerald-400 transition-colors flex items-center gap-1"
               >
                 <MessageCircle className="w-3.5 h-3.5" />
                 <span>WhatsApp Admin Resmi</span>
@@ -2701,30 +2675,6 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   }}
                   onError={(err) => setAuthError(err)}
                 />
-
-                {/* 1-Click Demo Login Helper */}
-                {authMode === 'login' && (
-                  <div className="pt-2 text-center">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        login('trader@realistisfx.com', 'trader123');
-                        setShowAuthModal(false);
-                        if (pendingCheckoutPlan) {
-                          const targetPlan = pendingCheckoutPlan;
-                          setPendingCheckoutPlan(null);
-                          setTimeout(() => {
-                            openPaymentModal(targetPlan);
-                          }, 350);
-                        }
-                      }}
-                      className="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 hover:underline cursor-pointer bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors inline-flex items-center gap-1.5"
-                    >
-                      <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                      <span>Klik Cepat: Masuk Akun Demo (trader@realistisfx.com)</span>
-                    </button>
-                  </div>
-                )}
               </form>
             )}
           </div>

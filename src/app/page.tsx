@@ -310,23 +310,29 @@ export default function DashboardOverviewPage() {
       {/* 1. TOP GREEN VERIFIED STATUS BANNER (ALA TRADERS FAMILY) */}
       {/* ======================================================== */}
       <div className="space-y-3">
-        {/* Banner 1: Green Verified Card (Persis TF Image 2) */}
-        <div className="rounded-2xl bg-[#005a36] text-white p-4 sm:p-5 shadow-sm flex items-start gap-3 sm:gap-4 border border-[#00472b]">
+        {/* Banner 1: Green Verified Card (Persis TF Deep Green) */}
+        <div className="rounded-2xl bg-gradient-to-r from-[#00472B] via-[#005A36] to-[#00472B] text-white p-4 sm:p-5 shadow-sm flex items-start gap-3 sm:gap-4 border border-[#00472B]">
           <div className="p-1 rounded-full bg-emerald-400/20 text-emerald-300 shrink-0 mt-0.5">
             <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <div className="min-w-0 flex-1">
-            <h2 className="text-sm sm:text-base font-extrabold text-white tracking-tight">
-              Akun RealistisFx Edukasi Anda Aktif!
+          <div className="min-w-0 flex-1 space-y-1">
+            <div className="inline-block px-2.5 py-0.5 rounded-full bg-white/15 text-emerald-200 text-[10px] font-black uppercase tracking-wider border border-white/20">
+              SOP REALISTISFX • ANTI MARGIN CALL
+            </div>
+            <h2 className="text-sm sm:text-base font-black text-white tracking-tight">
+              Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-100/95 mt-1 leading-relaxed">
-              Selamat datang, <strong className="text-white">{user.name}</strong>! Akun Anda siap digunakan untuk mempelajari bisnis trading forex dari 0 secara bertahap, terarah, &amp; terkonsep untuk membuka mindset awal memahami bisnis trading forex yang sesungguhnya.
+            <div className="text-xs sm:text-sm font-extrabold text-emerald-200">
+              Edukasi Bisnis Trading Forex Bertahap, Terarah &amp; Terkonsep.
+            </div>
+            <p className="text-xs text-emerald-100/95 leading-relaxed pt-0.5">
+              Bukan perjudian cepat kaya. Bangun fondasi dari nol dengan SOP Money Management 1%, metode baku Fixed SL 30 Pips, pemetaan zona supply-demand valid, dan psikologi eksekusi tenang untuk mencetak trader mandiri bebas Margin Call. Kami hadir bukan untuk menjanjikan profit instan, melainkan memberikan peta jalan terstruktur bagi Anda yang serius ingin menjadikan trading sebagai bisnis jangka panjang. Belajar merencanakan setiap eksekusi dengan logis, membatasi kerugian dengan disiplin, dan membangun mentalitas trader profesional.
             </p>
           </div>
         </div>
 
-        {/* Banner 2: Secondary Announcement / Promo Edukasi (Persis TF Image 2) */}
-        <div className="rounded-2xl bg-[#007043] text-white p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-[#005a36]">
+        {/* Banner 2: Secondary Announcement / Promo Edukasi (Persis TF) */}
+        <div className="rounded-2xl bg-[#005A36] text-white p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-[#00472B]">
           <div className="flex items-start gap-3">
             <div className="p-1 rounded-full bg-emerald-300/20 text-emerald-200 shrink-0 mt-0.5">
               <Info className="w-5 h-5" />
@@ -342,7 +348,7 @@ export default function DashboardOverviewPage() {
           </div>
           <Link
             href="/academy"
-            className="self-start sm:self-auto px-4 py-2 rounded-xl bg-white text-[#007043] hover:bg-emerald-50 text-xs font-black shadow-xs shrink-0 transition-all cursor-pointer flex items-center gap-1.5"
+            className="self-start sm:self-auto px-4 py-2 rounded-xl bg-white text-[#005A36] hover:bg-emerald-50 text-xs font-black shadow-xs shrink-0 transition-all cursor-pointer flex items-center gap-1.5"
           >
             <span>Buka Modul Edukasi</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -360,7 +366,7 @@ export default function DashboardOverviewPage() {
           </div>
           <a
             href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
-              `Halo Admin RealistisFx, saya ${user.name} (ID: ${user.id}). Saya ingin konsultasi materi edukasi bisnis trading forex.`
+              `Halo Admin RealistisFx, saya ${user.name} (ID: ${user.id}). Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya. Saya ingin konsultasi materi edukasi bisnis trading forex.`
             )}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -514,7 +520,7 @@ export default function DashboardOverviewPage() {
       {/* 4. DETAIL PROFIL TRADER & STATUS AKUN (#profile)          */}
       {/* ======================================================== */}
       <div id="profile" className="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden scroll-mt-20">
-        <div className="px-4 sm:px-6 py-3.5 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white flex flex-wrap items-center justify-between gap-2.5">
+        <div className="px-4 sm:px-6 py-3.5 bg-gradient-to-r from-[#00472B] via-[#005A36] to-[#00472B] text-white flex flex-wrap items-center justify-between gap-2.5">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#00A651] animate-pulse ring-4 ring-[#00A651]/20" />
             <span className="font-mono text-xs font-bold tracking-wider uppercase text-slate-200">
@@ -648,7 +654,7 @@ export default function DashboardOverviewPage() {
               </div>
 
               <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span className="text-[10px] text-slate-400 block">Kuota Lot Calculator</span>
+                <span className="text-[10px] text-slate-400 block">Kalkulator Lot Aman Anti-MC</span>
                 <span className="font-bold text-slate-900 mt-0.5 block font-mono">
                   {isPro ? 'Unlimited' : `${user.dailyCalculatorCount}/${siteSettings?.freeDailyCalculatorLimit ?? 3} Hari Ini`}
                 </span>

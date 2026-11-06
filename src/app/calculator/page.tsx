@@ -175,13 +175,13 @@ export default function CalculatorPage() {
         
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div className="space-y-2 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-[#00A651] border border-emerald-200 text-xs font-bold uppercase tracking-wider">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Kalkulator Lot Aman Anti-MC Menimalisir Risiko</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-[#005A36] border border-emerald-200 text-xs font-bold uppercase tracking-wider">
+              <ShieldCheck className="w-4 h-4 text-[#00A651]" />
+              <span>Kalkulator Lot Aman Anti-MC Meminimalisir Risiko</span>
             </div>
             
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
-              Kalkulator Lot Aman Anti-MC: Meminimalisir Risiko Sebelum Masuk Pasar
+              Kalkulator Lot Aman Anti-MC Meminimalisir Risiko
             </h1>
             
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">

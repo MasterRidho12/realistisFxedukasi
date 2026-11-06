@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Logo from '@/components/common/Logo';
 import {
   Menu,
   Crown,
@@ -15,6 +14,7 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
+import Logo from '@/components/common/Logo';
 
 export default function Navbar() {
   const {
@@ -59,8 +59,8 @@ export default function Navbar() {
         </button>
 
         {/* Mobile Brand Logo */}
-        <div className="flex lg:hidden items-center shrink-0">
-          <Logo variant="green" size="sm" href="/" />
+        <div className="lg:hidden flex items-center shrink-0">
+          <Logo variant="green" size="sm" showSubtitle={false} />
         </div>
 
         {/* Market Session Pill */}
@@ -94,7 +94,7 @@ export default function Navbar() {
         {/* Copy-Trade WhatsApp Button */}
         <a
           href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
-            'Halo Admin RealistisFx, saya ingin konsultasi Edukasi Bisnis Trading Forex. Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya. Mohon informasi bimbingan SOP Money Management 1% dan metode Fixed SL 30 Pips. Terima kasih.'
+            siteSettings?.copyTradeWaMessage || 'Halo Admin RealistisFx, saya tertarik untuk bergabung Copy Trade REALISTIS FX (Gold Breakout XAUUSD). Mohon panduan pendaftaran dan setup akunnya. Terima kasih.'
           )}`}
           target="_blank"
           rel="noopener noreferrer"

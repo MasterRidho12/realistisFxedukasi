@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import AppShell from '@/components/layout/AppShell';
-import PwaInstallPrompt from '@/components/common/PwaInstallPrompt';
 
+// Inter — matches Traders Family clean typography
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
@@ -17,26 +17,15 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#005A36',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
 };
 
 export const metadata: Metadata = {
-  title: 'RealistisFx — Edukasi Bisnis Trading Forex Bertahap, Terarah & Terkonsep',
+  title: 'RealistisFx — Edukasi Bisnis Trading Forex dari Nol & SOP Anti-MC',
   description:
-    'Bukan perjudian cepat kaya. Bangun fondasi dari nol dengan SOP Money Management 1%, metode baku Fixed SL 30 Pips, pemetaan zona supply-demand valid, dan psikologi eksekusi tenang untuk mencetak trader mandiri bebas Margin Call.',
-  manifest: '/manifest.webmanifest',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'default',
-    title: 'RealistisFx',
-  },
-  icons: {
-    icon: '/images/logo-green.svg',
-    apple: '/images/logo.png',
-  },
+    'Edukasi bisnis trading forex dari 0 secara bertahap, terarah, dan terkonsep untuk membuka mindset awal memahami bisnis trading forex. Kuasai SOP Money Management 1%, analisis teknikal supply-demand, dan tools manajemen risiko anti-Margin Call.',
 };
 
 export default function RootLayout({
@@ -51,7 +40,6 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-[#F8FAFC] text-slate-900 flex flex-col selection:bg-[#00A651] selection:text-white">
         <AppShell>{children}</AppShell>
-        <PwaInstallPrompt />
       </body>
     </html>
   );

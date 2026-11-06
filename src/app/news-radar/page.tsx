@@ -1001,7 +1001,7 @@ export default function NewsRadarPage() {
                         ))}
                       </div>
 
-                      {/* Visual Price Reaction Chart */}
+                      {/* Visual Price Reaction Chart (Point 4: Grafik Visual Signal News) */}
                       {news.actualData.hasReleased && (
                         <NewsImpactChart
                           pair={news.primaryAffectedPair}

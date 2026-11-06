@@ -102,7 +102,7 @@ export default function Sidebar() {
 
   const toolNavigationItems = [
     {
-      name: 'Kalkulator Lot Aman Anti-MC',
+      name: 'Kalkulator Lot Aman Anti-MC Meminimalisir Risiko',
       href: '/calculator',
       icon: Calculator,
       badge: 'Core SOP',
