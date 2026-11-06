@@ -1,100 +1,12 @@
 import { NextResponse } from 'next/server';
 import { UserState, SubscriptionRequest } from '@/types';
 import prisma from '@/lib/prisma';
-
-// In-Memory fallback cache (persists within serverless instance or when DB not yet linked)
-let serverUsers: UserState[] = [
-  {
-    id: 'usr-trader-01',
-    name: 'Budi Santoso (Trader)',
-    email: 'trader@realistisfx.com',
-    password: 'trader123',
-    whatsapp: '081234567890',
-    accountType: 'STANDARD',
-    tier: 'PRO',
-    role: 'USER',
-    isAuthenticated: false,
-    telegramLinked: true,
-    dailyCalculatorCount: 0,
-    disciplineScore: 85,
-    winRate: 75,
-    totalTrades: 12,
-    strictModeEnabled: true,
-    isChecklistPassed: true,
-    subscriptionStatus: 'ACTIVE',
-    proExpiryDate: '16 Nov 2026',
-  },
-  {
-    id: 'usr-trader-02',
-    name: 'Siti Rahmawati',
-    email: 'siti.trader@gmail.com',
-    password: 'trader123',
-    whatsapp: '081399887766',
-    accountType: 'STANDARD',
-    tier: 'PRO',
-    role: 'USER',
-    isAuthenticated: false,
-    telegramLinked: true,
-    dailyCalculatorCount: 0,
-    disciplineScore: 90,
-    winRate: 80,
-    totalTrades: 20,
-    strictModeEnabled: true,
-    isChecklistPassed: true,
-    subscriptionStatus: 'ACTIVE',
-    proExpiryDate: '15 Nov 2026',
-  },
-  {
-    id: 'usr-admin-01',
-    name: 'Super Administrator',
-    email: 'admin@realistisfx.com',
-    password: 'admin123',
-    whatsapp: '082199887700',
-    accountType: 'STANDARD',
-    tier: 'PRO',
-    role: 'ADMIN',
-    isAuthenticated: false,
-    telegramLinked: true,
-    dailyCalculatorCount: 0,
-    disciplineScore: 100,
-    winRate: 100,
-    totalTrades: 0,
-    strictModeEnabled: false,
-    isChecklistPassed: true,
-    subscriptionStatus: 'ACTIVE',
-  },
-];
-
-let serverRequests: SubscriptionRequest[] = [
-  {
-    id: 'sub-req-100',
-    userId: 'usr-trader-01',
-    userName: 'Budi Santoso (Trader)',
-    userEmail: 'trader@realistisfx.com',
-    userPhone: '081234567890',
-    planName: 'Paket Edukasi Realistis',
-    amount: 250000,
-    paymentMethod: 'QRIS',
-    proofScreenshot: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
-    status: 'APPROVED',
-    createdAt: '16 Okt 2026, 18.39 WIB',
-    notes: 'Disetujui Admin - Status Edukasi Lengkap Aktif',
-  },
-  {
-    id: 'sub-req-101',
-    userId: 'usr-trader-03',
-    userName: 'Dimas Wahyu',
-    userEmail: 'dimas.forex@gmail.com',
-    userPhone: '081234567899',
-    planName: 'Paket Edukasi Realistis',
-    amount: 250000,
-    paymentMethod: 'QRIS',
-    proofScreenshot: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
-    status: 'PENDING',
-    createdAt: '16 Okt 2026, 12:45 WIB',
-    notes: 'Transfer via BCA Mobile ke QRIS RealistisFx',
-  },
-];
+import {
+  getServerUsers,
+  setServerUsers,
+  getServerRequests,
+  setServerRequests,
+} from '@/lib/serverUserStore';
 
 async function getDatabaseUsers(): Promise<UserState[] | null> {
   const hasDbUrl = Boolean(
@@ -129,6 +41,7 @@ async function getDatabaseUsers(): Promise<UserState[] | null> {
       strictModeEnabled: true,
       isChecklistPassed: false,
       subscriptionStatus: u.tier === 'PRO' ? 'ACTIVE' : 'NONE',
+      hasAcademyAccess: u.tier === 'PRO',
     }));
   } catch (err) {
     console.warn('[Sync API] Prisma DB read fallback:', err);
@@ -140,7 +53,7 @@ export async function GET() {
   const dbUsers = await getDatabaseUsers();
   const isDatabaseConnected = dbUsers !== null;
 
-  let mergedUsers = [...serverUsers];
+  let mergedUsers = [...getServerUsers()];
   if (dbUsers && dbUsers.length > 0) {
     dbUsers.forEach((du) => {
       const idx = mergedUsers.findIndex((su) => su.email.toLowerCase() === du.email.toLowerCase());
@@ -154,7 +67,7 @@ export async function GET() {
 
   return NextResponse.json({
     users: mergedUsers,
-    requests: serverRequests,
+    requests: getServerRequests(),
     isDatabaseConnected,
     databaseEngine: isDatabaseConnected ? 'Vercel Postgres (Neon Cloud)' : 'Serverless Cache & In-Memory',
     userCount: mergedUsers.length,
@@ -165,7 +78,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { action, user, request, userId, newTier, requestId, updatedRequests, updatedUsers } = body;
+    const { action, user, request, userId, targetEmail, newTier, requestId, updatedRequests, updatedUsers } = body;
 
     const hasDbUrl = Boolean(
       process.env.DATABASE_URL ||
@@ -173,18 +86,20 @@ export async function POST(req: Request) {
       process.env.POSTGRES_URL
     );
 
+    let currentUsers = [...getServerUsers()];
+    let currentRequests = [...getServerRequests()];
+
     if (action === 'REGISTER_USER' && user) {
-      // 1. Update in-memory cache
-      const exists = serverUsers.find((u) => u.email.toLowerCase() === user.email.toLowerCase());
+      const exists = currentUsers.find((u) => u.email.toLowerCase() === user.email.toLowerCase());
       if (!exists) {
-        serverUsers.push(user);
+        currentUsers.push(user);
       } else {
-        serverUsers = serverUsers.map((u) =>
+        currentUsers = currentUsers.map((u) =>
           u.email.toLowerCase() === user.email.toLowerCase() ? { ...u, ...user } : u
         );
       }
+      setServerUsers(currentUsers);
 
-      // 2. Persist to Vercel Postgres if connected
       if (hasDbUrl) {
         try {
           await prisma.user.upsert({
@@ -213,16 +128,19 @@ export async function POST(req: Request) {
         }
       }
     } else if (action === 'CREATE_REQUEST' && request) {
-      const exists = serverRequests.find((r) => r.id === request.id);
+      const exists = currentRequests.find((r) => r.id === request.id);
       if (!exists) {
-        serverRequests.unshift(request);
+        currentRequests.unshift(request);
+        setServerRequests(currentRequests);
       }
     } else if (action === 'UPDATE_PROFILE' && user) {
-      serverUsers = serverUsers.map((u) =>
+      currentUsers = currentUsers.map((u) =>
         u.id === user.id || (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase())
           ? { ...u, ...user }
           : u
       );
+      setServerUsers(currentUsers);
+
       if (hasDbUrl && user.email) {
         try {
           await prisma.user.updateMany({
@@ -237,48 +155,86 @@ export async function POST(req: Request) {
           console.warn('[Sync API] DB update user profile warning:', dbErr);
         }
       }
-    } else if (action === 'UPDATE_USER_TIER' && userId && newTier) {
-      serverUsers = serverUsers.map((u) => {
-        if (u.id === userId) {
-          return {
-            ...u,
-            tier: newTier,
-            subscriptionStatus: newTier === 'PRO' ? 'ACTIVE' : 'NONE',
-            proExpiryDate: newTier === 'PRO' ? '16 Nov 2026' : undefined,
-          };
-        }
-        return u;
-      });
+    } else if (action === 'UPDATE_USER_TIER' && (userId || targetEmail) && newTier) {
+      const idx = currentUsers.findIndex((u) =>
+        (userId && u.id === userId) ||
+        (targetEmail && u.email.toLowerCase() === targetEmail.toLowerCase())
+      );
+      if (idx >= 0) {
+        currentUsers[idx] = {
+          ...currentUsers[idx],
+          tier: newTier,
+          subscriptionStatus: newTier === 'PRO' ? 'ACTIVE' : 'NONE',
+          proExpiryDate: newTier === 'PRO' ? '16 Nov 2026' : undefined,
+          hasAcademyAccess: newTier === 'PRO',
+        };
+      } else if (targetEmail) {
+        currentUsers.push({
+          id: userId || `usr-${Date.now().toString().slice(-6)}`,
+          name: 'Trader RealistisFx',
+          email: targetEmail.toLowerCase(),
+          whatsapp: '',
+          accountType: 'STANDARD',
+          tier: newTier,
+          role: 'USER',
+          isAuthenticated: false,
+          telegramLinked: false,
+          dailyCalculatorCount: 0,
+          disciplineScore: 0,
+          winRate: 0,
+          totalTrades: 0,
+          strictModeEnabled: true,
+          isChecklistPassed: false,
+          subscriptionStatus: newTier === 'PRO' ? 'ACTIVE' : 'NONE',
+          proExpiryDate: newTier === 'PRO' ? '16 Nov 2026' : undefined,
+          hasAcademyAccess: newTier === 'PRO',
+        });
+      }
+      setServerUsers(currentUsers);
 
       if (hasDbUrl) {
         try {
-          await prisma.user.updateMany({
-            where: { id: userId },
-            data: {
-              tier: newTier === 'PRO' ? 'PRO' : 'FREE',
-            },
-          });
+          if (userId) {
+            await prisma.user.updateMany({
+              where: { id: userId },
+              data: {
+                tier: newTier === 'PRO' ? 'PRO' : 'FREE',
+              },
+            });
+          }
+          if (targetEmail) {
+            await prisma.user.updateMany({
+              where: { email: targetEmail.toLowerCase() },
+              data: {
+                tier: newTier === 'PRO' ? 'PRO' : 'FREE',
+              },
+            });
+          }
         } catch (dbErr) {
           console.warn('[Sync API] DB update tier error:', dbErr);
         }
       }
     } else if (action === 'APPROVE_SUBSCRIPTION' && requestId) {
-      serverRequests = serverRequests.map((r) =>
-        r.id === requestId ? { ...r, status: 'APPROVED' } : r
+      currentRequests = currentRequests.map((r) =>
+        r.id === requestId ? { ...r, status: 'APPROVED' as const } : r
       );
-      const reqItem = serverRequests.find((r) => r.id === requestId);
+      setServerRequests(currentRequests);
+
+      const reqItem = currentRequests.find((r) => r.id === requestId);
       if (reqItem) {
-        serverUsers = serverUsers.map((u) => {
+        currentUsers = currentUsers.map((u) => {
           if (u.id === reqItem.userId || u.email.toLowerCase() === reqItem.userEmail.toLowerCase()) {
             return {
               ...u,
-              tier: 'PRO',
-              subscriptionStatus: 'ACTIVE',
+              tier: 'PRO' as const,
+              subscriptionStatus: 'ACTIVE' as const,
               proExpiryDate: '16 Nov 2026',
+              hasAcademyAccess: true,
             };
           }
           return u;
         });
+        setServerUsers(currentUsers);
 
         if (hasDbUrl) {
           try {
@@ -296,27 +252,28 @@ export async function POST(req: Request) {
     } else if (action === 'SYNC_ALL') {
       if (Array.isArray(updatedUsers) && updatedUsers.length > 0) {
         updatedUsers.forEach((u: UserState) => {
-          const idx = serverUsers.findIndex((su) => su.email.toLowerCase() === u.email.toLowerCase());
+          const idx = currentUsers.findIndex((su) => su.email.toLowerCase() === u.email.toLowerCase());
           if (idx >= 0) {
-            if (u.tier === 'PRO' || serverUsers[idx].tier === 'PRO') {
-              serverUsers[idx] = { ...serverUsers[idx], ...u, tier: 'PRO', subscriptionStatus: 'ACTIVE' };
+            if (u.tier === 'PRO' || currentUsers[idx].tier === 'PRO') {
+              currentUsers[idx] = { ...currentUsers[idx], ...u, tier: 'PRO', subscriptionStatus: 'ACTIVE', hasAcademyAccess: true };
             } else {
-              serverUsers[idx] = { ...serverUsers[idx], ...u };
+              currentUsers[idx] = { ...currentUsers[idx], ...u };
             }
           } else {
-            serverUsers.push(u);
+            currentUsers.push(u);
           }
         });
+        setServerUsers(currentUsers);
       }
       if (Array.isArray(updatedRequests) && updatedRequests.length > 0) {
-        serverRequests = updatedRequests;
+        setServerRequests(updatedRequests);
       }
     }
 
     return NextResponse.json({
       success: true,
-      users: serverUsers,
-      requests: serverRequests,
+      users: getServerUsers(),
+      requests: getServerRequests(),
     });
   } catch (error) {
     return NextResponse.json({ success: false, error: String(error) }, { status: 500 });

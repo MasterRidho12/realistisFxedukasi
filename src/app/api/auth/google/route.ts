@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { UserState } from '@/types';
 import prisma from '@/lib/prisma';
+import { getServerUsers } from '@/lib/serverUserStore';
 
 // Helper to decode Base64Url JWT from Google Identity Services
 function decodeGoogleJwt(token: string): { email?: string; name?: string; picture?: string; sub?: string } | null {
@@ -124,46 +125,56 @@ export async function POST(req: Request) {
         }
       } catch (dbErr) {
         console.warn('[Google Auth] Prisma DB operation error, falling back:', dbErr);
+        const existingInStore = getServerUsers().find(
+          (u) => u.email.toLowerCase() === normalizedEmail
+        );
         userState = {
-          id: `usr-g-${Date.now().toString().slice(-6)}`,
+          id: existingInStore?.id || `usr-g-${Date.now().toString().slice(-6)}`,
           name: finalName,
           email: normalizedEmail,
           avatar: finalAvatar,
-          whatsapp: '',
-          accountType: 'STANDARD',
-          tier: 'FREE',
-          role: normalizedEmail === 'admin@realistisfx.com' ? 'ADMIN' : 'USER',
+          whatsapp: existingInStore?.whatsapp || '',
+          accountType: existingInStore?.accountType || 'STANDARD',
+          tier: existingInStore?.tier || 'FREE',
+          role: existingInStore?.role || (normalizedEmail === 'admin@realistisfx.com' ? 'ADMIN' : 'USER'),
           isAuthenticated: true,
-          telegramLinked: false,
-          dailyCalculatorCount: 0,
-          disciplineScore: 0,
+          telegramLinked: existingInStore?.telegramLinked ?? false,
+          dailyCalculatorCount: existingInStore?.dailyCalculatorCount ?? 0,
+          disciplineScore: existingInStore?.disciplineScore ?? 0,
           winRate: 0,
           totalTrades: 0,
           strictModeEnabled: true,
           isChecklistPassed: false,
-          subscriptionStatus: 'NONE',
+          subscriptionStatus: existingInStore?.subscriptionStatus || (existingInStore?.tier === 'PRO' ? 'ACTIVE' : 'NONE'),
+          proExpiryDate: existingInStore?.proExpiryDate,
+          hasAcademyAccess: existingInStore?.hasAcademyAccess || existingInStore?.tier === 'PRO',
         };
       }
     } else {
       // In-Memory / Serverless Fallback
+      const existingInStore = getServerUsers().find(
+        (u) => u.email.toLowerCase() === normalizedEmail
+      );
       userState = {
-        id: `usr-g-${Date.now().toString().slice(-6)}`,
+        id: existingInStore?.id || `usr-g-${Date.now().toString().slice(-6)}`,
         name: finalName,
         email: normalizedEmail,
         avatar: finalAvatar,
-        whatsapp: '',
-        accountType: 'STANDARD',
-        tier: 'FREE',
-        role: normalizedEmail === 'admin@realistisfx.com' ? 'ADMIN' : 'USER',
+        whatsapp: existingInStore?.whatsapp || '',
+        accountType: existingInStore?.accountType || 'STANDARD',
+        tier: existingInStore?.tier || 'FREE',
+        role: existingInStore?.role || (normalizedEmail === 'admin@realistisfx.com' ? 'ADMIN' : 'USER'),
         isAuthenticated: true,
-        telegramLinked: false,
-        dailyCalculatorCount: 0,
-        disciplineScore: 0,
+        telegramLinked: existingInStore?.telegramLinked ?? false,
+        dailyCalculatorCount: existingInStore?.dailyCalculatorCount ?? 0,
+        disciplineScore: existingInStore?.disciplineScore ?? 0,
         winRate: 0,
         totalTrades: 0,
         strictModeEnabled: true,
         isChecklistPassed: false,
-        subscriptionStatus: 'NONE',
+        subscriptionStatus: existingInStore?.subscriptionStatus || (existingInStore?.tier === 'PRO' ? 'ACTIVE' : 'NONE'),
+        proExpiryDate: existingInStore?.proExpiryDate,
+        hasAcademyAccess: existingInStore?.hasAcademyAccess || existingInStore?.tier === 'PRO',
       };
     }
 

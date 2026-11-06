@@ -258,7 +258,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [journals, setJournals] = useState<JournalRecord[]>([]);
   const [siteSettings, setSiteSettings] = useState<AdminSiteSettings>(defaultSiteSettings);
 
-  // Load from localStorage
+  // Load from localStorage & Server with cross-session synchronization
   useEffect(() => {
     const savedSettings = localStorage.getItem('realistisfx_site_settings');
     if (savedSettings) {
@@ -267,11 +267,40 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       } catch {}
     }
 
+    let loadedAllUsers: UserState[] = initialUsers;
+    const savedAllUsers = localStorage.getItem('realistisfx_all_users');
+    if (savedAllUsers) {
+      try {
+        loadedAllUsers = JSON.parse(savedAllUsers);
+        setAllUsers(loadedAllUsers);
+      } catch {
+        // ignore
+      }
+    }
+
     const savedUser = localStorage.getItem('realistisfx_user');
     if (savedUser) {
       try {
-        const parsed = JSON.parse(savedUser);
+        let parsed: UserState = JSON.parse(savedUser);
         if (parsed && parsed.isAuthenticated) {
+          // Immediately cross-check with loadedAllUsers: if admin changed tier, keep user in sync!
+          const matched = loadedAllUsers.find(
+            (u) =>
+              (u.id && parsed.id && u.id === parsed.id) ||
+              (u.email && parsed.email && u.email.toLowerCase() === parsed.email.toLowerCase())
+          );
+          if (matched && (matched.tier !== parsed.tier || matched.subscriptionStatus !== parsed.subscriptionStatus)) {
+            parsed = {
+              ...parsed,
+              tier: matched.tier,
+              subscriptionStatus: matched.subscriptionStatus,
+              proExpiryDate: matched.proExpiryDate || parsed.proExpiryDate,
+              hasAcademyAccess: matched.hasAcademyAccess ?? (matched.tier === 'PRO'),
+            };
+            try {
+              localStorage.setItem('realistisfx_user', JSON.stringify(parsed));
+            } catch {}
+          }
           setUser(parsed);
         } else {
           setUser(defaultGuestUser);
@@ -299,15 +328,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    const savedAllUsers = localStorage.getItem('realistisfx_all_users');
-    if (savedAllUsers) {
-      try {
-        setAllUsers(JSON.parse(savedAllUsers));
-      } catch {
-        // ignore
-      }
-    }
-
     // Multi-Device Server Sync: fetch latest users and approved tiers from server API
     fetch('/api/users/sync')
       .then((res) => res.json())
@@ -324,14 +344,22 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             try {
               const parsedUser: UserState = JSON.parse(currentSaved);
               const remote = data.users.find(
-                (u: UserState) => u.email.toLowerCase() === parsedUser.email.toLowerCase()
+                (u: UserState) =>
+                  (u.id && parsedUser.id && u.id === parsedUser.id) ||
+                  (u.email && parsedUser.email && u.email.toLowerCase() === parsedUser.email.toLowerCase())
               );
-              if (remote && (remote.tier !== parsedUser.tier || remote.subscriptionStatus !== parsedUser.subscriptionStatus)) {
+              if (
+                remote &&
+                (remote.tier !== parsedUser.tier ||
+                  remote.subscriptionStatus !== parsedUser.subscriptionStatus ||
+                  remote.hasAcademyAccess !== parsedUser.hasAcademyAccess)
+              ) {
                 const updatedCurrent: UserState = {
                   ...parsedUser,
                   tier: remote.tier,
                   subscriptionStatus: remote.subscriptionStatus,
                   proExpiryDate: remote.proExpiryDate,
+                  hasAcademyAccess: remote.hasAcademyAccess ?? (remote.tier === 'PRO'),
                 };
                 setUser(updatedCurrent);
                 localStorage.setItem('realistisfx_user', JSON.stringify(updatedCurrent));
@@ -347,6 +375,134 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         }
       })
       .catch(() => {});
+  }, []);
+
+  // Real-time synchronization across browser tabs (e.g. Admin Tab & User Dashboard Tab)
+  useEffect(() => {
+    const handleStorageEvent = (e: StorageEvent) => {
+      if (e.key === 'realistisfx_all_users' && e.newValue) {
+        try {
+          const freshAll: UserState[] = JSON.parse(e.newValue);
+          setAllUsers(freshAll);
+          setUser((curr) => {
+            if (!curr.isAuthenticated) return curr;
+            const matched = freshAll.find((u) =>
+              (u.id && curr.id && u.id === curr.id) ||
+              (u.email && curr.email && u.email.toLowerCase() === curr.email.toLowerCase())
+            );
+            if (matched && (matched.tier !== curr.tier || matched.subscriptionStatus !== curr.subscriptionStatus)) {
+              const updated: UserState = {
+                ...curr,
+                tier: matched.tier,
+                subscriptionStatus: matched.subscriptionStatus,
+                proExpiryDate: matched.proExpiryDate || curr.proExpiryDate,
+                hasAcademyAccess: matched.hasAcademyAccess ?? (matched.tier === 'PRO'),
+              };
+              try {
+                localStorage.setItem('realistisfx_user', JSON.stringify(updated));
+              } catch {}
+              return updated;
+            }
+            return curr;
+          });
+        } catch {}
+      }
+
+      if (e.key === 'realistisfx_user' && e.newValue) {
+        try {
+          const freshUser: UserState = JSON.parse(e.newValue);
+          if (freshUser && freshUser.isAuthenticated) {
+            setUser(freshUser);
+          }
+        } catch {}
+      }
+    };
+
+    const handleWindowFocus = () => {
+      const localAllStr = localStorage.getItem('realistisfx_all_users');
+      if (localAllStr) {
+        try {
+          const freshAll: UserState[] = JSON.parse(localAllStr);
+          setAllUsers(freshAll);
+          setUser((curr) => {
+            if (!curr.isAuthenticated) return curr;
+            const matched = freshAll.find((u) =>
+              (u.id && curr.id && u.id === curr.id) ||
+              (u.email && curr.email && u.email.toLowerCase() === curr.email.toLowerCase())
+            );
+            if (matched && (matched.tier !== curr.tier || matched.subscriptionStatus !== curr.subscriptionStatus)) {
+              const updated: UserState = {
+                ...curr,
+                tier: matched.tier,
+                subscriptionStatus: matched.subscriptionStatus,
+                proExpiryDate: matched.proExpiryDate || curr.proExpiryDate,
+                hasAcademyAccess: matched.hasAcademyAccess ?? (matched.tier === 'PRO'),
+              };
+              try {
+                localStorage.setItem('realistisfx_user', JSON.stringify(updated));
+              } catch {}
+              return updated;
+            }
+            return curr;
+          });
+        } catch {}
+      }
+
+      // Check server sync on tab focus
+      fetch('/api/users/sync')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && Array.isArray(data.users)) {
+            setAllUsers(data.users);
+            try {
+              localStorage.setItem('realistisfx_all_users', JSON.stringify(data.users));
+            } catch {}
+            setUser((curr) => {
+              if (!curr.isAuthenticated) return curr;
+              const remote = data.users.find(
+                (u: UserState) =>
+                  (u.id && curr.id && u.id === curr.id) ||
+                  (u.email && curr.email && u.email.toLowerCase() === curr.email.toLowerCase())
+              );
+              if (
+                remote &&
+                (remote.tier !== curr.tier ||
+                  remote.subscriptionStatus !== curr.subscriptionStatus ||
+                  remote.hasAcademyAccess !== curr.hasAcademyAccess)
+              ) {
+                const updated: UserState = {
+                  ...curr,
+                  tier: remote.tier,
+                  subscriptionStatus: remote.subscriptionStatus,
+                  proExpiryDate: remote.proExpiryDate,
+                  hasAcademyAccess: remote.hasAcademyAccess ?? (remote.tier === 'PRO'),
+                };
+                try {
+                  localStorage.setItem('realistisfx_user', JSON.stringify(updated));
+                } catch {}
+                return updated;
+              }
+              return curr;
+            });
+          }
+        })
+        .catch(() => {});
+    };
+
+    window.addEventListener('storage', handleStorageEvent);
+    window.addEventListener('focus', handleWindowFocus);
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        handleWindowFocus();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageEvent);
+      window.removeEventListener('focus', handleWindowFocus);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, []);
 
   // Dynamic add trading journal entry
@@ -569,8 +725,19 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         return { success: false, error: data.error || 'Gagal login dengan Google.' };
       }
 
+      const targetEmail = (googleData.email || data.user.email || '').trim().toLowerCase();
+      const existingInAll = allUsers.find(
+        (u) => u.email.toLowerCase() === targetEmail
+      );
+
+      const isPro = (existingInAll && existingInAll.tier === 'PRO') || data.user.tier === 'PRO';
+
       const googleUser: UserState = {
         ...data.user,
+        tier: isPro ? 'PRO' : 'FREE',
+        subscriptionStatus: isPro ? 'ACTIVE' : (data.user.subscriptionStatus || 'NONE'),
+        proExpiryDate: isPro ? (existingInAll?.proExpiryDate || data.user.proExpiryDate || '16 Nov 2026') : data.user.proExpiryDate,
+        hasAcademyAccess: isPro || Boolean(data.user.hasAcademyAccess),
         isAuthenticated: true,
       };
 
@@ -596,24 +763,29 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       console.error('[UserContext] loginWithGoogle error:', err);
       // Fallback local if serverless / network is unavailable
       if (googleData.email) {
+        const targetEmail = googleData.email.trim().toLowerCase();
+        const existingInAll = allUsers.find((u) => u.email.toLowerCase() === targetEmail);
+        const isPro = Boolean(existingInAll && existingInAll.tier === 'PRO');
         const fallbackUser: UserState = {
-          id: `usr-g-${Date.now().toString().slice(-6)}`,
-          name: googleData.name || 'Trader Google',
-          email: googleData.email.trim().toLowerCase(),
+          id: existingInAll?.id || `usr-g-${Date.now().toString().slice(-6)}`,
+          name: googleData.name || existingInAll?.name || 'Trader Google',
+          email: targetEmail,
           avatar: googleData.avatar,
-          whatsapp: '',
-          accountType: 'STANDARD',
-          tier: 'FREE',
-          role: googleData.email.trim().toLowerCase() === 'admin@realistisfx.com' ? 'ADMIN' : 'USER',
+          whatsapp: existingInAll?.whatsapp || '',
+          accountType: existingInAll?.accountType || 'STANDARD',
+          tier: isPro ? 'PRO' : 'FREE',
+          role: targetEmail === 'admin@realistisfx.com' ? 'ADMIN' : (existingInAll?.role || 'USER'),
           isAuthenticated: true,
-          telegramLinked: false,
-          dailyCalculatorCount: 0,
-          disciplineScore: 0,
-          winRate: 0,
-          totalTrades: 0,
+          telegramLinked: existingInAll?.telegramLinked ?? false,
+          dailyCalculatorCount: existingInAll?.dailyCalculatorCount ?? 0,
+          disciplineScore: existingInAll?.disciplineScore ?? 0,
+          winRate: existingInAll?.winRate ?? 0,
+          totalTrades: existingInAll?.totalTrades ?? 0,
           strictModeEnabled: true,
-          isChecklistPassed: false,
-          subscriptionStatus: 'NONE',
+          isChecklistPassed: existingInAll?.isChecklistPassed ?? false,
+          subscriptionStatus: isPro ? 'ACTIVE' : 'NONE',
+          proExpiryDate: isPro ? (existingInAll?.proExpiryDate || '16 Nov 2026') : undefined,
+          hasAcademyAccess: Boolean(isPro || existingInAll?.hasAcademyAccess),
         };
         saveUser(fallbackUser);
         return { success: true };
@@ -832,32 +1004,43 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   // Admin manually toggles any user's tier
   const updateUserTierManually = (userId: string, newTier: UserTier) => {
+    let targetEmail = '';
     const updatedAll = allUsers.map((u) => {
       if (u.id === userId) {
+        targetEmail = u.email;
         return {
           ...u,
           tier: newTier,
           subscriptionStatus: newTier === 'PRO' ? ('ACTIVE' as const) : ('NONE' as const),
           proExpiryDate: newTier === 'PRO' ? '16 Nov 2026' : undefined,
+          hasAcademyAccess: newTier === 'PRO',
         };
       }
       return u;
     });
     setAllUsers(updatedAll);
-    localStorage.setItem('realistisfx_all_users', JSON.stringify(updatedAll));
+    try {
+      localStorage.setItem('realistisfx_all_users', JSON.stringify(updatedAll));
+    } catch {}
 
     // Multi-Device Server Sync: notify server
     fetch('/api/users/sync', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'UPDATE_USER_TIER', userId, newTier }),
+      body: JSON.stringify({ action: 'UPDATE_USER_TIER', userId, targetEmail, newTier }),
     }).catch(() => {});
 
-    if (user.id === userId) {
+    // If currently logged-in user is the one being updated (by id or email)
+    if (
+      user.id === userId ||
+      (targetEmail && user.email && targetEmail.toLowerCase() === user.email.toLowerCase())
+    ) {
       saveUser({
         ...user,
         tier: newTier,
         subscriptionStatus: newTier === 'PRO' ? 'ACTIVE' : 'NONE',
+        proExpiryDate: newTier === 'PRO' ? '16 Nov 2026' : undefined,
+        hasAcademyAccess: newTier === 'PRO',
       });
     }
   };
