@@ -9,11 +9,8 @@ import {
   Radar,
   BookOpenCheck,
   ShieldAlert,
-  TrendingUp,
   LineChart,
-  AlertTriangle,
   GraduationCap,
-  Bot,
   Sparkles,
   ChevronRight,
   ChevronDown,
@@ -100,7 +97,14 @@ export default function Sidebar() {
     },
   ];
 
-  const toolNavigationItems = [
+  const toolNavigationItems: Array<{
+    name: string;
+    href: string;
+    icon: any;
+    badge?: string;
+    badgeColor?: string;
+    proOnly?: boolean;
+  }> = [
     {
       name: 'Kalkulator Lot Aman Anti-MC Meminimalisir Risiko',
       href: '/calculator',
@@ -134,27 +138,6 @@ export default function Sidebar() {
       icon: BookOpenCheck,
       badge: 'Evaluasi',
       badgeColor: 'amber',
-    },
-    {
-      name: 'Ketahanan Margin (Anti-MC)',
-      href: '/margin-resistance',
-      icon: AlertTriangle,
-      badge: 'PRO',
-      proOnly: true,
-    },
-    {
-      name: 'Recovery & Compounding',
-      href: '/compounding',
-      icon: TrendingUp,
-      badge: 'PRO',
-      proOnly: true,
-    },
-    {
-      name: 'Bot Telegram Webhook',
-      href: '/bot-assistant',
-      icon: Bot,
-      badge: 'Alert H-30',
-      proOnly: true,
     },
   ];
 

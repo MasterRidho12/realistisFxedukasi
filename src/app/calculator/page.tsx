@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Calculator,
@@ -83,12 +83,59 @@ export default function CalculatorPage() {
   const currentPairConfig = PAIRS.find((p) => p.symbol === selectedPair) || PAIRS[1];
   const isSelectedPairLocked = currentPairConfig.proOnly && !isPro;
 
-  // Anti-FOMO Strict Mode Check:
-  const isBlockedByStrictSop = isPro && user.strictModeEnabled && !user.isChecklistPassed;
+  // Reusable lot computation helper
+  const computeCalculation = (
+    bal: number,
+    risk: number,
+    sl: number,
+    pairSymbol: string,
+    accType: 'STANDARD' | 'CENT'
+  ): CalculationResult => {
+    const pairConfig = PAIRS.find((p) => p.symbol === pairSymbol) || PAIRS[1];
+    const isCent = accType === 'CENT';
+    const effectiveBalanceUSD = isCent ? bal / 100 : bal;
+    const riskAmountUSD = effectiveBalanceUSD * (risk / 100);
+    const pipValue = pairConfig.pipValueStandard;
 
-  // Triggered ONLY when clicking "Hitung Lot & Validasi SOP"
+    let calculatedLot = sl > 0 ? riskAmountUSD / (sl * pipValue) : 0;
+    if (isCent) {
+      calculatedLot = calculatedLot * 100; // Cent lots
+    }
+    const safeLot = Math.max(0.01, Math.round(calculatedLot * 100) / 100);
+
+    const moneyAtRisk = Math.round(riskAmountUSD * 100) / 100;
+    const moneyAtRiskIDR = Math.round(riskAmountUSD * 16200);
+    const balanceRemaining = Math.max(0, effectiveBalanceUSD - moneyAtRisk);
+    const tradesToMarginCall = moneyAtRisk > 0 ? Math.floor(effectiveBalanceUSD / moneyAtRisk) : 100;
+
+    const badLot = (safeLot * 10).toFixed(2);
+    const badLoss = (moneyAtRisk * 10).toFixed(2);
+    const badLossPercent = (risk * 10).toFixed(1);
+
+    return {
+      safeLot,
+      moneyAtRisk,
+      moneyAtRiskIDR,
+      balanceRemaining,
+      tradesToMarginCall,
+      selectedPair: pairSymbol,
+      accountType: accType,
+      balance: bal,
+      slPips: sl,
+      riskPercent: risk,
+      badLot,
+      badLoss,
+      badLossPercent,
+    };
+  };
+
+  // Auto-calculate on initial load so the result panel is ready right away
+  useEffect(() => {
+    setCalculationResult(computeCalculation(balance, riskPercent, slPips, selectedPair, accountType));
+  }, []);
+
+  // Triggered when clicking "Hitung Lot & Validasi SOP"
   const handleCalculate = () => {
-    if (isBlockedByStrictSop) return;
     if (isSelectedPairLocked) {
       openPaymentModal();
       return;
@@ -103,43 +150,9 @@ export default function CalculatorPage() {
     setIsCalculating(true);
 
     setTimeout(() => {
-      const isCent = accountType === 'CENT';
-      const effectiveBalanceUSD = isCent ? balance / 100 : balance;
-      const riskAmountUSD = effectiveBalanceUSD * (riskPercent / 100);
-      const pipValue = currentPairConfig.pipValueStandard;
-
-      let calculatedLot = slPips > 0 ? riskAmountUSD / (slPips * pipValue) : 0;
-      if (isCent) {
-        calculatedLot = calculatedLot * 100; // Cent lots
-      }
-      const safeLot = Math.max(0.01, Math.round(calculatedLot * 100) / 100);
-
-      const moneyAtRisk = Math.round(riskAmountUSD * 100) / 100;
-      const moneyAtRiskIDR = Math.round(riskAmountUSD * 16200);
-      const balanceRemaining = Math.max(0, effectiveBalanceUSD - moneyAtRisk);
-      const tradesToMarginCall = moneyAtRisk > 0 ? Math.floor(effectiveBalanceUSD / moneyAtRisk) : 100;
-
-      const badLot = (safeLot * 10).toFixed(2);
-      const badLoss = (moneyAtRisk * 10).toFixed(2);
-      const badLossPercent = (riskPercent * 10).toFixed(1);
-
-      setCalculationResult({
-        safeLot,
-        moneyAtRisk,
-        moneyAtRiskIDR,
-        balanceRemaining,
-        tradesToMarginCall,
-        selectedPair,
-        accountType,
-        balance,
-        slPips,
-        riskPercent,
-        badLot,
-        badLoss,
-        badLossPercent,
-      });
+      setCalculationResult(computeCalculation(balance, riskPercent, slPips, selectedPair, accountType));
       setIsCalculating(false);
-    }, 250);
+    }, 200);
   };
 
   const handleReset = () => {
@@ -148,7 +161,7 @@ export default function CalculatorPage() {
     setSlPips(30);
     setSelectedPair('EURUSD');
     setAccountType('STANDARD');
-    setCalculationResult(null);
+    setCalculationResult(computeCalculation(1000, 1.5, 30, 'EURUSD', 'STANDARD'));
   };
 
   const handleCopyLot = () => {
@@ -241,25 +254,25 @@ export default function CalculatorPage() {
         </div>
       )}
 
-      {/* Strict Anti-FOMO Warning Banner if enabled */}
-      {isBlockedByStrictSop && (
-        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* Strict Anti-FOMO Informational SOP Banner (Non-blocking) */}
+      {isPro && user.strictModeEnabled && !user.isChecklistPassed && (
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-3">
-            <ShieldAlert className="w-6 h-6 text-amber-600 flex-shrink-0" />
+            <ShieldCheck className="w-6 h-6 text-[#00A651] flex-shrink-0" />
             <div>
               <h4 className="text-xs font-bold text-slate-900">
-                Mode Ketat Anti-FOMO Sedang Aktif!
+                Kalkulator Lot Edukasi PRO Siap Digunakan
               </h4>
               <p className="text-[11px] text-slate-600">
-                Kalkulator lot terkunci karena Anda belum menyelesaikan verifikasi 5 SOP di menu Anti-FOMO Checklist hari ini.
+                Kalkulator lot aktif tanpa batas kuota. Sebagai rekomendasi SOP disiplin, pastikan Anda juga memverifikasi Anti-FOMO Checklist sebelum entry.
               </p>
             </div>
           </div>
           <Link
             href="/checklist"
-            className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold whitespace-nowrap flex items-center gap-1 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-bold whitespace-nowrap flex items-center gap-1 cursor-pointer shadow-xs transition-colors"
           >
-            Buka Checklist SOP <ArrowRight className="w-3.5 h-3.5" />
+            Checklist SOP <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       )}
@@ -499,25 +512,16 @@ export default function CalculatorPage() {
             </div>
           </div>
 
-          {/* THE CALCULATION BUTTON - USER MUST CLICK THIS TO GENERATE RESULT */}
+          {/* THE CALCULATION BUTTON */}
           <div className="pt-3 border-t border-slate-100">
             <button
               id="btn-hitung-lot"
               type="button"
-              disabled={isBlockedByStrictSop || isCalculating}
+              disabled={isCalculating}
               onClick={handleCalculate}
-              className={`w-full py-4 rounded-2xl font-black text-sm tracking-wide shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                isBlockedByStrictSop
-                  ? 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed'
-                  : 'bg-[#00A651] hover:bg-[#008F45] hover:scale-[1.01] active:scale-98 text-white shadow-[#00A651]/25'
-              }`}
+              className="w-full py-4 rounded-2xl font-black text-sm tracking-wide shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer bg-[#00A651] hover:bg-[#008F45] hover:scale-[1.01] active:scale-98 text-white shadow-[#00A651]/25 disabled:opacity-75 disabled:cursor-wait"
             >
-              {isBlockedByStrictSop ? (
-                <>
-                  <Lock className="w-5 h-5 text-amber-600" />
-                  <span>Kalkulator Terkunci oleh SOP Checklist</span>
-                </>
-              ) : isCalculating ? (
+              {isCalculating ? (
                 <>
                   <RotateCcw className="w-5 h-5 animate-spin" />
                   <span>Memvalidasi SOP &amp; Menghitung Lot Aman...</span>

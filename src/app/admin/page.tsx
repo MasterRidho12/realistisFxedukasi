@@ -785,48 +785,6 @@ export default function AdminDashboardPage() {
                     )}
                   </button>
                 </div>
-
-                {/* Margin Resistance Calculator */}
-                <div className="p-3.5 rounded-xl border border-slate-200 bg-white flex items-center justify-between">
-                  <div>
-                    <span className="font-bold text-slate-900 block">Kalkulator Ketahanan Margin</span>
-                    <span className="text-[11px] text-slate-500">
-                      {menuForm.marginResistanceVipOnly ? '🔒 Khusus Member VIP PRO' : '🔓 Terbuka untuk Akun FREE'}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setMenuForm({ ...menuForm, marginResistanceVipOnly: !menuForm.marginResistanceVipOnly })}
-                    className="p-1 cursor-pointer"
-                  >
-                    {menuForm.marginResistanceVipOnly ? (
-                      <ToggleRight className="w-8 h-8 text-[#00A651]" />
-                    ) : (
-                      <ToggleLeft className="w-8 h-8 text-slate-400" />
-                    )}
-                  </button>
-                </div>
-
-                {/* Compounding Matrix */}
-                <div className="p-3.5 rounded-xl border border-slate-200 bg-white flex items-center justify-between">
-                  <div>
-                    <span className="font-bold text-slate-900 block">Compounding Growth Matrix</span>
-                    <span className="text-[11px] text-slate-500">
-                      {menuForm.compoundingVipOnly ? '🔒 Khusus Member VIP PRO' : '🔓 Terbuka untuk Akun FREE'}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setMenuForm({ ...menuForm, compoundingVipOnly: !menuForm.compoundingVipOnly })}
-                    className="p-1 cursor-pointer"
-                  >
-                    {menuForm.compoundingVipOnly ? (
-                      <ToggleRight className="w-8 h-8 text-[#00A651]" />
-                    ) : (
-                      <ToggleLeft className="w-8 h-8 text-slate-400" />
-                    )}
-                  </button>
-                </div>
               </div>
             </div>
 
