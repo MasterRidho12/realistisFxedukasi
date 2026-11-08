@@ -196,59 +196,51 @@ export default function DashboardOverviewPage() {
     }, 1500);
   };
 
-  // 8 Quick Access Grid ala Traders Family (Image 2)
+  // 8 Quick Access Grid persis Traders Family (Image account.tradersfamily.id)
   const quickAccessMenus = [
     {
       title: 'Profil',
       href: '#profile',
       icon: User,
-      description: 'Ubah Nama, Foto & Info',
       onClick: handleOpenEditProfile,
     },
     {
-      title: 'Edukasi Video',
-      href: '/academy',
-      icon: PlayCircle,
-      description: 'Kurikulum Lvl 0 - 5',
+      title: 'Sinyal AI',
+      href: '/signals',
+      icon: Zap,
     },
     {
       title: 'Analisa Market',
       href: '/watchlist',
       icon: LineChart,
-      description: 'Peta S&R Harian',
     },
     {
       title: 'Kalkulator Lot',
       href: '/calculator',
       icon: Calculator,
-      description: 'SOP Risiko 1%',
     },
     {
       title: 'News & Event',
       href: '/news-radar',
       icon: Radar,
-      description: 'Kalender NFP & CPI',
     },
     {
       title: 'Jurnal Trading',
       href: '/journal',
       icon: BookOpenCheck,
-      description: 'Evaluasi & Win Rate',
-    },
-    {
-      title: 'Checklist SOP',
-      href: '/checklist',
-      icon: ShieldAlert,
-      description: 'Validasi Anti-FOMO',
     },
     {
       title: 'Bantuan CS',
       href: `https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
         `Halo Admin RealistisFx, saya ${user.name} (ID: ${user.id}). Saya ingin konsultasi materi edukasi bisnis forex.`
       )}`,
-      icon: MessageCircle,
-      description: 'Tanya Jawab WhatsApp',
+      icon: HelpCircle,
       isExternal: true,
+    },
+    {
+      title: 'Video Edukasi',
+      href: '/academy',
+      icon: PlayCircle,
     },
   ];
 
@@ -379,32 +371,20 @@ export default function DashboardOverviewPage() {
       </div>
 
       {/* ======================================================== */}
-      {/* 2. 8 QUICK ACCESS GRID ALA TRADERS FAMILY (IMAGE 2)      */}
+      {/* 2. 8 QUICK ACCESS GRID PERSIS TRADERS FAMILY             */}
       {/* ======================================================== */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
-            Menu Akses Cepat Platform
-          </h3>
-          <span className="text-[11px] text-slate-500 font-medium">Edukasi &amp; Tools Terarah</span>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div className="rounded-2xl bg-white border border-slate-200/90 p-4 sm:p-6 shadow-xs">
+        <div className="grid grid-cols-4 gap-y-4 sm:gap-y-6 gap-x-2 sm:gap-x-4">
           {quickAccessMenus.map((menu) => {
             const Icon = menu.icon;
             const content = (
-              <div className="h-full rounded-2xl bg-white border border-slate-200/90 p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-2 hover:border-[#00A651] hover:shadow-md transition-all group cursor-pointer shadow-xs">
-                <div className="w-12 h-12 rounded-2xl border-2 border-slate-200 group-hover:border-[#00A651] flex items-center justify-center text-slate-700 group-hover:text-[#00A651] group-hover:bg-emerald-50/50 transition-all">
-                  <Icon className="w-6 h-6 stroke-[1.8]" />
+              <div className="flex flex-col items-center justify-center text-center gap-1.5 group cursor-pointer p-1.5 sm:p-2.5 rounded-xl hover:bg-slate-50/80 transition-all">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-[#005A36] group-hover:text-[#00A651] transition-colors">
+                  <Icon className="w-7 h-7 sm:w-8 sm:h-8 stroke-[1.5]" />
                 </div>
-                <div className="min-w-0">
-                  <span className="font-extrabold text-xs sm:text-sm text-slate-900 group-hover:text-[#00A651] transition-colors block truncate">
-                    {menu.title}
-                  </span>
-                  <span className="text-[10px] sm:text-[11px] text-slate-400 block truncate mt-0.5">
-                    {menu.description}
-                  </span>
-                </div>
+                <span className="font-semibold text-[11px] sm:text-xs text-slate-700 group-hover:text-[#005A36] transition-colors line-clamp-1 leading-tight tracking-normal">
+                  {menu.title}
+                </span>
               </div>
             );
 
@@ -414,7 +394,7 @@ export default function DashboardOverviewPage() {
                   key={menu.title}
                   type="button"
                   onClick={menu.onClick}
-                  className="block h-full text-left w-full cursor-pointer"
+                  className="block text-center w-full cursor-pointer focus:outline-none"
                 >
                   {content}
                 </button>
@@ -428,7 +408,7 @@ export default function DashboardOverviewPage() {
                   href={menu.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block h-full"
+                  className="block text-center focus:outline-none"
                 >
                   {content}
                 </a>
@@ -436,7 +416,7 @@ export default function DashboardOverviewPage() {
             }
 
             return (
-              <Link key={menu.title} href={menu.href} className="block h-full">
+              <Link key={menu.title} href={menu.href} className="block text-center focus:outline-none">
                 {content}
               </Link>
             );
