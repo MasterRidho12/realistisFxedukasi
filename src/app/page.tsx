@@ -315,7 +315,7 @@ export default function DashboardOverviewPage() {
               Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya
             </h2>
             <div className="text-xs sm:text-sm font-extrabold text-emerald-200">
-              Edukasi Bisnis Trading Forex Bertahap, Terarah &amp; Terkonsep.
+              Edukasi Bisnis Trading Forex Bertahap &amp; Terarah.
             </div>
             <p className="text-xs text-emerald-100/95 leading-relaxed pt-0.5">
               Trading adalah bisnis probabilitas dan pengelolaan risiko, bukan spekulasi tanpa arah. Bangun fondasi kokoh dari nol dengan SOP Money Management 1%, metode baku Fixed SL 30 Pips, pemetaan zona supply-demand valid, dan psikologi eksekusi tenang untuk mencetak trader mandiri bebas Margin Call. Kami hadir bukan untuk menjanjikan keuntungan instan, melainkan memberikan peta jalan terstruktur bagi Anda yang serius ingin menjadikan trading sebagai bisnis jangka panjang yang terukur dan berkelanjutan. Belajar merencanakan setiap eksekusi secara objektif, membatasi risiko dengan penuh disiplin, dan membangun mentalitas trader profesional.
