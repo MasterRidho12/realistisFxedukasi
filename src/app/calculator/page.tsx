@@ -5,7 +5,6 @@ import Link from 'next/link';
 import {
   Calculator,
   ShieldCheck,
-  ShieldAlert,
   AlertTriangle,
   Crown,
   Sparkles,
@@ -251,29 +250,6 @@ export default function CalculatorPage() {
             <span>Akses Edukasi Lengkap Aktif: Kalkulator Unlimited, Pair Emas (XAUUSD), dan Seluruh Modul Terbuka.</span>
           </span>
           <span className="font-bold text-[#00A651]">EDUKASI PRO</span>
-        </div>
-      )}
-
-      {/* Strict Anti-FOMO Informational SOP Banner (Non-blocking) */}
-      {isPro && user.strictModeEnabled && !user.isChecklistPassed && (
-        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center gap-3">
-            <ShieldCheck className="w-6 h-6 text-[#00A651] flex-shrink-0" />
-            <div>
-              <h4 className="text-xs font-bold text-slate-900">
-                Kalkulator Lot Edukasi PRO Siap Digunakan
-              </h4>
-              <p className="text-[11px] text-slate-600">
-                Kalkulator lot aktif tanpa batas kuota. Sebagai rekomendasi SOP disiplin, pastikan Anda juga memverifikasi Anti-FOMO Checklist sebelum entry.
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/checklist"
-            className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-bold whitespace-nowrap flex items-center gap-1 cursor-pointer shadow-xs transition-colors"
-          >
-            Checklist SOP <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
         </div>
       )}
 

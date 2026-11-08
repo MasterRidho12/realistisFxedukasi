@@ -150,22 +150,6 @@ export default function DashboardOverviewPage() {
   const [pwErrorMsg, setPwErrorMsg] = useState('');
   const [copiedId, setCopiedId] = useState(false);
 
-  // Anti-FOMO Checklist state on Dashboard Overview
-  const [sopChecks, setSopChecks] = useState({
-    newsChecked: true,
-    srIdentified: true,
-    lotCalculated: false,
-    rrValid: false,
-    mindsetCalm: true,
-  });
-
-  const toggleSop = (key: keyof typeof sopChecks) => {
-    setSopChecks((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const completedChecksCount = Object.values(sopChecks).filter(Boolean).length;
-  const isSopReady = completedChecksCount === 5;
-
   const handleCopyAccountId = () => {
     navigator.clipboard.writeText(user.id);
     setCopiedId(true);
@@ -804,156 +788,85 @@ export default function DashboardOverviewPage() {
       </div>
 
       {/* ======================================================== */}
-      {/* 6. NEWS RADAR PREVIEW & ANTI-FOMO SOP CHECKLIST          */}
+      {/* 6. NEWS RADAR PREVIEW                                    */}
       {/* ======================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* News Radar Preview */}
-        <div className="lg:col-span-2 rounded-3xl p-4 sm:p-6 bg-white border border-slate-200/90 shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-emerald-50 text-[#00A651] border border-emerald-100">
-                <Radar className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="text-base font-bold text-slate-900">
-                  News Sentiment Radar (High-Impact)
-                </h2>
-                <p className="text-xs text-slate-500">
-                  Peringatan rilis data ekonomi berdampak tinggi &amp; skenario 2 arah
-                </p>
-              </div>
+      <div className="rounded-3xl p-4 sm:p-6 bg-white border border-slate-200/90 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-emerald-50 text-[#00A651] border border-emerald-100">
+              <Radar className="w-5 h-5" />
             </div>
-            <Link
-              href="/news-radar"
-              className="text-xs text-[#00A651] hover:text-[#008F45] font-bold flex items-center gap-1"
-            >
-              Buka Radar Lengkap <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-rose-50/70 border border-rose-200">
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-rose-100 text-rose-800 border border-rose-200 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping" />
-                  HIGH IMPACT 🔥
-                </span>
-                <span className="text-xs font-bold text-slate-900">
-                  USD Non-Farm Payrolls (NFP)
-                </span>
-              </div>
-              <span className="text-xs font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                Kalender Bulanan BLS
-              </span>
-            </div>
-
-            <p className="text-xs text-slate-700 leading-relaxed">
-              Fokus edukasi berita: <strong>Jangan entry pada detik ke-0 saat spread melebar 15x</strong>. Tunggu konfirmasi arah candle M5 untuk melindungi akun dari fakeout wick.
-            </p>
-
-            <div className="mt-3 pt-3 border-t border-rose-200/60">
-              {isPro ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div className="p-3 rounded-xl bg-emerald-50/90 border border-emerald-200 text-slate-800">
-                    <span className="font-bold text-[#00A651] flex items-center gap-1.5">
-                      <TrendingUp className="w-3.5 h-3.5" /> Skenario Bullish Gold (XAUUSD):
-                    </span>
-                    <p className="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
-                      Jika NFP &lt; 150K dan Unemployment Rate naik, peluang buy akumulasi setelah fakeout wick selesai.
-                    </p>
-                  </div>
-                  <div className="p-3 rounded-xl bg-rose-50/90 border border-rose-200 text-slate-800">
-                    <span className="font-bold text-rose-600 flex items-center gap-1.5">
-                      <TrendingDown className="w-3.5 h-3.5" /> Skenario Bearish Gold (XAUUSD):
-                    </span>
-                    <p className="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
-                      Jika NFP &gt; 200K, DXY menguat tajam, peluang sell rejection di supply zone H1 terdekat.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-3 rounded-xl bg-white border border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-                  <div className="flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-amber-600 shrink-0" />
-                    <p className="text-xs text-slate-700">
-                      <span className="font-bold text-slate-900">Skenario Prediksi 2 Arah</span> terbuka khusus untuk Member Pro Edukasi.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => openPaymentModal('EDUKASI')}
-                    className="w-full sm:w-auto px-3 py-1.5 rounded-lg bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shrink-0 cursor-pointer shadow-xs text-center"
-                  >
-                    Buka Edukasi Lengkap (Rp 250k)
-                  </button>
-                </div>
-              )}
+            <div>
+              <h2 className="text-base font-bold text-slate-900">
+                News Sentiment Radar (High-Impact)
+              </h2>
+              <p className="text-xs text-slate-500">
+                Peringatan rilis data ekonomi berdampak tinggi &amp; skenario 2 arah
+              </p>
             </div>
           </div>
+          <Link
+            href="/news-radar"
+            className="text-xs text-[#00A651] hover:text-[#008F45] font-bold flex items-center gap-1"
+          >
+            Buka Radar Lengkap <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
 
-        {/* Anti-FOMO Daily Checklist Widget */}
-        <div className="rounded-3xl p-4 sm:p-6 bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2">
-                <ShieldAlert className="w-5 h-5 text-[#00A651]" />
-                <h2 className="text-sm font-bold text-slate-900">Anti-FOMO SOP Checklist</h2>
-              </div>
-              <span
-                className={`text-xs font-mono font-bold px-2 py-0.5 rounded ${
-                  isSopReady
-                    ? 'bg-emerald-50 text-[#00A651] border border-emerald-200'
-                    : 'bg-amber-50 text-amber-800 border border-amber-200'
-                }`}
-              >
-                {completedChecksCount}/5 Valid
+        <div className="p-4 rounded-2xl bg-rose-50/70 border border-rose-200">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-rose-100 text-rose-800 border border-rose-200 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping" />
+                HIGH IMPACT 🔥
+              </span>
+              <span className="text-xs font-bold text-slate-900">
+                USD Non-Farm Payrolls (NFP)
               </span>
             </div>
-
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Verifikasi checklist ini sebelum membuka posisi apapun di MetaTrader untuk mencegah entry impulsif:
-            </p>
-
-            <div className="space-y-2">
-              {[
-                { key: 'newsChecked' as const, label: 'Cek Kalender High Impact (NFP/CPI)' },
-                { key: 'srIdentified' as const, label: 'Konfirmasi Level S&R Timeframe H1/H4' },
-                { key: 'lotCalculated' as const, label: 'Hitung Lot Aman (Maks 1% Risiko)' },
-                { key: 'rrValid' as const, label: 'Risk to Reward Minimal 1:2 Valid' },
-                { key: 'mindsetCalm' as const, label: 'Emosi Tenang, Bebas Revenge Trading' },
-              ].map((item) => (
-                <label
-                  key={item.key}
-                  className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors border border-transparent hover:border-slate-200"
-                >
-                  <input
-                    type="checkbox"
-                    checked={sopChecks[item.key]}
-                    onChange={() => toggleSop(item.key)}
-                    className="mt-0.5 w-4 h-4 rounded text-[#00A651] bg-white border-slate-300 focus:ring-[#00A651] cursor-pointer"
-                  />
-                  <span
-                    className={`text-xs ${
-                      sopChecks[item.key]
-                        ? 'line-through text-slate-400'
-                        : 'text-slate-700 font-medium'
-                    }`}
-                  >
-                    {item.label}
-                  </span>
-                </label>
-              ))}
-            </div>
+            <span className="text-xs font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+              Kalender Bulanan BLS
+            </span>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-100">
-            {isSopReady ? (
-              <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-[#00A651] text-xs font-bold text-center flex items-center justify-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4" /> SOP Terpenuhi! Disiplin Terjaga.
+          <p className="text-xs text-slate-700 leading-relaxed">
+            Fokus edukasi berita: <strong>Jangan entry pada detik ke-0 saat spread melebar 15x</strong>. Tunggu konfirmasi arah candle M5 untuk melindungi akun dari fakeout wick.
+          </p>
+
+          <div className="mt-3 pt-3 border-t border-rose-200/60">
+            {isPro ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="p-3 rounded-xl bg-emerald-50/90 border border-emerald-200 text-slate-800">
+                  <span className="font-bold text-[#00A651] flex items-center gap-1.5">
+                    <TrendingUp className="w-3.5 h-3.5" /> Skenario Bullish Gold (XAUUSD):
+                  </span>
+                  <p className="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+                    Jika NFP &lt; 150K dan Unemployment Rate naik, peluang buy akumulasi setelah fakeout wick selesai.
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-rose-50/90 border border-rose-200 text-slate-800">
+                  <span className="font-bold text-rose-600 flex items-center gap-1.5">
+                    <TrendingDown className="w-3.5 h-3.5" /> Skenario Bearish Gold (XAUUSD):
+                  </span>
+                  <p className="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+                    Jika NFP &gt; 200K, DXY menguat tajam, peluang sell rejection di supply zone H1 terdekat.
+                  </p>
+                </div>
               </div>
             ) : (
-              <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold text-center flex items-center justify-center gap-1.5">
-                <AlertTriangle className="w-4 h-4" /> Tuntaskan 5 syarat sebelum entry!
+              <div className="p-3 rounded-xl bg-white border border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-amber-600 shrink-0" />
+                  <p className="text-xs text-slate-700">
+                    <span className="font-bold text-slate-900">Skenario Prediksi 2 Arah</span> terbuka khusus untuk Member Pro Edukasi.
+                  </p>
+                </div>
+                <button
+                  onClick={() => openPaymentModal('EDUKASI')}
+                  className="w-full sm:w-auto px-3 py-1.5 rounded-lg bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shrink-0 cursor-pointer shadow-xs text-center"
+                >
+                  Buka Edukasi Lengkap (Rp 250k)
+                </button>
               </div>
             )}
           </div>

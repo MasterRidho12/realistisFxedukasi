@@ -8,7 +8,6 @@ import {
   Calculator,
   Radar,
   BookOpenCheck,
-  ShieldAlert,
   LineChart,
   GraduationCap,
   Sparkles,
@@ -124,13 +123,6 @@ export default function Sidebar() {
       icon: Radar,
       badge: 'NFP & CPI',
       badgeColor: 'blue',
-    },
-    {
-      name: 'Anti-FOMO Checklist',
-      href: '/checklist',
-      icon: ShieldAlert,
-      badge: 'Strict Mode',
-      badgeColor: 'green',
     },
     {
       name: 'Smart Trading Journal',
