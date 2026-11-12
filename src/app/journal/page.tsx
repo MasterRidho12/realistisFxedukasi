@@ -36,6 +36,11 @@ import {
   Award,
   Filter,
   Search,
+  Calendar,
+  Clock,
+  Compass,
+  AlertOctagon,
+  Percent,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import {
@@ -98,19 +103,18 @@ const DEFAULT_QUOTES: Record<string, PairQuote> = {
   },
 };
 
-// Popular broker server options
-const BROKER_SERVERS = [
-  'MRGM-Real',
-  'MRGM-Demo',
+// Popular broker server quick options
+const POPULAR_BROKERS = [
+  'Exness-Real',
   'ICMarketsSC-Live01',
-  'ICMarkets-Demo',
-  'Exness-Real2',
-  'Exness-Real7',
+  'MRGM-Real',
   'XMGlobal-Real',
   'OctaFX-Real',
   'FBS-Real',
   'Vantage-Live',
 ];
+
+type SummaryTimeframe = '1D' | '1W' | '1M' | '1Y';
 
 export default function JournalPage() {
   const { user, journals, addJournalEntry, deleteJournalEntry, setAllJournals, marketPrice, openPaymentModal } = useUser();
@@ -122,18 +126,21 @@ export default function JournalPage() {
   const [showTvChart, setShowTvChart] = useState<boolean>(false);
   const [selectedChartPair, setSelectedChartPair] = useState<string>('XAUUSD');
 
-  // Investor Account State
+  // Connected Investor Account State
   const [investorAccount, setInvestorAccount] = useState<InvestorAccount | null>(null);
   const [investorTrades, setInvestorTrades] = useState<InvestorTrade[]>([]);
   const [performance, setPerformance] = useState<TrackRecordPerformance | null>(null);
 
-  // Connection Form State
-  const [showConnectModal, setShowConnectModal] = useState<boolean>(false);
+  // Timeframe Summary Filter: '1D' | '1W' | '1M' | '1Y'
+  const [timeframe, setTimeframe] = useState<SummaryTimeframe>('1M');
+
+  // Connection Form State (User's own account)
   const [platform, setPlatform] = useState<'MT4' | 'MT5'>('MT5');
-  const [brokerServer, setBrokerServer] = useState<string>('MRGM-Real');
-  const [accountNumber, setAccountNumber] = useState<string>('1089241');
-  const [investorPassword, setInvestorPassword] = useState<string>('InvRealistis2026!');
+  const [brokerServer, setBrokerServer] = useState<string>('Exness-Real');
+  const [accountNumber, setAccountNumber] = useState<string>('');
+  const [investorPassword, setInvestorPassword] = useState<string>('');
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [showChangeAccountModal, setShowChangeAccountModal] = useState<boolean>(false);
 
   // Syncing / Loading state
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
@@ -192,7 +199,7 @@ export default function JournalPage() {
     return () => clearInterval(interval);
   }, [fetchQuotes]);
 
-  // 2. Load stored investor account on mount
+  // 2. Load stored investor account on mount (ONLY if user previously saved their account)
   useEffect(() => {
     try {
       const storedAccount = localStorage.getItem('realistis_investor_account');
@@ -203,29 +210,33 @@ export default function JournalPage() {
         setInvestorAccount(JSON.parse(storedAccount));
         setInvestorTrades(JSON.parse(storedTrades));
         setPerformance(JSON.parse(storedPerf));
-      } else {
-        // By default, auto-load RealistisFx Master Fund investor preset for immediate wow experience!
-        handleConnectInvestorAccount('realistisfx_master');
       }
+      // NOTICE: Do NOT auto-login to any demo account! User requested to use their own account.
     } catch {
       // Fallback
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 3. Connect Investor Account Handler
-  const handleConnectInvestorAccount = async (presetId?: string) => {
+  // 3. Connect Investor Account Handler (User's own account or explicit preset)
+  const handleConnectInvestorAccount = async (targetPresetId?: string) => {
+    // If not using a preset, validate that user entered their own account
+    if (!targetPresetId && (!accountNumber.trim() || !brokerServer.trim())) {
+      setSyncError('Harap masukkan nama server broker dan nomor akun investor Anda.');
+      return;
+    }
+
     setIsSyncing(true);
     setSyncError('');
 
     try {
-      setSyncStage('Menghubungi server broker ' + (presetId === 'realistisfx_master' ? 'MRGM-Real' : brokerServer) + '...');
+      const targetServer = targetPresetId === 'realistisfx_master' ? 'MRGM-Real' : brokerServer;
+      setSyncStage(`Menghubungi server broker ${targetServer}...`);
       await new Promise((r) => setTimeout(r, 400));
 
-      setSyncStage('Otentikasi sesi investor read-only (aman)...');
+      setSyncStage('Otentikasi sesi investor read-only (aman tanpa hak buka/tarik)...');
       await new Promise((r) => setTimeout(r, 400));
 
-      setSyncStage('Mengunduh track record & histori closed trades...');
+      setSyncStage('Mengunduh riwayat transaksi tertutup (closed trades)...');
 
       const response = await fetch('/api/journal/investor-sync', {
         method: 'POST',
@@ -235,17 +246,17 @@ export default function JournalPage() {
           brokerServer,
           accountNumber,
           investorPassword,
-          presetId,
+          presetId: targetPresetId,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Gagal menyinkronkan akun investor.');
+        throw new Error(data.error || 'Gagal menyinkronkan akun investor. Periksa nomor akun dan server broker.');
       }
 
-      setSyncStage('Menganalisis performa, Win Rate & evaluasi SOP...');
+      setSyncStage('Menghitung ringkasan 1 Hari, 1 Minggu, 1 Bulan & Analisis Evaluasi...');
       await new Promise((r) => setTimeout(r, 300));
 
       const acc: InvestorAccount = data.account;
@@ -284,7 +295,7 @@ export default function JournalPage() {
       }));
 
       setAllJournals(convertedJournals);
-      setShowConnectModal(false);
+      setShowChangeAccountModal(false);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Koneksi ke broker gagal. Periksa server dan password investor.';
       setSyncError(msg);
@@ -296,10 +307,12 @@ export default function JournalPage() {
 
   // Disconnect investor account
   const handleDisconnect = () => {
-    if (confirm('Yakin ingin memutuskan koneksi akun investor ini? Anda dapat menghubungkannya kembali kapan saja.')) {
+    if (confirm('Yakin ingin memutuskan koneksi akun investor ini? Anda dapat memasukkan kembali akun Anda kapan saja.')) {
       setInvestorAccount(null);
       setInvestorTrades([]);
       setPerformance(null);
+      setAccountNumber('');
+      setInvestorPassword('');
       try {
         localStorage.removeItem('realistis_investor_account');
         localStorage.removeItem('realistis_investor_trades');
@@ -316,9 +329,116 @@ export default function JournalPage() {
     }
   };
 
-  // Filtered trades list
-  const filteredTrades = useMemo(() => {
+  // =========================================================================
+  // DYNAMIC TIMEFRAME SUMMARY CALCULATION (1 Hari, 1 Minggu, 1 Bulan, 1 Tahun)
+  // =========================================================================
+  const timeframeTrades = useMemo(() => {
+    if (!investorTrades || investorTrades.length === 0) return [];
+
+    const now = Date.now();
+    let thresholdMs = 30 * 24 * 3600 * 1000; // default 1M (30 days)
+
+    if (timeframe === '1D') {
+      thresholdMs = 24 * 3600 * 1000; // 1 Hari (24 hours)
+    } else if (timeframe === '1W') {
+      thresholdMs = 7 * 24 * 3600 * 1000; // 1 Minggu (7 days)
+    } else if (timeframe === '1M') {
+      thresholdMs = 30 * 24 * 3600 * 1000; // 1 Bulan (30 days)
+    } else if (timeframe === '1Y') {
+      thresholdMs = 365 * 24 * 3600 * 1000; // 1 Tahun (365 days)
+    }
+
     return investorTrades.filter((t) => {
+      const tradeDate = new Date(t.closeTime).getTime();
+      return !isNaN(tradeDate) && now - tradeDate <= thresholdMs;
+    });
+  }, [investorTrades, timeframe]);
+
+  // Compute metrics for selected timeframe
+  const timeframeMetrics = useMemo(() => {
+    const list = timeframeTrades;
+    const total = list.length;
+    if (total === 0) {
+      return {
+        totalTrades: 0,
+        winningTrades: 0,
+        losingTrades: 0,
+        winRate: 0,
+        netPnL: 0,
+        totalProfit: 0,
+        totalLoss: 0,
+        profitFactor: 0,
+        avgWin: 0,
+        avgLoss: 0,
+        riskRewardRatio: 0,
+        slDisciplineRate: 0,
+        bestTrade: null,
+        worstTrade: null,
+      };
+    }
+
+    const winning = list.filter((t) => t.pnl > 0);
+    const losing = list.filter((t) => t.pnl < 0);
+    const totalProfit = winning.reduce((acc, t) => acc + t.pnl, 0);
+    const totalLoss = Math.abs(losing.reduce((acc, t) => acc + t.pnl, 0));
+    const netPnL = Number((totalProfit - totalLoss).toFixed(2));
+    const winRate = Number(((winning.length / total) * 100).toFixed(1));
+    const profitFactor = totalLoss > 0 ? Number((totalProfit / totalLoss).toFixed(2)) : totalProfit > 0 ? 4.5 : 0;
+    const avgWin = winning.length > 0 ? Number((totalProfit / winning.length).toFixed(2)) : 0;
+    const avgLoss = losing.length > 0 ? Number((totalLoss / losing.length).toFixed(2)) : 0;
+    const riskRewardRatio = avgLoss > 0 ? Number((avgWin / avgLoss).toFixed(2)) : 2.0;
+
+    const slCompliant = list.filter((t) => t.stopLoss !== undefined && t.sopCompliant).length;
+    const slDisciplineRate = Number(((slCompliant / total) * 100).toFixed(1));
+
+    const sortedByPnL = [...list].sort((a, b) => b.pnl - a.pnl);
+    const bestTrade = sortedByPnL[0] || null;
+    const worstTrade = sortedByPnL[sortedByPnL.length - 1] || null;
+
+    return {
+      totalTrades: total,
+      winningTrades: winning.length,
+      losingTrades: losing.length,
+      winRate,
+      netPnL,
+      totalProfit: Math.round(totalProfit * 100) / 100,
+      totalLoss: Math.round(totalLoss * 100) / 100,
+      profitFactor,
+      avgWin,
+      avgLoss,
+      riskRewardRatio,
+      slDisciplineRate,
+      bestTrade,
+      worstTrade,
+    };
+  }, [timeframeTrades]);
+
+  // Breakdown per Currency Pair to identify Best vs Worst pair
+  const pairBreakdown = useMemo(() => {
+    const map: Record<string, { total: number; win: number; loss: number; pnl: number }> = {};
+
+    timeframeTrades.forEach((t) => {
+      if (!map[t.pair]) {
+        map[t.pair] = { total: 0, win: 0, loss: 0, pnl: 0 };
+      }
+      map[t.pair].total++;
+      if (t.pnl > 0) map[t.pair].win++;
+      if (t.pnl < 0) map[t.pair].loss++;
+      map[t.pair].pnl += t.pnl;
+    });
+
+    return Object.entries(map).map(([pair, stats]) => ({
+      pair,
+      total: stats.total,
+      winRate: stats.total > 0 ? Math.round((stats.win / stats.total) * 100) : 0,
+      pnl: Math.round(stats.pnl * 100) / 100,
+      isProfit: stats.pnl >= 0,
+    })).sort((a, b) => b.pnl - a.pnl);
+  }, [timeframeTrades]);
+
+  // Filtered trades list for table display
+  const filteredTrades = useMemo(() => {
+    return timeframeTrades.filter((t) => {
       // Type/Status filter
       if (tradeFilter === 'WIN' && t.pnl <= 0) return false;
       if (tradeFilter === 'LOSS' && t.pnl >= 0) return false;
@@ -335,7 +455,7 @@ export default function JournalPage() {
       }
       return true;
     });
-  }, [investorTrades, tradeFilter, searchQuery]);
+  }, [timeframeTrades, tradeFilter, searchQuery]);
 
   // Fallback Manual Trade submission
   const handleAddManualTrade = (e: React.FormEvent) => {
@@ -360,6 +480,13 @@ export default function JournalPage() {
     });
 
     setShowManualModal(false);
+  };
+
+  const timeframeLabels: Record<SummaryTimeframe, string> = {
+    '1D': 'Hari Ini (1 Hari / 24 Jam)',
+    '1W': 'Minggu Ini (1 Minggu / 7 Hari)',
+    '1M': 'Bulan Ini (1 Bulan / 30 Hari)',
+    '1Y': 'Tahun Ini (1 Tahun / 365 Hari)',
   };
 
   return (
@@ -431,7 +558,7 @@ export default function JournalPage() {
             </h1>
           </div>
           <p className="text-xs text-slate-600 max-w-3xl leading-relaxed">
-            Tidak perlu mencatat manual lagi. Cukup hubungkan <strong className="text-slate-900">Akun Investor (Read-Only)</strong> Anda, sistem RealistisFx akan membaca otomatis riwayat seluruh transaksi, akurasi <strong className="text-slate-900">Win Rate</strong>, rasio RR, serta memberikan evaluasi mendalam <strong className="text-emerald-700 font-semibold">apakah performa trading Anda bagus atau butuh evaluasi</strong>.
+            Hubungkan akun investor MT4/MT5 Anda untuk membaca riwayat transaksi secara otomatis tanpa pencatatan manual. Ringkas performa <strong className="text-slate-900">1 Hari, 1 Minggu, 1 Bulan, hingga 1 Tahun</strong>, pantau akurasi <strong className="text-slate-900">Win Rate</strong>, dan dapatkan poin-poin penting <strong className="text-emerald-700 font-semibold">apa saja yang harus dievaluasi</strong> dari trading Anda.
           </p>
         </div>
 
@@ -447,7 +574,7 @@ export default function JournalPage() {
                 Sinkronkan Ulang
               </button>
               <button
-                onClick={() => setShowConnectModal(true)}
+                onClick={() => setShowChangeAccountModal(true)}
                 className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center gap-1.5 border border-slate-200 transition-all cursor-pointer"
               >
                 <Server className="w-3.5 h-3.5" /> Ganti Akun Investor
@@ -455,10 +582,13 @@ export default function JournalPage() {
             </>
           ) : (
             <button
-              onClick={() => setShowConnectModal(true)}
+              onClick={() => {
+                const el = document.getElementById('connect-form-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
               className="px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm hover:shadow active:scale-95 transition-all cursor-pointer"
             >
-              <Server className="w-4 h-4" /> Hubungkan Akun Investor
+              <Server className="w-4 h-4" /> Masukkan Akun Saya
             </button>
           )}
 
@@ -472,11 +602,184 @@ export default function JournalPage() {
         </div>
       </div>
 
-      {/* Investor Account Connection Banner / Card */}
-      {investorAccount ? (
-        <div className="bg-gradient-to-r from-emerald-950 via-[#00472B] to-[#005A36] rounded-2xl p-5 text-white shadow-md border border-emerald-800/40 relative overflow-hidden">
-          <div className="absolute right-0 top-0 bottom-0 w-96 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-400/10 via-transparent to-transparent pointer-events-none" />
+      {/* ===================================================================== */}
+      {/* 1. KONEKSI AKUN INVESTOR SAYA: JIKA BELUM TERHUBUNG, TAMPILKAN FORM     */}
+      {/* ===================================================================== */}
+      {!investorAccount ? (
+        <div id="connect-form-section" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-7 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+                <Server className="w-3.5 h-3.5 text-emerald-600" />
+                Hubungkan Akun Investor MetaTrader Anda (Read-Only)
+              </div>
+              <h2 className="text-lg sm:text-xl font-black text-slate-900">
+                Masukkan Akun Investor Anda untuk Membaca Track Record Otomatis
+              </h2>
+              <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+                Password investor adalah kata sandi khusus yang <strong className="text-slate-900">hanya memiliki izin melihat data (read-only)</strong>. Sistem tidak bisa membuka posisi, memodifikasi order, atau menarik dana sama sekali.
+              </p>
+            </div>
 
+            <div className="flex items-center gap-1.5 text-xs text-emerald-700 font-semibold bg-emerald-50/60 p-2.5 rounded-xl border border-emerald-200/60">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>100% Aman: Akses Read-Only Broker</span>
+            </div>
+          </div>
+
+          {/* User Input Form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleConnectInvestorAccount();
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs"
+          >
+            {/* Platform MT4 vs MT5 */}
+            <div className="space-y-1.5">
+              <label className="font-bold text-slate-700 block">Platform Trading</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPlatform('MT5')}
+                  className={`py-2.5 rounded-xl font-bold border transition-all cursor-pointer ${
+                    platform === 'MT5'
+                      ? 'bg-[#00A651] text-white border-[#00A651] shadow-2xs'
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  MetaTrader 5 (MT5)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPlatform('MT4')}
+                  className={`py-2.5 rounded-xl font-bold border transition-all cursor-pointer ${
+                    platform === 'MT4'
+                      ? 'bg-[#00A651] text-white border-[#00A651] shadow-2xs'
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  MetaTrader 4 (MT4)
+                </button>
+              </div>
+            </div>
+
+            {/* Server Broker */}
+            <div className="space-y-1.5">
+              <label className="font-bold text-slate-700 block">Nama Server Broker</label>
+              <input
+                type="text"
+                value={brokerServer}
+                onChange={(e) => setBrokerServer(e.target.value)}
+                placeholder="Contoh: Exness-Real, ICMarketsSC-Live, MRGM-Real"
+                required
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600 bg-white"
+              />
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[10px]">
+                <span className="text-slate-400 font-medium">Pilihan Cepat:</span>
+                {POPULAR_BROKERS.slice(0, 4).map((b) => (
+                  <button
+                    key={b}
+                    type="button"
+                    onClick={() => setBrokerServer(b)}
+                    className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono border border-slate-200 cursor-pointer"
+                  >
+                    {b}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Account Number */}
+            <div className="space-y-1.5">
+              <label className="font-bold text-slate-700 block">Nomor Akun (Login ID)</label>
+              <input
+                type="text"
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
+                placeholder="Masukkan Nomor Login MT4/MT5 Anda (Contoh: 8192014)"
+                required
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600 bg-white"
+              />
+            </div>
+
+            {/* Investor Password */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="font-bold text-slate-700">Password Investor (Kata Sandi Investor)</label>
+                <button
+                  type="button"
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                  className="text-[11px] text-emerald-700 font-semibold cursor-pointer"
+                >
+                  {isPasswordVisible ? 'Sembunyikan' : 'Lihat'}
+                </button>
+              </div>
+              <input
+                type={isPasswordVisible ? 'text' : 'password'}
+                value={investorPassword}
+                onChange={(e) => setInvestorPassword(e.target.value)}
+                placeholder="Masukkan Kata Sandi Investor Akun Anda"
+                required
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600 bg-white"
+              />
+            </div>
+
+            {/* Syncing Progress Animation */}
+            {isSyncing && (
+              <div className="md:col-span-2 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2 animate-in fade-in">
+                <div className="flex items-center gap-2.5 text-xs font-bold text-emerald-900">
+                  <RefreshCw className="w-4 h-4 text-emerald-600 animate-spin" />
+                  <span>{syncStage}</span>
+                </div>
+                <div className="w-full bg-emerald-200/50 h-2 rounded-full overflow-hidden">
+                  <div className="bg-emerald-600 h-full rounded-full animate-pulse w-3/4" />
+                </div>
+              </div>
+            )}
+
+            {/* Sync Error */}
+            {syncError && (
+              <div className="md:col-span-2 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>{syncError}</span>
+              </div>
+            )}
+
+            {/* Submit Button & Optional Demo Callouts */}
+            <div className="md:col-span-2 pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                <span>Atau ingin coba akun simulasi dulu?</span>
+                <button
+                  type="button"
+                  onClick={() => handleConnectInvestorAccount('realistisfx_master')}
+                  className="text-emerald-700 hover:text-emerald-800 font-bold underline cursor-pointer"
+                >
+                  Coba Demo RealistisFx (Grade A)
+                </button>
+                <span>•</span>
+                <button
+                  type="button"
+                  onClick={() => handleConnectInvestorAccount('exness_eval')}
+                  className="text-amber-700 hover:text-amber-800 font-bold underline cursor-pointer"
+                >
+                  Coba Akun Evaluasi (Grade C)
+                </button>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSyncing}
+                className="px-6 py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer disabled:opacity-50"
+              >
+                <Server className="w-4 h-4" /> Hubungkan Akun Saya &amp; Baca Track Record
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : (
+        /* Connected State Header Card */
+        <div className="bg-gradient-to-r from-emerald-950 via-[#00472B] to-[#005A36] rounded-2xl p-5 text-white shadow-md border border-emerald-800/40 relative overflow-hidden">
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="space-y-1.5">
               <div className="flex items-center gap-2 flex-wrap">
@@ -521,7 +824,7 @@ export default function JournalPage() {
               </div>
               <div className="h-8 w-px bg-white/10" />
               <div>
-                <div className="text-[10px] text-emerald-200 uppercase font-bold tracking-wider">Keuntungan Bersih</div>
+                <div className="text-[10px] text-emerald-200 uppercase font-bold tracking-wider">Total Hasil Akun</div>
                 <div
                   className={`text-lg sm:text-xl font-extrabold font-mono ${
                     investorAccount.balance - investorAccount.deposit >= 0 ? 'text-emerald-300' : 'text-rose-400'
@@ -543,492 +846,543 @@ export default function JournalPage() {
             </div>
           </div>
         </div>
-      ) : (
-        /* Disconnected State / Connect Call to Action */
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 rounded-2xl p-6 text-white border border-slate-700 shadow-md">
-          <div className="max-w-3xl space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-semibold">
-              <Zap className="w-3.5 h-3.5" />
-              Fitur Utama: Jurnal Otomatis via Akun Investor
-            </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold">
-              Hubungkan Akun Investor MT4/MT5 Anda
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Anda tidak perlu mengetik posisi trade satu per satu. Masukkan kata sandi investor (hanya akses baca, aman 100% tanpa hak trading/penarikan), dan RealistisFx akan membaca otomatis jumlah entry, persentase Win Rate, kepatuhan Stop Loss, serta menyajikan diagnostik apakah performa Anda sudah bagus atau berisiko tinggi.
-            </p>
-            <div className="pt-2 flex flex-wrap gap-2.5">
-              <button
-                onClick={() => setShowConnectModal(true)}
-                className="px-5 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"
-              >
-                <Server className="w-4 h-4" /> Masukkan Akun Investor Saya
-              </button>
-              <button
-                onClick={() => handleConnectInvestorAccount('realistisfx_master')}
-                className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-emerald-200 font-bold text-xs flex items-center gap-2 border border-white/20 transition-all cursor-pointer"
-              >
-                <Sparkles className="w-4 h-4 text-emerald-400" /> Coba Demo RealistisFx Master (Grade A)
-              </button>
-            </div>
-          </div>
-        </div>
       )}
 
-      {/* Hero "Bagus apa Gak" RealistisFx Institutional Diagnostic Engine */}
-      {performance && (
-        <div
-          className={`rounded-2xl border p-5 sm:p-6 shadow-sm transition-all ${
-            performance.grade === 'A'
-              ? 'bg-gradient-to-br from-emerald-50/90 via-white to-emerald-50/50 border-emerald-200'
-              : performance.grade === 'B'
-              ? 'bg-gradient-to-br from-blue-50/90 via-white to-blue-50/50 border-blue-200'
-              : 'bg-gradient-to-br from-rose-50/90 via-white to-rose-50/50 border-rose-200'
-          }`}
-        >
-          {/* Top Verdict Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4 mb-5">
-            <div className="flex items-start sm:items-center gap-3">
-              <div
-                className={`w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-xl shadow-xs ${
-                  performance.grade === 'A'
-                    ? 'bg-gradient-to-br from-[#00A651] to-[#005A36] text-white'
-                    : performance.grade === 'B'
-                    ? 'bg-gradient-to-br from-blue-600 to-indigo-700 text-white'
-                    : 'bg-gradient-to-br from-rose-600 to-rose-800 text-white'
-                }`}
-              >
-                {performance.grade}
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span
-                    className={`px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase tracking-wide border ${
-                      performance.grade === 'A'
-                        ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                        : performance.grade === 'B'
-                        ? 'bg-blue-100 text-blue-800 border-blue-300'
-                        : 'bg-rose-100 text-rose-800 border-rose-300'
-                    }`}
-                  >
-                    EVALUASI KINERJA: {performance.verdict}
-                  </span>
-                  <span className="text-xs font-mono font-bold text-slate-700">
-                    Skor Disiplin: {performance.score} / 100
-                  </span>
-                </div>
-                <h3 className="text-base sm:text-lg font-extrabold text-slate-900 mt-0.5">
-                  {performance.verdictSub}
-                </h3>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-500 font-medium hidden sm:inline">Standar Penilaian SOP:</span>
-              <span className="px-3 py-1 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs font-bold shadow-2xs font-mono">
-                SOP Fixed SL 30 Pips &amp; MM 1%
+      {/* ===================================================================== */}
+      {/* 2. TIMEFRAME SELECTOR RIBBON (1 Hari, 1 Minggu, 1 Bulan, 1 Tahun)     */}
+      {/* ===================================================================== */}
+      {investorAccount && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
+              <Calendar className="w-4 h-4" />
+            </span>
+            <div>
+              <span className="text-xs font-bold text-slate-900 block">Pilih Rentang Waktu Ringkasan:</span>
+              <span className="text-[11px] text-slate-500 font-mono">
+                Menampilkan data: <strong className="text-emerald-800 font-semibold">{timeframeLabels[timeframe]}</strong>
               </span>
             </div>
           </div>
 
-          {/* Institutional Diagnostic Summary Narrative */}
-          <div className="p-4 rounded-xl bg-white/80 border border-slate-200/80 mb-5 text-xs sm:text-[13px] text-slate-700 leading-relaxed space-y-2">
-            <div className="flex items-center gap-2 font-bold text-slate-900">
-              <Award className="w-4 h-4 text-emerald-600" />
-              <span>Diagnostik RealistisFx: Analisis Kesehatan &amp; Karakter Akun</span>
-            </div>
-            <p className="text-slate-600">{performance.summary}</p>
-          </div>
-
-          {/* 4 Pillars of Health Diagnostic */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-5">
-            {performance.diagnostics.map((diag, idx) => {
-              const isBagus = diag.status === 'BAGUS';
-              const isCukup = diag.status === 'CUKUP';
-
-              return (
-                <div
-                  key={idx}
-                  className={`p-3.5 rounded-xl border bg-white shadow-2xs space-y-1.5 ${
-                    isBagus
-                      ? 'border-emerald-200'
-                      : isCukup
-                      ? 'border-blue-200'
-                      : 'border-rose-200'
-                  }`}
-                >
-                  <div className="flex items-center justify-between text-xs font-bold">
-                    <span className="text-slate-900">{diag.title}</span>
-                    <span
-                      className={`px-1.5 py-0.5 rounded text-[10px] font-extrabold ${
-                        isBagus
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : isCukup
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-rose-100 text-rose-800'
-                      }`}
-                    >
-                      {diag.status === 'BAGUS' ? '✓ SANGAT SEHAT' : diag.status === 'CUKUP' ? '⚡ CUKUP' : '⚠️ PERLU PERBAIKAN'}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-600 leading-relaxed">{diag.message}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Actionable Recommendations */}
-          <div className="p-3.5 rounded-xl bg-white/90 border border-slate-200/80 space-y-2">
-            <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-              <Target className="w-3.5 h-3.5 text-emerald-600" />
-              Rekomendasi Tindakan untuk Menjaga Pertumbuhan Modal:
-            </div>
-            <ul className="space-y-1 text-[11px] text-slate-600">
-              {performance.recommendations.map((rec, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
-                  <span>{rec}</span>
-                </li>
-              ))}
-            </ul>
+          {/* 4 Segmented Period Tabs */}
+          <div className="grid grid-cols-4 sm:flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
+            {(
+              [
+                { key: '1D', label: '1 Hari' },
+                { key: '1W', label: '1 Minggu' },
+                { key: '1M', label: '1 Bulan' },
+                { key: '1Y', label: '1 Tahun' },
+              ] as const
+            ).map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTimeframe(t.key)}
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer text-center ${
+                  timeframe === t.key
+                    ? 'bg-[#00A651] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
         </div>
       )}
 
-      {/* Key Track Record Metrics Grid */}
-      {performance && (
+      {/* ===================================================================== */}
+      {/* 3. DYNAMIC METRICS FOR SELECTED TIMEFRAME (1D / 1W / 1M / 1Y)        */}
+      {/* ===================================================================== */}
+      {investorAccount && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          {/* 1. Total Entry */}
+          {/* Total Entry */}
           <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-1">
-            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Total Entry</div>
+            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Total Entry ({timeframe})</div>
             <div className="text-xl sm:text-2xl font-extrabold font-mono text-slate-900">
-              {performance.totalTrades} <span className="text-xs font-normal text-slate-500">Posisi</span>
+              {timeframeMetrics.totalTrades} <span className="text-xs font-normal text-slate-500">Posisi</span>
             </div>
             <div className="text-[10px] text-slate-500 font-mono">
-              {performance.winningTrades} Menang / {performance.losingTrades} Kalah
+              {timeframeMetrics.winningTrades} Menang / {timeframeMetrics.losingTrades} Kalah
             </div>
           </div>
 
-          {/* 2. Win Rate */}
+          {/* Win Rate */}
           <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-1">
-            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Win Rate (%)</div>
+            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Win Rate ({timeframe})</div>
             <div className="text-xl sm:text-2xl font-extrabold font-mono text-emerald-700 flex items-center gap-1">
               <TrendingUp className="w-5 h-5 text-emerald-600" />
-              {performance.winRate}%
+              {timeframeMetrics.winRate}%
             </div>
             <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
               <div
                 className="bg-emerald-600 h-full rounded-full"
-                style={{ width: `${Math.min(100, performance.winRate)}%` }}
+                style={{ width: `${Math.min(100, timeframeMetrics.winRate)}%` }}
               />
             </div>
           </div>
 
-          {/* 3. Net Profit */}
+          {/* Net Profit / Loss */}
           <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-1">
-            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Net Profit / Loss</div>
+            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Net PnL ({timeframe})</div>
             <div
               className={`text-xl sm:text-2xl font-extrabold font-mono ${
-                performance.netPnL >= 0 ? 'text-[#00A651]' : 'text-rose-600'
+                timeframeMetrics.netPnL >= 0 ? 'text-[#00A651]' : 'text-rose-600'
               }`}
             >
-              {performance.netPnL >= 0 ? '+' : '-'}${Math.abs(performance.netPnL).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              {timeframeMetrics.netPnL >= 0 ? '+' : '-'}${Math.abs(timeframeMetrics.netPnL).toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
             <div className="text-[10px] text-slate-500 font-mono">
-              ≈ Rp {Math.round(performance.netPnL * 16000).toLocaleString('id-ID')}
+              ≈ Rp {Math.round(timeframeMetrics.netPnL * 16000).toLocaleString('id-ID')}
             </div>
           </div>
 
-          {/* 4. Profit Factor */}
+          {/* Profit Factor */}
           <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-1">
-            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Profit Factor</div>
+            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Profit Factor ({timeframe})</div>
             <div className="text-xl sm:text-2xl font-extrabold font-mono text-slate-900">
-              {performance.profitFactor}
+              {timeframeMetrics.profitFactor}
             </div>
             <div className="text-[10px] text-emerald-700 font-semibold">
-              {performance.profitFactor >= 2.0 ? 'Luar Biasa (> 2.0)' : performance.profitFactor >= 1.5 ? 'Bagus (> 1.5)' : 'Perlu Ditingkatkan'}
+              {timeframeMetrics.profitFactor >= 2.0 ? 'Luar Biasa (> 2.0)' : timeframeMetrics.profitFactor >= 1.5 ? 'Bagus (> 1.5)' : 'Perlu Diperbaiki'}
             </div>
           </div>
 
-          {/* 5. Rata-rata Win vs Loss */}
+          {/* Risk to Reward Realisasi */}
           <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-1">
-            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Rasio Rata2 Win/Loss</div>
+            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Rata-rata Win / Loss</div>
             <div className="text-xl sm:text-2xl font-extrabold font-mono text-slate-900">
-              1 : {performance.riskRewardRatio}
+              1 : {timeframeMetrics.riskRewardRatio}
             </div>
             <div className="text-[10px] text-slate-500 font-mono">
-              +${performance.avgWin} / -${performance.avgLoss}
+              +${timeframeMetrics.avgWin} / -${timeframeMetrics.avgLoss}
             </div>
           </div>
 
-          {/* 6. Max Drawdown */}
+          {/* Disiplin Stop Loss */}
           <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-1">
-            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Max Drawdown</div>
+            <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Disiplin SL ({timeframe})</div>
             <div
               className={`text-xl sm:text-2xl font-extrabold font-mono ${
-                performance.maxDrawdown <= 10 ? 'text-emerald-700' : performance.maxDrawdown <= 20 ? 'text-amber-600' : 'text-rose-600'
+                timeframeMetrics.slDisciplineRate >= 80 ? 'text-emerald-700' : 'text-rose-600'
               }`}
             >
-              {performance.maxDrawdown}%
+              {timeframeMetrics.slDisciplineRate}%
             </div>
             <div className="text-[10px] text-slate-500">
-              {performance.maxDrawdown <= 10 ? 'Risiko Sangat Rendah' : 'Waspada Penurunan Modal'}
+              {timeframeMetrics.slDisciplineRate >= 85 ? 'SOP 1% Terpenuhi' : 'Waspada Trade Tanpa SL'}
             </div>
           </div>
         </div>
       )}
 
-      {/* Synced Closed Trades Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-        {/* Table Controls & Filter Ribbon */}
-        <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold text-slate-900">Histori Track Record Otomatis (Closed Trades)</h2>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-mono border border-emerald-200 font-bold">
-              {filteredTrades.length} Transaksi
-            </span>
-          </div>
-
-          {/* Filter Buttons */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Cari tiket, pair, catatan..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs w-44 sm:w-56 focus:outline-emerald-600"
-              />
+      {/* ===================================================================== */}
+      {/* 4. POIN KRITIS YANG HARUS DIEVALUASI & ANALISIS WIN RATE               */}
+      {/*    (Menjawab user: "sama performa winrate nya sama ada yg harus       */}
+      {/*     di evaluasi gitu")                                                */}
+      {/* ===================================================================== */}
+      {investorAccount && (
+        <div className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="p-2 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
+                  <AlertOctagon className="w-5 h-5" />
+                </span>
+                <h2 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
+                  Evaluasi Kritis Kinerja &amp; Performa Win Rate ({timeframeLabels[timeframe]})
+                </h2>
+              </div>
+              <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+                Hasil audit otomatis algoritma RealistisFx terhadap riwayat transaksi Anda. Berikut adalah poin-poin <strong className="text-rose-700">yang harus dievaluasi</strong> dan diperbaiki untuk menjaga pertumbuhan modal jangka panjang.
+              </p>
             </div>
 
-            <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-semibold">
-              {(
-                [
-                  { key: 'ALL', label: 'Semua' },
-                  { key: 'WIN', label: 'Win (Menang)' },
-                  { key: 'LOSS', label: 'Loss (Kena SL)' },
-                  { key: 'GOLD', label: 'XAUUSD' },
-                  { key: 'FOREX', label: 'Forex Majors' },
-                ] as const
-              ).map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setTradeFilter(tab.key)}
-                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                    tradeFilter === tab.key
-                      ? 'bg-white text-emerald-800 font-bold shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900'
+            {/* Win Rate Status Pill */}
+            <div className="flex items-center gap-2.5">
+              <div className="text-right">
+                <div className="text-[10px] text-slate-400 font-bold uppercase">Standar Target SOP</div>
+                <div className="text-xs font-bold text-slate-800">Minimal 60% Win Rate</div>
+              </div>
+              <div
+                className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 border shadow-2xs ${
+                  timeframeMetrics.winRate >= 65
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                    : timeframeMetrics.winRate >= 50
+                    ? 'bg-blue-50 text-blue-800 border-blue-300'
+                    : 'bg-rose-50 text-rose-800 border-rose-300'
+                }`}
+              >
+                {timeframeMetrics.winRate >= 65 ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>Akurasi Sangat Bagus ({timeframeMetrics.winRate}%)</span>
+                  </>
+                ) : timeframeMetrics.winRate >= 50 ? (
+                  <>
+                    <Activity className="w-4 h-4 text-blue-600" />
+                    <span>Akurasi Cukup ({timeframeMetrics.winRate}%)</span>
+                  </>
+                ) : (
+                  <>
+                    <AlertTriangle className="w-4 h-4 text-rose-600" />
+                    <span>Perlu Evaluasi Ketat ({timeframeMetrics.winRate}%)</span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 4 Poin Kritis yang Harus Dievaluasi */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* 1. Evaluasi Disiplin Stop Loss */}
+            <div
+              className={`p-4 rounded-2xl border space-y-2 ${
+                timeframeMetrics.slDisciplineRate >= 85
+                  ? 'bg-emerald-50/40 border-emerald-200'
+                  : 'bg-rose-50/50 border-rose-200'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 font-bold text-xs text-slate-900">
+                  <ShieldAlert className="w-4 h-4 text-rose-600" />
+                  <span>1. Evaluasi Kedisiplinan Stop Loss (SL)</span>
+                </div>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-extrabold ${
+                    timeframeMetrics.slDisciplineRate >= 85
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : 'bg-rose-100 text-rose-800'
                   }`}
                 >
-                  {tab.label}
-                </button>
-              ))}
+                  {timeframeMetrics.slDisciplineRate >= 85 ? '✓ LULUS SOP' : '⚠️ HARUS DIEVALUASI'}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                {timeframeMetrics.slDisciplineRate >= 85
+                  ? `Sangat baik! ${timeframeMetrics.slDisciplineRate}% transaksi dalam periode ${timeframe} ini dipasangi batasan Stop Loss baku. Tidak ada posisi floating minus liar.`
+                  : `PERHATIAN: Ada transaksi yang tidak memasang Stop Loss atau kerugian melebihi batas toleransi 1% modal. Jangan pernah menahan posisi minus dengan harapan harga akan balik arah (hoping).`}
+              </p>
+              <div className="text-[10px] text-slate-500 font-mono">
+                Catatan SOP: Pasang Stop Loss baku 30 pips seketika setelah menekan tombol Order.
+              </div>
+            </div>
+
+            {/* 2. Evaluasi Rasio Risk to Reward (Taking Profit) */}
+            <div
+              className={`p-4 rounded-2xl border space-y-2 ${
+                timeframeMetrics.riskRewardRatio >= 1.5
+                  ? 'bg-emerald-50/40 border-emerald-200'
+                  : 'bg-amber-50/50 border-amber-200'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 font-bold text-xs text-slate-900">
+                  <Target className="w-4 h-4 text-emerald-600" />
+                  <span>2. Evaluasi Rasio Risk to Reward (RR)</span>
+                </div>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-extrabold ${
+                    timeframeMetrics.riskRewardRatio >= 1.5
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : 'bg-amber-100 text-amber-800'
+                  }`}
+                >
+                  {timeframeMetrics.riskRewardRatio >= 1.5 ? '✓ SEHAT (1:2+)' : '⚡ HARUS DIEVALUASI'}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                {timeframeMetrics.riskRewardRatio >= 1.5
+                  ? `Rasio reward Anda 1 : ${timeframeMetrics.riskRewardRatio}. Rata-rata kemenangan ($${timeframeMetrics.avgWin}) jauh lebih besar dari rata-rata kerugian ($${timeframeMetrics.avgLoss}).`
+                  : `Rata-rata take profit ($${timeframeMetrics.avgWin}) hampir sebanding dengan rata-rata loss ($${timeframeMetrics.avgLoss}). Terdeteksi kebiasaan 'cut profit terlalu dini tapi nahan loss'. Tahan posisi hingga minimal 1:2 RR.`}
+              </p>
+              <div className="text-[10px] text-slate-500 font-mono">
+                Rata-rata Menang: +${timeframeMetrics.avgWin} | Rata-rata Kalah: -${timeframeMetrics.avgLoss}
+              </div>
+            </div>
+
+            {/* 3. Evaluasi Over-Trading & Frekuensi Transaksi */}
+            <div
+              className={`p-4 rounded-2xl border space-y-2 ${
+                (timeframe === '1D' && timeframeMetrics.totalTrades <= 3) ||
+                (timeframe === '1W' && timeframeMetrics.totalTrades <= 15) ||
+                timeframe === '1M' || timeframe === '1Y'
+                  ? 'bg-emerald-50/40 border-emerald-200'
+                  : 'bg-rose-50/50 border-rose-200'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 font-bold text-xs text-slate-900">
+                  <Activity className="w-4 h-4 text-blue-600" />
+                  <span>3. Evaluasi Over-Trading (Frekuensi Entry)</span>
+                </div>
+                <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-slate-100 text-slate-800">
+                  {timeframeMetrics.totalTrades} Transaksi
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                {timeframe === '1D' && timeframeMetrics.totalTrades > 3
+                  ? 'PERINGATAN: Anda membuka lebih dari 3 trade hari ini. Terlalu sering menatap chart memicu kelelahan psikologis dan eksekusi balas dendam (revenge trading).'
+                  : `Frekuensi trading terkontrol. Disiplin menunggu setup pantulan Support & Resistance yang benar-benar valid terbukti menghasilkan probabilitas lebih tinggi.`}
+              </p>
+              <div className="text-[10px] text-slate-500 font-mono">
+                Batas SOP Realistis: Maksimal 2 - 3 entry berkualitas tinggi per hari.
+              </div>
+            </div>
+
+            {/* 4. Evaluasi Pasangan Mata Uang (Pair Terbaik vs Terburuk) */}
+            <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50/60 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 font-bold text-xs text-slate-900">
+                  <BarChart3 className="w-4 h-4 text-purple-600" />
+                  <span>4. Evaluasi Pasangan Mata Uang (Pair)</span>
+                </div>
+                <span className="text-[10px] text-slate-500 font-mono">Breakdown Instrumen</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                {pairBreakdown.slice(0, 4).map((p) => (
+                  <div key={p.pair} className="bg-white p-2 rounded-xl border border-slate-200 text-center">
+                    <div className="font-bold text-slate-900 text-[11px]">{p.pair}</div>
+                    <div className={`text-xs font-extrabold font-mono ${p.isProfit ? 'text-emerald-700' : 'text-rose-600'}`}>
+                      {p.isProfit ? '+' : ''}${p.pnl}
+                    </div>
+                    <div className="text-[9px] text-slate-400 font-mono">Win Rate: {p.winRate}%</div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-slate-500 italic">
+                Saran: Fokuslah pada pair yang memiliki Win Rate tertinggi, dan kurangi trading pada pair yang sering memberi kekalahan.
+              </p>
+            </div>
+          </div>
+
+          {/* Action Plan / Rekomendasi Tindakan Koreksi */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-white to-emerald-50/30 border border-emerald-200 space-y-2.5">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+              <Compass className="w-4 h-4 text-emerald-700" />
+              <span>Rencana Tindakan Koreksi untuk Sesi Berikutnya:</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] text-slate-700">
+              <div className="bg-white p-3 rounded-xl border border-emerald-100 shadow-2xs space-y-1">
+                <div className="font-bold text-emerald-900">1. Kunci Stop Loss 30 Pips</div>
+                <p className="text-slate-500">Pasang SL sebelum entry. Jangan pernah memindahkan SL menjauh saat floating minus.</p>
+              </div>
+              <div className="bg-white p-3 rounded-xl border border-emerald-100 shadow-2xs space-y-1">
+                <div className="font-bold text-emerald-900">2. Target TP Minimal 1:2</div>
+                <p className="text-slate-500">Biarkan posisi menyentuh level TP yang sudah direncanakan. Jangan close profit terburu-buru.</p>
+              </div>
+              <div className="bg-white p-3 rounded-xl border border-emerald-100 shadow-2xs space-y-1">
+                <div className="font-bold text-emerald-900">3. Istirahat Setelah 2 Loss</div>
+                <p className="text-slate-500">Jika mengalami 2 kali kena SL berturut-turut, matikan laptop untuk mencegah revenge trading.</p>
+              </div>
             </div>
           </div>
         </div>
+      )}
 
-        {/* Trade Table Rows */}
-        {filteredTrades.length === 0 ? (
-          <div className="p-12 text-center space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto">
-              <BookOpenCheck className="w-6 h-6" />
+      {/* ===================================================================== */}
+      {/* 5. TABEL HISTORI CLOSED TRADES (SESUAI PERIODE 1D / 1W / 1M / 1Y)       */}
+      {/* ===================================================================== */}
+      {investorAccount && (
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          {/* Table Controls & Filter Ribbon */}
+          <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-slate-900">Histori Transaksi Periode: {timeframeLabels[timeframe]}</h2>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-mono border border-emerald-200 font-bold">
+                {filteredTrades.length} Posisi
+              </span>
             </div>
-            <h3 className="text-sm font-bold text-slate-900">Belum Ada Riwayat Transaksi Ditemukan</h3>
-            <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-              Hubungkan akun investor MT4/MT5 Anda untuk mengunduh dan membaca track record secara otomatis.
-            </p>
-            <button
-              onClick={() => setShowConnectModal(true)}
-              className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white text-xs font-bold transition-all cursor-pointer"
-            >
-              Hubungkan Akun Investor
-            </button>
+
+            {/* Filter Buttons & Search */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Cari tiket, pair, catatan..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs w-44 sm:w-56 focus:outline-emerald-600"
+                />
+              </div>
+
+              <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-semibold">
+                {(
+                  [
+                    { key: 'ALL', label: 'Semua' },
+                    { key: 'WIN', label: 'Win (Menang)' },
+                    { key: 'LOSS', label: 'Loss (Kena SL)' },
+                    { key: 'GOLD', label: 'XAUUSD' },
+                    { key: 'FOREX', label: 'Forex' },
+                  ] as const
+                ).map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setTradeFilter(tab.key)}
+                    className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                      tradeFilter === tab.key
+                        ? 'bg-white text-emerald-800 font-bold shadow-2xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="overflow-x-auto w-full">
-            <table className="min-w-[900px] w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-200 text-slate-600 bg-slate-50 font-mono font-semibold">
-                  <th className="p-3.5">Tiket / Waktu Close</th>
-                  <th className="p-3.5">Pair / Arah</th>
-                  <th className="p-3.5">Volume (Lot)</th>
-                  <th className="p-3.5">Open Price</th>
-                  <th className="p-3.5">Close Price</th>
-                  <th className="p-3.5">Stop Loss (SL)</th>
-                  <th className="p-3.5">Take Profit (TP)</th>
-                  <th className="p-3.5">Hasil PnL ($) / Pips</th>
-                  <th className="p-3.5">Kepatuhan SOP</th>
-                  <th className="p-3.5">Analisa Rekam Jejak</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredTrades.map((t) => {
-                  const isWin = t.pnl > 0;
-                  const isSl = t.pnl < 0;
 
-                  return (
-                    <tr key={t.ticket} className="hover:bg-slate-50/80 transition-colors">
-                      {/* Ticket & Time */}
-                      <td className="p-3.5 font-mono whitespace-nowrap">
-                        <div className="font-bold text-slate-900">#{t.ticket}</div>
-                        <div className="text-[11px] text-slate-500">{t.closeTime}</div>
-                      </td>
+          {/* Trade Table Rows */}
+          {filteredTrades.length === 0 ? (
+            <div className="p-12 text-center space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto">
+                <BookOpenCheck className="w-6 h-6" />
+              </div>
+              <h3 className="text-sm font-bold text-slate-900">Tidak Ada Transaksi pada Periode Ini</h3>
+              <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                Tidak ada transaksi yang selesai dalam rentang waktu {timeframeLabels[timeframe]}. Coba pilih rentang waktu yang lebih luas seperti 1 Bulan atau 1 Tahun di atas.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto w-full">
+              <table className="min-w-[900px] w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-slate-200 text-slate-600 bg-slate-50 font-mono font-semibold">
+                    <th className="p-3.5">Tiket / Waktu Close</th>
+                    <th className="p-3.5">Pair / Arah</th>
+                    <th className="p-3.5">Volume (Lot)</th>
+                    <th className="p-3.5">Open Price</th>
+                    <th className="p-3.5">Close Price</th>
+                    <th className="p-3.5">Stop Loss (SL)</th>
+                    <th className="p-3.5">Take Profit (TP)</th>
+                    <th className="p-3.5">Hasil PnL ($) / Pips</th>
+                    <th className="p-3.5">Kepatuhan SOP</th>
+                    <th className="p-3.5">Analisa Rekam Jejak</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredTrades.map((t) => {
+                    const isWin = t.pnl > 0;
 
-                      {/* Pair & Type */}
-                      <td className="p-3.5">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-slate-900">{t.pair}</span>
-                          <span
-                            className={`px-1.5 py-0.5 rounded text-[10px] font-extrabold ${
-                              t.type === 'BUY'
-                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                                : 'bg-rose-100 text-rose-800 border border-rose-200'
+                    return (
+                      <tr key={t.ticket} className="hover:bg-slate-50/80 transition-colors">
+                        {/* Ticket & Time */}
+                        <td className="p-3.5 font-mono whitespace-nowrap">
+                          <div className="font-bold text-slate-900">#{t.ticket}</div>
+                          <div className="text-[11px] text-slate-500">{t.closeTime}</div>
+                        </td>
+
+                        {/* Pair & Type */}
+                        <td className="p-3.5">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-slate-900">{t.pair}</span>
+                            <span
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-extrabold ${
+                                t.type === 'BUY'
+                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                  : 'bg-rose-100 text-rose-800 border border-rose-200'
+                              }`}
+                            >
+                              {t.type}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Lot */}
+                        <td className="p-3.5 font-mono font-semibold text-slate-700">{t.lot}</td>
+
+                        {/* Open Price */}
+                        <td className="p-3.5 font-mono text-slate-900 font-medium">{t.openPrice}</td>
+
+                        {/* Close Price */}
+                        <td className="p-3.5 font-mono text-slate-900 font-medium">{t.closePrice}</td>
+
+                        {/* Stop Loss */}
+                        <td className="p-3.5 font-mono">
+                          {t.stopLoss ? (
+                            <span className="px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 font-medium text-[11px]">
+                              {t.stopLoss}
+                            </span>
+                          ) : (
+                            <span className="text-amber-600 font-semibold text-[11px]">Tanpa SL ⚠️</span>
+                          )}
+                        </td>
+
+                        {/* Take Profit */}
+                        <td className="p-3.5 font-mono">
+                          {t.takeProfit ? (
+                            <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium text-[11px]">
+                              {t.takeProfit}
+                            </span>
+                          ) : (
+                            <span className="text-slate-400">-</span>
+                          )}
+                        </td>
+
+                        {/* PnL & Pips */}
+                        <td className="p-3.5 font-mono">
+                          <div
+                            className={`font-bold text-sm ${
+                              isWin ? 'text-[#00A651]' : 'text-rose-600'
                             }`}
                           >
-                            {t.type}
-                          </span>
-                        </div>
-                      </td>
+                            {isWin ? `+$${t.pnl.toFixed(2)}` : `-$${Math.abs(t.pnl).toFixed(2)}`}
+                          </div>
+                          <div className={`text-[10px] ${isWin ? 'text-emerald-700' : 'text-rose-600'}`}>
+                            {t.pips >= 0 ? `+${t.pips}` : t.pips} pips (≈ Rp {Math.round(Math.abs(t.pnl) * 16000).toLocaleString('id-ID')})
+                          </div>
+                        </td>
 
-                      {/* Lot */}
-                      <td className="p-3.5 font-mono font-semibold text-slate-700">{t.lot}</td>
+                        {/* SOP Compliance */}
+                        <td className="p-3.5">
+                          {t.sopCompliant ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-700" /> SOP Valid
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                              <AlertTriangle className="w-3 h-3 text-rose-700" /> Over-Risk
+                            </span>
+                          )}
+                        </td>
 
-                      {/* Open Price */}
-                      <td className="p-3.5 font-mono text-slate-900 font-medium">{t.openPrice}</td>
+                        {/* Notes */}
+                        <td className="p-3.5 text-slate-600 text-[11px] max-w-xs">
+                          {t.notes || (isWin ? 'Target tercapai' : 'Kena Stop Loss disiplin')}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
-                      {/* Close Price */}
-                      <td className="p-3.5 font-mono text-slate-900 font-medium">{t.closePrice}</td>
-
-                      {/* Stop Loss */}
-                      <td className="p-3.5 font-mono">
-                        {t.stopLoss ? (
-                          <span className="px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 font-medium text-[11px]">
-                            {t.stopLoss}
-                          </span>
-                        ) : (
-                          <span className="text-amber-600 font-semibold text-[11px]">Tanpa SL ⚠️</span>
-                        )}
-                      </td>
-
-                      {/* Take Profit */}
-                      <td className="p-3.5 font-mono">
-                        {t.takeProfit ? (
-                          <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium text-[11px]">
-                            {t.takeProfit}
-                          </span>
-                        ) : (
-                          <span className="text-slate-400">-</span>
-                        )}
-                      </td>
-
-                      {/* PnL & Pips */}
-                      <td className="p-3.5 font-mono">
-                        <div
-                          className={`font-bold text-sm ${
-                            isWin ? 'text-[#00A651]' : 'text-rose-600'
-                          }`}
-                        >
-                          {isWin ? `+$${t.pnl.toFixed(2)}` : `-$${Math.abs(t.pnl).toFixed(2)}`}
-                        </div>
-                        <div className={`text-[10px] ${isWin ? 'text-emerald-700' : 'text-rose-600'}`}>
-                          {t.pips >= 0 ? `+${t.pips}` : t.pips} pips (≈ Rp {Math.round(Math.abs(t.pnl) * 16000).toLocaleString('id-ID')})
-                        </div>
-                      </td>
-
-                      {/* SOP Compliance */}
-                      <td className="p-3.5">
-                        {t.sopCompliant ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-700" /> SOP Valid
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
-                            <AlertTriangle className="w-3 h-3 text-rose-700" /> Over-Risk
-                          </span>
-                        )}
-                      </td>
-
-                      {/* Notes */}
-                      <td className="p-3.5 text-slate-600 text-[11px] max-w-xs">
-                        {t.notes || (isWin ? 'Target tercapai' : 'Kena Stop Loss disiplin')}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* Connect Investor Account Modal */}
-      {showConnectModal && (
+      {/* Change / Reconnect Investor Modal */}
+      {showChangeAccountModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2">
                 <span className="p-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
                   <Server className="w-5 h-5" />
                 </span>
                 <div>
-                  <h3 className="text-base font-extrabold text-slate-900">
-                    Koneksi Akun Investor (MT4 / MT5)
-                  </h3>
-                  <p className="text-[11px] text-slate-500">
-                    Akses Read-Only aman untuk membaca track record otomatis
-                  </p>
+                  <h3 className="text-base font-extrabold text-slate-900">Ganti Akun Investor (MT4 / MT5)</h3>
+                  <p className="text-[11px] text-slate-500">Masukkan kredensial akun investor Anda</p>
                 </div>
               </div>
               <button
-                onClick={() => setShowConnectModal(false)}
+                onClick={() => setShowChangeAccountModal(false)}
                 className="text-slate-400 hover:text-slate-600 text-xl font-bold cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            {/* Quick 1-Click Preset Options */}
-            <div className="space-y-2">
-              <div className="text-xs font-bold text-slate-700 flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-600" /> Coba Akun Demo Cepat (1-Klik):
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleConnectInvestorAccount('realistisfx_master')}
-                  className="p-2.5 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-left transition-all cursor-pointer"
-                >
-                  <div className="text-xs font-bold text-emerald-900">Master RealistisFx</div>
-                  <div className="text-[10px] text-emerald-700">MRGM-Real • Grade A (Sangat Bagus)</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleConnectInvestorAccount('icmarkets_demo')}
-                  className="p-2.5 rounded-xl border border-blue-300 bg-blue-50 hover:bg-blue-100 text-left transition-all cursor-pointer"
-                >
-                  <div className="text-xs font-bold text-blue-900">Scalping Disiplin</div>
-                  <div className="text-[10px] text-blue-700">ICMarkets • Grade B (Cukup Bagus)</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleConnectInvestorAccount('exness_eval')}
-                  className="p-2.5 rounded-xl border border-rose-300 bg-rose-50 hover:bg-rose-100 text-left transition-all cursor-pointer"
-                >
-                  <div className="text-xs font-bold text-rose-900">Akun Evaluasi</div>
-                  <div className="text-[10px] text-rose-700">Exness • Grade C (Perlu Evaluasi)</div>
-                </button>
-              </div>
-            </div>
-
-            <div className="relative flex items-center justify-center my-2">
-              <div className="border-t border-slate-200 w-full" />
-              <span className="bg-white px-3 text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
-                Atau Masukkan Akun Sendiri
-              </span>
-            </div>
-
-            {/* Manual Form */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -1036,80 +1390,53 @@ export default function JournalPage() {
               }}
               className="space-y-3.5 text-xs"
             >
-              {/* Platform Segment */}
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Platform MetaTrader</label>
+                <label className="font-bold text-slate-700 block mb-1">Platform</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setPlatform('MT5')}
-                    className={`py-2 rounded-xl font-bold border transition-all cursor-pointer ${
-                      platform === 'MT5'
-                        ? 'bg-[#00A651] text-white border-[#00A651]'
-                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                    }`}
+                    className={`py-2 rounded-xl font-bold border ${platform === 'MT5' ? 'bg-[#00A651] text-white border-[#00A651]' : 'bg-slate-50 text-slate-700 border-slate-200'}`}
                   >
-                    MetaTrader 5 (MT5)
+                    MT5
                   </button>
                   <button
                     type="button"
                     onClick={() => setPlatform('MT4')}
-                    className={`py-2 rounded-xl font-bold border transition-all cursor-pointer ${
-                      platform === 'MT4'
-                        ? 'bg-[#00A651] text-white border-[#00A651]'
-                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                    }`}
+                    className={`py-2 rounded-xl font-bold border ${platform === 'MT4' ? 'bg-[#00A651] text-white border-[#00A651]' : 'bg-slate-50 text-slate-700 border-slate-200'}`}
                   >
-                    MetaTrader 4 (MT4)
+                    MT4
                   </button>
                 </div>
               </div>
 
-              {/* Broker Server */}
               <div>
                 <label className="font-bold text-slate-700 block mb-1">Nama Server Broker</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={brokerServer}
-                    onChange={(e) => setBrokerServer(e.target.value)}
-                    placeholder="Contoh: MRGM-Real, ICMarketsSC-Live, Exness-Real"
-                    required
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
-                  />
-                </div>
-                <div className="flex items-center gap-1.5 mt-1.5 overflow-x-auto pb-1 text-[10px]">
-                  <span className="text-slate-400">Pilihan Cepat:</span>
-                  {BROKER_SERVERS.slice(0, 4).map((srv) => (
-                    <button
-                      key={srv}
-                      type="button"
-                      onClick={() => setBrokerServer(srv)}
-                      className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-mono"
-                    >
-                      {srv}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Account Number */}
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Nomor Akun (Login ID)</label>
                 <input
                   type="text"
-                  value={accountNumber}
-                  onChange={(e) => setAccountNumber(e.target.value)}
-                  placeholder="Contoh: 1089241"
+                  value={brokerServer}
+                  onChange={(e) => setBrokerServer(e.target.value)}
+                  placeholder="Contoh: Exness-Real, ICMarketsSC-Live, MRGM-Real"
                   required
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
                 />
               </div>
 
-              {/* Investor Password */}
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Nomor Akun (Login)</label>
+                <input
+                  type="text"
+                  value={accountNumber}
+                  onChange={(e) => setAccountNumber(e.target.value)}
+                  placeholder="Nomor Login Akun Anda"
+                  required
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
+                />
+              </div>
+
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="font-bold text-slate-700">Password Investor (Kata Sandi Investor)</label>
+                  <label className="font-bold text-slate-700">Password Investor</label>
                   <button
                     type="button"
                     onClick={() => setIsPasswordVisible(!isPasswordVisible)}
@@ -1122,51 +1449,41 @@ export default function JournalPage() {
                   type={isPasswordVisible ? 'text' : 'password'}
                   value={investorPassword}
                   onChange={(e) => setInvestorPassword(e.target.value)}
-                  placeholder="Password Investor MT4/MT5 (Hanya Read-Only)"
+                  placeholder="Password Investor (Read-Only)"
                   required
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
                 />
-                <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3 text-emerald-600 shrink-0" />
-                  Keamanan Terjamin: Password investor HANYA memberi izin membaca riwayat transaksi, tidak bisa membuka/menutup posisi atau menarik dana.
-                </p>
               </div>
 
-              {/* Syncing Progress Animation */}
               {isSyncing && (
-                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 space-y-2 animate-in fade-in">
-                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-900">
-                    <RefreshCw className="w-4 h-4 text-emerald-600 animate-spin" />
+                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1.5 text-xs text-emerald-900 font-bold">
+                  <div className="flex items-center gap-2">
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-600" />
                     <span>{syncStage}</span>
-                  </div>
-                  <div className="w-full bg-emerald-200/50 h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-emerald-600 h-full rounded-full animate-pulse w-3/4" />
                   </div>
                 </div>
               )}
 
-              {/* Error Message */}
               {syncError && (
-                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-                  <span>{syncError}</span>
+                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">
+                  {syncError}
                 </div>
               )}
 
               <div className="pt-2 flex items-center justify-end gap-2">
                 <button
                   type="button"
-                  onClick={() => setShowConnectModal(false)}
-                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all cursor-pointer"
+                  onClick={() => setShowChangeAccountModal(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-bold cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSyncing}
-                  className="px-5 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold cursor-pointer disabled:opacity-50"
                 >
-                  <Server className="w-4 h-4" /> Hubungkan &amp; Baca Track Record
+                  Hubungkan Akun
                 </button>
               </div>
             </form>
@@ -1174,7 +1491,7 @@ export default function JournalPage() {
         </div>
       )}
 
-      {/* Fallback Manual Modal (If user explicitly wants to add an offline trade) */}
+      {/* Fallback Manual Modal (Offline entry) */}
       {showManualModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
