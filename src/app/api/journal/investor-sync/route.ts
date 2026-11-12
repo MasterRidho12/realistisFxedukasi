@@ -18,7 +18,9 @@ function generateMultiTimeframeTrades(
   accountNumber: string,
   brokerServer: string,
   platform: 'MT4' | 'MT5',
-  typeProfile: 'BALANCED' | 'SCALPER' | 'HIGH_RISK' = 'BALANCED'
+  typeProfile: 'BALANCED' | 'SCALPER' | 'HIGH_RISK' = 'BALANCED',
+  accountType: 'STANDARD' | 'CENT' = 'STANDARD',
+  customDeposit?: number
 ): {
   account: InvestorAccount;
   trades: InvestorTrade[];
@@ -33,20 +35,27 @@ function generateMultiTimeframeTrades(
 
   const now = Date.now();
   const pairs = ['XAUUSD', 'EURUSD', 'GBPUSD', 'USDJPY'];
+  const isCent = accountType === 'CENT';
 
-  // Base configurations based on profile
+  // Base configurations based on profile & account type
   let targetWinRate = 72; // default BALANCED
   let totalTradesCount = 52;
-  let initialDeposit = 5000;
+  let initialDeposit = isCent ? 5000 : 5000; // in Cent or USD
+
+  if (customDeposit && customDeposit > 0) {
+    initialDeposit = customDeposit;
+  } else if (isCent) {
+    initialDeposit = 5000; // 5,000 USC = $50 USD
+  }
 
   if (typeProfile === 'SCALPER') {
     targetWinRate = 58;
     totalTradesCount = 64;
-    initialDeposit = 3000;
+    initialDeposit = isCent ? 3000 : 3000;
   } else if (typeProfile === 'HIGH_RISK') {
     targetWinRate = 38;
     totalTradesCount = 48;
-    initialDeposit = 2000;
+    initialDeposit = isCent ? 2000 : 2000;
   } else {
     // Custom user account: derive win rate from seed
     targetWinRate = 60 + (seed % 17); // 60% - 76%
@@ -70,24 +79,21 @@ function generateMultiTimeframeTrades(
 
   for (let i = 0; i < totalTradesCount; i++) {
     const isWin = i < winningTarget;
-    const pair = pairs[(seed + i * 3) % pairs.length];
+    const rawPair = pairs[(seed + i * 3) % pairs.length];
+    const pair = isCent ? `${rawPair}c` : rawPair;
     const type: 'BUY' | 'SELL' = (seed + i) % 2 === 0 ? 'BUY' : 'SELL';
-    const isGold = pair === 'XAUUSD';
-    const lot = isGold ? 0.10 : 0.20;
+    const isGold = rawPair === 'XAUUSD';
+    const lot = isCent ? (isGold ? 0.05 : 0.10) : (isGold ? 0.10 : 0.20);
 
     // Distribute timestamps realistically
     let timeOffsetMs: number;
     if (i < 4) {
-      // Today (1 Hari): 2 - 20 hours ago
       timeOffsetMs = (2 + i * 4) * 3600 * 1000;
     } else if (i < 14) {
-      // This Week (1 Minggu): 1 - 6 days ago
       timeOffsetMs = (24 + (i - 4) * 12) * 3600 * 1000;
     } else if (i < 36) {
-      // This Month (1 Bulan): 8 - 28 days ago
       timeOffsetMs = (7 * 24 + (i - 14) * 22) * 3600 * 1000;
     } else {
-      // This Year (1 Tahun): 32 - 300 days ago
       timeOffsetMs = (30 * 24 + (i - 36) * 14 * 24) * 3600 * 1000;
     }
 
@@ -104,39 +110,39 @@ function generateMultiTimeframeTrades(
     let hasSL = true;
 
     if (typeProfile === 'HIGH_RISK' && (seed + i) % 4 === 0) {
-      hasSL = false; // High risk sometimes misses SL
+      hasSL = false;
     }
 
     if (isGold) {
       openPrice = 4120 + ((seed * 7 + i * 19) % 70);
       if (isWin) {
-        pips = 120 + ((seed + i * 13) % 160); // 120 - 280 pips
-        pnl = Number(((pips * lot * 10) / 10).toFixed(2));
+        pips = 120 + ((seed + i * 13) % 160);
+        // Cent account pnl in USC, Standard in USD
+        pnl = Number(((pips * lot * (isCent ? 5 : 10)) / 10).toFixed(2));
         closePrice = type === 'BUY' ? openPrice + pips / 10 : openPrice - pips / 10;
         takeProfit = closePrice;
         stopLoss = hasSL ? (type === 'BUY' ? openPrice - 10 : openPrice + 10) : undefined;
         totalProfit += pnl;
       } else {
-        pips = -(80 + ((seed + i * 11) % 40)); // -80 to -120 pips
-        pnl = Number(((pips * lot * 10) / 10).toFixed(2));
+        pips = -(80 + ((seed + i * 11) % 40));
+        pnl = Number(((pips * lot * (isCent ? 5 : 10)) / 10).toFixed(2));
         closePrice = type === 'BUY' ? openPrice + pips / 10 : openPrice - pips / 10;
         stopLoss = hasSL ? closePrice : undefined;
         takeProfit = type === 'BUY' ? openPrice + 20 : openPrice - 20;
         totalLoss += Math.abs(pnl);
       }
     } else {
-      // Forex pairs
       openPrice = 1.1200 + ((seed * 3 + i * 11) % 150) / 10000;
       if (isWin) {
-        pips = 30 + ((seed + i * 7) % 35); // 30 - 65 pips
-        pnl = Number((pips * lot * 10).toFixed(2));
+        pips = 30 + ((seed + i * 7) % 35);
+        pnl = Number((pips * lot * (isCent ? 5 : 10)).toFixed(2));
         closePrice = type === 'BUY' ? openPrice + pips / 10000 : openPrice - pips / 10000;
         takeProfit = closePrice;
         stopLoss = hasSL ? (type === 'BUY' ? openPrice - 0.0030 : openPrice + 0.0030) : undefined;
         totalProfit += pnl;
       } else {
-        pips = -(25 + ((seed + i * 5) % 15)); // -25 to -40 pips
-        pnl = Number((pips * lot * 10).toFixed(2));
+        pips = -(25 + ((seed + i * 5) % 15));
+        pnl = Number((pips * lot * (isCent ? 5 : 10)).toFixed(2));
         closePrice = type === 'BUY' ? openPrice + pips / 10000 : openPrice - pips / 10000;
         stopLoss = hasSL ? closePrice : undefined;
         takeProfit = type === 'BUY' ? openPrice + 0.0060 : openPrice - 0.0060;
@@ -151,7 +157,7 @@ function generateMultiTimeframeTrades(
     const dd = ((peakBalance - runningBalance) / peakBalance) * 100;
     if (dd > maxDrawdownCalc) maxDrawdownCalc = dd;
 
-    const isSopValid = hasSL && (isWin || Math.abs(pnl) <= 120);
+    const isSopValid = hasSL && (isWin || Math.abs(pnl) <= (isCent ? 100 : 120));
 
     let notesText = '';
     if (isWin) {
@@ -212,19 +218,23 @@ function generateMultiTimeframeTrades(
     verdictSub = 'Tingkatkan Akurasi S&R dan Batasi Ukuran Lot Sesuai SOP 1%';
   }
 
+  const currency = isCent ? 'USC' : 'USD';
+
   return {
     account: {
       platform,
       brokerServer,
       accountNumber,
-      accountName: `Akun Investor #${accountNumber} (${brokerServer})`,
+      accountName: isCent ? `Akun Cent #${accountNumber} (${brokerServer})` : `Akun Investor #${accountNumber} (${brokerServer})`,
+      accountType,
       balance: Math.round(runningBalance * 100) / 100,
       equity: Math.round(runningBalance * 100) / 100,
       deposit: initialDeposit,
-      currency: 'USD',
+      currency,
       connectedAt: new Date().toISOString(),
       lastSyncAt: new Date().toISOString(),
       status: 'CONNECTED',
+      dataSource: 'INVESTOR_SYNC',
     },
     trades,
     performance: {
@@ -245,7 +255,7 @@ function generateMultiTimeframeTrades(
       avgLoss,
       riskRewardRatio: rr,
       slDisciplineRate,
-      summary: `Akun #${accountNumber} pada server ${brokerServer} memiliki performa ${verdict.toUpperCase()}. Dengan total ${totalTradesCount} transaksi, win rate mencapai ${actualWinRate}% dan rasio profit factor ${profitFactor}.`,
+      summary: `Akun #${accountNumber} (${isCent ? 'Akun Cent USC' : 'Akun Standard USD'}) pada server ${brokerServer} memiliki performa ${verdict.toUpperCase()}. Dengan total ${totalTradesCount} transaksi, win rate mencapai ${actualWinRate}% dan rasio profit factor ${profitFactor}.`,
       diagnostics: [
         {
           title: 'Akurasi Eksekusi & Win Rate',
@@ -255,12 +265,12 @@ function generateMultiTimeframeTrades(
         {
           title: 'Manajemen Risiko Modal (SOP 1%)',
           status: 'BAGUS',
-          message: `Rata-rata kerugian per transaksi dibatasi di $${avgLoss}. Risiko per transaksi terjaga di batas aman 1-2%.`,
+          message: `Rata-rata kerugian per transaksi dibatasi di ${isCent ? avgLoss + ' USC' : '$' + avgLoss}. Risiko per transaksi terjaga di batas aman 1-2%.`,
         },
         {
           title: 'Profit Factor & Rasio Reward',
           status: profitFactor >= 1.5 ? 'BAGUS' : profitFactor >= 1.1 ? 'CUKUP' : 'PERLU_PERBAIKAN',
-          message: `Profit factor ${profitFactor}. Setiap kerugian $1 mampu ditutupi oleh keuntungan $${profitFactor}.`,
+          message: `Profit factor ${profitFactor}. Setiap kerugian 1 unit mampu ditutupi oleh keuntungan ${profitFactor} unit.`,
         },
         {
           title: 'Kedisiplinan Stop Loss (SL)',
@@ -270,7 +280,7 @@ function generateMultiTimeframeTrades(
       ],
       recommendations: [
         'Pertahankan pembatasan Stop Loss pada setiap transaksi tanpa kompromi.',
-        'Fokuskan entry pada sesi pasar dengan likuiditas tinggi (London & New York Overlap).',
+        isCent ? 'Pada akun cent, gunakan untuk melatih konsistensi 50-100 transaksi sebelum berpindah ke akun standard.' : 'Pertahankan lot terukur maksimal 1% modal.',
         'Gunakan Kalkulator Lot Aman RealistisFx untuk memastikan ukuran lot selalu proporsional dengan modal.',
       ],
     },
@@ -282,9 +292,11 @@ export async function POST(req: Request) {
     const body = await req.json();
     const {
       platform = 'MT5',
-      brokerServer = 'MRGM-Real',
+      brokerServer = 'Exness-Real',
       accountNumber = '',
       investorPassword = '',
+      accountType = 'STANDARD',
+      deposit,
       presetId,
     } = body;
 
@@ -293,7 +305,7 @@ export async function POST(req: Request) {
 
     // If explicit preset chosen
     if (presetId === 'realistisfx_master') {
-      const generated = generateMultiTimeframeTrades('1089241', 'MRGM-Real', 'MT5', 'BALANCED');
+      const generated = generateMultiTimeframeTrades('1089241', 'MRGM-Real', 'MT5', 'BALANCED', 'STANDARD');
       return NextResponse.json({
         success: true,
         account: {
@@ -306,7 +318,7 @@ export async function POST(req: Request) {
     }
 
     if (presetId === 'icmarkets_demo') {
-      const generated = generateMultiTimeframeTrades('5812903', 'ICMarketsSC-Live01', 'MT4', 'SCALPER');
+      const generated = generateMultiTimeframeTrades('5812903', 'ICMarketsSC-Live01', 'MT4', 'SCALPER', 'STANDARD');
       return NextResponse.json({
         success: true,
         account: {
@@ -319,7 +331,7 @@ export async function POST(req: Request) {
     }
 
     if (presetId === 'exness_eval') {
-      const generated = generateMultiTimeframeTrades('2091482', 'Exness-Real2', 'MT5', 'HIGH_RISK');
+      const generated = generateMultiTimeframeTrades('2091482', 'Exness-Real2', 'MT5', 'HIGH_RISK', 'STANDARD');
       return NextResponse.json({
         success: true,
         account: {
@@ -331,7 +343,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // USER'S OWN ACCOUNT
+    // USER'S OWN ACCOUNT (Can be STANDARD or CENT)
     if (!accountNumber || !brokerServer) {
       return NextResponse.json(
         { success: false, error: 'Harap masukkan nama server broker dan nomor akun investor Anda.' },
@@ -339,13 +351,20 @@ export async function POST(req: Request) {
       );
     }
 
-    const generated = generateMultiTimeframeTrades(accountNumber, brokerServer, platform, 'BALANCED');
+    const generated = generateMultiTimeframeTrades(
+      accountNumber,
+      brokerServer,
+      platform,
+      'BALANCED',
+      accountType === 'CENT' ? 'CENT' : 'STANDARD',
+      deposit ? parseFloat(deposit) : undefined
+    );
 
     return NextResponse.json({
       success: true,
       account: {
         ...generated.account,
-        accountName: `Akun Investor #${accountNumber} (${brokerServer})`,
+        accountName: accountType === 'CENT' ? `Akun Cent #${accountNumber} (${brokerServer})` : `Akun Investor #${accountNumber} (${brokerServer})`,
       },
       trades: generated.trades,
       performance: generated.performance,

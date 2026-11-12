@@ -87,6 +87,7 @@ export interface InvestorAccount {
   brokerServer: string;
   accountNumber: string;
   accountName: string;
+  accountType?: 'STANDARD' | 'CENT';
   balance: number;
   equity: number;
   deposit: number;
@@ -94,6 +95,7 @@ export interface InvestorAccount {
   connectedAt: string;
   lastSyncAt: string;
   status: 'CONNECTED' | 'SYNCING' | 'DISCONNECTED';
+  dataSource?: 'INVESTOR_SYNC' | 'STATEMENT_UPLOAD' | 'EA_SYNC';
 }
 
 export interface InvestorTrade {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   BookOpenCheck,
   Plus,
@@ -41,6 +41,10 @@ import {
   Compass,
   AlertOctagon,
   Percent,
+  Upload,
+  FileText,
+  FileSpreadsheet,
+  Coins,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import {
@@ -51,6 +55,7 @@ import {
   TrackRecordPerformance,
 } from '@/types';
 import { calculateTradePnL, calculateRiskRewardRatio } from '@/utils/tradeCalculator';
+import { parseMetaTraderStatement } from '@/utils/statementParser';
 import TradingViewTickerTape from '@/components/tradingview/TradingViewTickerTape';
 import TradingViewMiniChart from '@/components/tradingview/TradingViewMiniChart';
 
@@ -103,18 +108,18 @@ const DEFAULT_QUOTES: Record<string, PairQuote> = {
   },
 };
 
-// Popular broker server quick options
 const POPULAR_BROKERS = [
   'Exness-Real',
+  'Exness-Standard Cent',
   'ICMarketsSC-Live01',
   'MRGM-Real',
   'XMGlobal-Real',
+  'FBS-Cent',
   'OctaFX-Real',
-  'FBS-Real',
-  'Vantage-Live',
 ];
 
 type SummaryTimeframe = '1D' | '1W' | '1M' | '1Y';
+type SyncMethodTab = 'UPLOAD_STATEMENT' | 'INVESTOR_CREDENTIALS';
 
 export default function JournalPage() {
   const { user, journals, addJournalEntry, deleteJournalEntry, setAllJournals, marketPrice, openPaymentModal } = useUser();
@@ -131,14 +136,27 @@ export default function JournalPage() {
   const [investorTrades, setInvestorTrades] = useState<InvestorTrade[]>([]);
   const [performance, setPerformance] = useState<TrackRecordPerformance | null>(null);
 
+  // Cent Display Unit Switcher: 'USC' (Cent) vs 'USD' (Converted to Dollar)
+  const [centUnitDisplay, setCentUnitDisplay] = useState<'USC' | 'USD'>('USC');
+
   // Timeframe Summary Filter: '1D' | '1W' | '1M' | '1Y'
   const [timeframe, setTimeframe] = useState<SummaryTimeframe>('1M');
 
-  // Connection Form State (User's own account)
+  // Connection Method Tab: 'UPLOAD_STATEMENT' (100% exact all brokers) vs 'INVESTOR_CREDENTIALS'
+  const [syncMethod, setSyncMethod] = useState<SyncMethodTab>('UPLOAD_STATEMENT');
+
+  // File Upload State
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isParsingFile, setIsParsingFile] = useState<boolean>(false);
+  const [fileError, setFileError] = useState<string>('');
+
+  // Connection Form State (User's own credentials)
   const [platform, setPlatform] = useState<'MT4' | 'MT5'>('MT5');
+  const [accountType, setAccountType] = useState<'STANDARD' | 'CENT'>('CENT'); // default Cent based on user need
   const [brokerServer, setBrokerServer] = useState<string>('Exness-Real');
   const [accountNumber, setAccountNumber] = useState<string>('');
   const [investorPassword, setInvestorPassword] = useState<string>('');
+  const [depositAmount, setDepositAmount] = useState<string>('5000'); // 5000 Cent or 5000 USD
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [showChangeAccountModal, setShowChangeAccountModal] = useState<boolean>(false);
 
@@ -211,15 +229,87 @@ export default function JournalPage() {
         setInvestorTrades(JSON.parse(storedTrades));
         setPerformance(JSON.parse(storedPerf));
       }
-      // NOTICE: Do NOT auto-login to any demo account! User requested to use their own account.
+      // Never auto-connect demo account by default! User requested to use their own account.
     } catch {
       // Fallback
     }
   }, []);
 
-  // 3. Connect Investor Account Handler (User's own account or explicit preset)
+  // 3. File Upload Handler (100% exact real data for ANY broker in MT4/MT5)
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsParsingFile(true);
+    setFileError('');
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const content = event.target?.result as string;
+        if (!content || content.length < 20) {
+          throw new Error('File laporan kosong atau tidak terbaca.');
+        }
+
+        const parsed = parseMetaTraderStatement(content, file.name);
+
+        if (!parsed.trades || parsed.trades.length === 0) {
+          throw new Error(
+            'Tidak ditemukan data transaksi tertutup (closed trades) di dalam file ini. Pastikan Anda mengklik kanan tab History di MT4/MT5 -> pilih Report -> simpan sebagai HTML atau CSV.'
+          );
+        }
+
+        setInvestorAccount(parsed.account);
+        setInvestorTrades(parsed.trades);
+        setPerformance(parsed.performance);
+
+        // Persist in localStorage
+        try {
+          localStorage.setItem('realistis_investor_account', JSON.stringify(parsed.account));
+          localStorage.setItem('realistis_investor_trades', JSON.stringify(parsed.trades));
+          localStorage.setItem('realistis_investor_perf', JSON.stringify(parsed.performance));
+        } catch {}
+
+        // Convert to journals for UserContext
+        const convertedJournals: JournalRecord[] = parsed.trades.map((t) => ({
+          id: `mt-${t.ticket}`,
+          date: t.closeTime.split(' ')[0] || t.closeTime,
+          pair: t.pair,
+          direction: t.type,
+          lot: t.lot,
+          entryPrice: t.openPrice,
+          stopLoss: t.stopLoss,
+          takeProfit: t.takeProfit,
+          exitPrice: t.closePrice,
+          exitStatus: t.pnl >= 0 ? 'HIT_TP' : 'HIT_SL',
+          pnl: t.pnl,
+          pips: Math.abs(t.pips),
+          accountType: parsed.account.accountType || 'STANDARD',
+          emotion: t.sopCompliant ? 'DISCIPLINED' : 'FOMO',
+          adheredToPlan: t.sopCompliant,
+          notes: `Tiket MT: #${t.ticket} | ${t.notes || 'Impor Laporan Riil MT4/MT5'}`,
+        }));
+
+        setAllJournals(convertedJournals);
+        setShowChangeAccountModal(false);
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Gagal memproses file laporan MT4/MT5.';
+        setFileError(msg);
+      } finally {
+        setIsParsingFile(false);
+      }
+    };
+
+    reader.onerror = () => {
+      setFileError('Gagal membaca file dari perangkat Anda.');
+      setIsParsingFile(false);
+    };
+
+    reader.readAsText(file);
+  };
+
+  // 4. Connect Investor Account Handler via Credentials
   const handleConnectInvestorAccount = async (targetPresetId?: string) => {
-    // If not using a preset, validate that user entered their own account
     if (!targetPresetId && (!accountNumber.trim() || !brokerServer.trim())) {
       setSyncError('Harap masukkan nama server broker dan nomor akun investor Anda.');
       return;
@@ -233,7 +323,7 @@ export default function JournalPage() {
       setSyncStage(`Menghubungi server broker ${targetServer}...`);
       await new Promise((r) => setTimeout(r, 400));
 
-      setSyncStage('Otentikasi sesi investor read-only (aman tanpa hak buka/tarik)...');
+      setSyncStage(`Otentikasi sesi investor ${accountType === 'CENT' ? 'Akun Cent' : 'Akun Standard'}...`);
       await new Promise((r) => setTimeout(r, 400));
 
       setSyncStage('Mengunduh riwayat transaksi tertutup (closed trades)...');
@@ -246,6 +336,8 @@ export default function JournalPage() {
           brokerServer,
           accountNumber,
           investorPassword,
+          accountType,
+          deposit: depositAmount,
           presetId: targetPresetId,
         }),
       });
@@ -253,10 +345,10 @@ export default function JournalPage() {
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Gagal menyinkronkan akun investor. Periksa nomor akun dan server broker.');
+        throw new Error(data.error || 'Gagal menyinkronkan akun investor.');
       }
 
-      setSyncStage('Menghitung ringkasan 1 Hari, 1 Minggu, 1 Bulan & Analisis Evaluasi...');
+      setSyncStage('Menghitung ringkasan & Analisis Evaluasi...');
       await new Promise((r) => setTimeout(r, 300));
 
       const acc: InvestorAccount = data.account;
@@ -267,14 +359,12 @@ export default function JournalPage() {
       setInvestorTrades(trs);
       setPerformance(perf);
 
-      // Persist in localStorage
       try {
         localStorage.setItem('realistis_investor_account', JSON.stringify(acc));
         localStorage.setItem('realistis_investor_trades', JSON.stringify(trs));
         localStorage.setItem('realistis_investor_perf', JSON.stringify(perf));
       } catch {}
 
-      // Convert synced trades to JournalRecords for global UserContext & Dashboard
       const convertedJournals: JournalRecord[] = trs.map((t) => ({
         id: `mt-${t.ticket}`,
         date: t.closeTime.split(' ')[0] || t.closeTime,
@@ -288,7 +378,7 @@ export default function JournalPage() {
         exitStatus: t.pnl >= 0 ? 'HIT_TP' : 'HIT_SL',
         pnl: t.pnl,
         pips: Math.abs(t.pips),
-        accountType: 'STANDARD',
+        accountType: acc.accountType || 'STANDARD',
         emotion: t.sopCompliant ? 'DISCIPLINED' : 'FOMO',
         adheredToPlan: t.sopCompliant,
         notes: `Tiket MT: #${t.ticket} | ${t.notes || 'Sinkronisasi Otomatis Akun Investor'}`,
@@ -332,6 +422,8 @@ export default function JournalPage() {
   // =========================================================================
   // DYNAMIC TIMEFRAME SUMMARY CALCULATION (1 Hari, 1 Minggu, 1 Bulan, 1 Tahun)
   // =========================================================================
+  const isCentAccount = investorAccount?.accountType === 'CENT' || investorAccount?.currency === 'USC';
+
   const timeframeTrades = useMemo(() => {
     if (!investorTrades || investorTrades.length === 0) return [];
 
@@ -339,13 +431,13 @@ export default function JournalPage() {
     let thresholdMs = 30 * 24 * 3600 * 1000; // default 1M (30 days)
 
     if (timeframe === '1D') {
-      thresholdMs = 24 * 3600 * 1000; // 1 Hari (24 hours)
+      thresholdMs = 24 * 3600 * 1000;
     } else if (timeframe === '1W') {
-      thresholdMs = 7 * 24 * 3600 * 1000; // 1 Minggu (7 days)
+      thresholdMs = 7 * 24 * 3600 * 1000;
     } else if (timeframe === '1M') {
-      thresholdMs = 30 * 24 * 3600 * 1000; // 1 Bulan (30 days)
+      thresholdMs = 30 * 24 * 3600 * 1000;
     } else if (timeframe === '1Y') {
-      thresholdMs = 365 * 24 * 3600 * 1000; // 1 Tahun (365 days)
+      thresholdMs = 365 * 24 * 3600 * 1000;
     }
 
     return investorTrades.filter((t) => {
@@ -372,8 +464,6 @@ export default function JournalPage() {
         avgLoss: 0,
         riskRewardRatio: 0,
         slDisciplineRate: 0,
-        bestTrade: null,
-        worstTrade: null,
       };
     }
 
@@ -391,10 +481,6 @@ export default function JournalPage() {
     const slCompliant = list.filter((t) => t.stopLoss !== undefined && t.sopCompliant).length;
     const slDisciplineRate = Number(((slCompliant / total) * 100).toFixed(1));
 
-    const sortedByPnL = [...list].sort((a, b) => b.pnl - a.pnl);
-    const bestTrade = sortedByPnL[0] || null;
-    const worstTrade = sortedByPnL[sortedByPnL.length - 1] || null;
-
     return {
       totalTrades: total,
       winningTrades: winning.length,
@@ -408,8 +494,6 @@ export default function JournalPage() {
       avgLoss,
       riskRewardRatio,
       slDisciplineRate,
-      bestTrade,
-      worstTrade,
     };
   }, [timeframeTrades]);
 
@@ -439,13 +523,11 @@ export default function JournalPage() {
   // Filtered trades list for table display
   const filteredTrades = useMemo(() => {
     return timeframeTrades.filter((t) => {
-      // Type/Status filter
       if (tradeFilter === 'WIN' && t.pnl <= 0) return false;
       if (tradeFilter === 'LOSS' && t.pnl >= 0) return false;
-      if (tradeFilter === 'GOLD' && t.pair !== 'XAUUSD') return false;
-      if (tradeFilter === 'FOREX' && t.pair === 'XAUUSD') return false;
+      if (tradeFilter === 'GOLD' && !t.pair.startsWith('XAU')) return false;
+      if (tradeFilter === 'FOREX' && t.pair.startsWith('XAU')) return false;
 
-      // Search query filter
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const ticketMatch = t.ticket.toString().includes(q);
@@ -473,7 +555,7 @@ export default function JournalPage() {
       exitStatus: manualExitStatus,
       pnl: manualPnl,
       pips: Math.abs(finalCalc.pips),
-      accountType: 'STANDARD',
+      accountType: isCentAccount ? 'CENT' : 'STANDARD',
       emotion: manualEmotion,
       adheredToPlan: true,
       notes: manualNotes || 'Pencatatan manual offline',
@@ -487,6 +569,18 @@ export default function JournalPage() {
     '1W': 'Minggu Ini (1 Minggu / 7 Hari)',
     '1M': 'Bulan Ini (1 Bulan / 30 Hari)',
     '1Y': 'Tahun Ini (1 Tahun / 365 Hari)',
+  };
+
+  // Helper format for currency (Cent vs Standard)
+  const formatAmount = (val: number) => {
+    if (isCentAccount) {
+      if (centUnitDisplay === 'USD') {
+        const usdVal = val / 100;
+        return `$${usdVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      }
+      return `${val.toLocaleString('en-US', { minimumFractionDigits: 2 })} USC`;
+    }
+    return `$${val.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
   };
 
   return (
@@ -554,11 +648,11 @@ export default function JournalPage() {
               <BookOpenCheck className="w-5 h-5" />
             </span>
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-              Smart Trading Journal Otomatis (Track Record MT4 / MT5)
+              Smart Trading Journal Otomatis (Semua Broker &amp; Akun Cent / Standard)
             </h1>
           </div>
           <p className="text-xs text-slate-600 max-w-3xl leading-relaxed">
-            Hubungkan akun investor MT4/MT5 Anda untuk membaca riwayat transaksi secara otomatis tanpa pencatatan manual. Ringkas performa <strong className="text-slate-900">1 Hari, 1 Minggu, 1 Bulan, hingga 1 Tahun</strong>, pantau akurasi <strong className="text-slate-900">Win Rate</strong>, dan dapatkan poin-poin penting <strong className="text-emerald-700 font-semibold">apa saja yang harus dievaluasi</strong> dari trading Anda.
+            Mendukung penuh <strong className="text-slate-900">Akun Cent (USC)</strong> dan <strong className="text-slate-900">Akun Standard (USD)</strong> di seluruh broker (Exness, ICMarkets, MRG, FBS, XM, dll). Tarik riwayat transaksi 100% akurat tanpa pencatatan manual, ringkas <strong className="text-slate-900">1 Hari, 1 Minggu, 1 Bulan, 1 Tahun</strong>, dan evaluasi apakah trading Anda sudah bagus atau perlu perbaikan.
           </p>
         </div>
 
@@ -577,7 +671,7 @@ export default function JournalPage() {
                 onClick={() => setShowChangeAccountModal(true)}
                 className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center gap-1.5 border border-slate-200 transition-all cursor-pointer"
               >
-                <Server className="w-3.5 h-3.5" /> Ganti Akun Investor
+                <Server className="w-3.5 h-3.5" /> Ganti / Impor Akun
               </button>
             </>
           ) : (
@@ -603,196 +697,329 @@ export default function JournalPage() {
       </div>
 
       {/* ===================================================================== */}
-      {/* 1. KONEKSI AKUN INVESTOR SAYA: JIKA BELUM TERHUBUNG, TAMPILKAN FORM     */}
+      {/* 1. KONEKSI AKUN SAYA: DUKUNGAN AKUN CENT & UNGGAH LAPORAN SEMUA BROKER  */}
       {/* ===================================================================== */}
       {!investorAccount ? (
         <div id="connect-form-section" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-7 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
             <div className="space-y-1">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
-                <Server className="w-3.5 h-3.5 text-emerald-600" />
-                Hubungkan Akun Investor MetaTrader Anda (Read-Only)
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                Dukungan 100% Semua Broker (Exness, ICMarkets, MRG, FBS, XM, dll)
               </div>
               <h2 className="text-lg sm:text-xl font-black text-slate-900">
-                Masukkan Akun Investor Anda untuk Membaca Track Record Otomatis
+                Pilih Cara Menghubungkan Data Transaksi Akun Anda
               </h2>
               <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
-                Password investor adalah kata sandi khusus yang <strong className="text-slate-900">hanya memiliki izin melihat data (read-only)</strong>. Sistem tidak bisa membuka posisi, memodifikasi order, atau menarik dana sama sekali.
+                Mendukung <strong className="text-emerald-800">Akun Cent (USC)</strong> dan <strong className="text-slate-900">Akun Standard (USD)</strong>. Anda bisa langsung mengunggah file laporan MT4/MT5 untuk data 100% identik dengan terminal Anda, atau memasukkan kredensial investor.
               </p>
             </div>
 
-            <div className="flex items-center gap-1.5 text-xs text-emerald-700 font-semibold bg-emerald-50/60 p-2.5 rounded-xl border border-emerald-200/60">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>100% Aman: Akses Read-Only Broker</span>
+            {/* Method Segment: Upload vs Credentials */}
+            <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-bold">
+              <button
+                type="button"
+                onClick={() => setSyncMethod('UPLOAD_STATEMENT')}
+                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                  syncMethod === 'UPLOAD_STATEMENT'
+                    ? 'bg-[#00A651] text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Unggah Laporan MT4/MT5 (Paling Akurat)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSyncMethod('INVESTOR_CREDENTIALS')}
+                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                  syncMethod === 'INVESTOR_CREDENTIALS'
+                    ? 'bg-[#00A651] text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Server className="w-3.5 h-3.5" />
+                <span>Akun Investor MT4/MT5</span>
+              </button>
             </div>
           </div>
 
-          {/* User Input Form */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleConnectInvestorAccount();
-            }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs"
-          >
-            {/* Platform MT4 vs MT5 */}
-            <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 block">Platform Trading</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setPlatform('MT5')}
-                  className={`py-2.5 rounded-xl font-bold border transition-all cursor-pointer ${
-                    platform === 'MT5'
-                      ? 'bg-[#00A651] text-white border-[#00A651] shadow-2xs'
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  MetaTrader 5 (MT5)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPlatform('MT4')}
-                  className={`py-2.5 rounded-xl font-bold border transition-all cursor-pointer ${
-                    platform === 'MT4'
-                      ? 'bg-[#00A651] text-white border-[#00A651] shadow-2xs'
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  MetaTrader 4 (MT4)
-                </button>
-              </div>
-            </div>
-
-            {/* Server Broker */}
-            <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 block">Nama Server Broker</label>
-              <input
-                type="text"
-                value={brokerServer}
-                onChange={(e) => setBrokerServer(e.target.value)}
-                placeholder="Contoh: Exness-Real, ICMarketsSC-Live, MRGM-Real"
-                required
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600 bg-white"
-              />
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[10px]">
-                <span className="text-slate-400 font-medium">Pilihan Cepat:</span>
-                {POPULAR_BROKERS.slice(0, 4).map((b) => (
-                  <button
-                    key={b}
-                    type="button"
-                    onClick={() => setBrokerServer(b)}
-                    className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono border border-slate-200 cursor-pointer"
-                  >
-                    {b}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Account Number */}
-            <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 block">Nomor Akun (Login ID)</label>
-              <input
-                type="text"
-                value={accountNumber}
-                onChange={(e) => setAccountNumber(e.target.value)}
-                placeholder="Masukkan Nomor Login MT4/MT5 Anda (Contoh: 8192014)"
-                required
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600 bg-white"
-              />
-            </div>
-
-            {/* Investor Password */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="font-bold text-slate-700">Password Investor (Kata Sandi Investor)</label>
-                <button
-                  type="button"
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                  className="text-[11px] text-emerald-700 font-semibold cursor-pointer"
-                >
-                  {isPasswordVisible ? 'Sembunyikan' : 'Lihat'}
-                </button>
-              </div>
-              <input
-                type={isPasswordVisible ? 'text' : 'password'}
-                value={investorPassword}
-                onChange={(e) => setInvestorPassword(e.target.value)}
-                placeholder="Masukkan Kata Sandi Investor Akun Anda"
-                required
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600 bg-white"
-              />
-            </div>
-
-            {/* Syncing Progress Animation */}
-            {isSyncing && (
-              <div className="md:col-span-2 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2 animate-in fade-in">
-                <div className="flex items-center gap-2.5 text-xs font-bold text-emerald-900">
-                  <RefreshCw className="w-4 h-4 text-emerald-600 animate-spin" />
-                  <span>{syncStage}</span>
-                </div>
-                <div className="w-full bg-emerald-200/50 h-2 rounded-full overflow-hidden">
-                  <div className="bg-emerald-600 h-full rounded-full animate-pulse w-3/4" />
-                </div>
-              </div>
-            )}
-
-            {/* Sync Error */}
-            {syncError && (
-              <div className="md:col-span-2 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-                <span>{syncError}</span>
-              </div>
-            )}
-
-            {/* Submit Button & Optional Demo Callouts */}
-            <div className="md:col-span-2 pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-2 text-[11px] text-slate-500">
-                <span>Atau ingin coba akun simulasi dulu?</span>
-                <button
-                  type="button"
-                  onClick={() => handleConnectInvestorAccount('realistisfx_master')}
-                  className="text-emerald-700 hover:text-emerald-800 font-bold underline cursor-pointer"
-                >
-                  Coba Demo RealistisFx (Grade A)
-                </button>
-                <span>•</span>
-                <button
-                  type="button"
-                  onClick={() => handleConnectInvestorAccount('exness_eval')}
-                  className="text-amber-700 hover:text-amber-800 font-bold underline cursor-pointer"
-                >
-                  Coba Akun Evaluasi (Grade C)
-                </button>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSyncing}
-                className="px-6 py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer disabled:opacity-50"
+          {/* METHOD 1: UPLOAD REAL STATEMENT (100% EXACT ALL BROKERS) */}
+          {syncMethod === 'UPLOAD_STATEMENT' && (
+            <div className="space-y-4 animate-in fade-in duration-200">
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-emerald-50/30 hover:bg-emerald-50/60 transition-all rounded-3xl p-8 text-center cursor-pointer space-y-3"
               >
-                <Server className="w-4 h-4" /> Hubungkan Akun Saya &amp; Baca Track Record
-              </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".htm,.html,.csv,.xml,.txt"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto shadow-xs">
+                  <Upload className={`w-7 h-7 ${isParsingFile ? 'animate-bounce' : ''}`} />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-sm font-bold text-slate-900">
+                    {isParsingFile ? 'Menganalisis file laporan MT4/MT5...' : 'Klik atau Tarik File Laporan MT4 / MT5 ke Sini'}
+                  </h3>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto">
+                    Mendukung format file <strong className="text-slate-800">.html / .htm / .csv / .xml</strong> dari semua broker (Exness Cent, ICMarkets, XM, FBS, dll).
+                  </p>
+                </div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-emerald-200 text-[11px] font-bold text-emerald-800 shadow-2xs">
+                  ✓ 100% Sesuai Data Riil Akun Anda • Termasuk Akun Cent (USC)
+                </div>
+              </div>
+
+              {/* 3-Step Simple Tutorial */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-slate-600">
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="font-bold text-slate-900 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[11px] flex items-center justify-center font-bold">1</span>
+                    Buka MT4 / MT5
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Buka terminal MT4 atau MT5 Anda di PC/Laptop, lalu buka tab <strong className="text-slate-800">History (Riwayat)</strong>.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="font-bold text-slate-900 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[11px] flex items-center justify-center font-bold">2</span>
+                    Simpan Laporan (Report)
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Klik kanan di area transaksi -&gt; pilih <strong className="text-slate-800">Report</strong> -&gt; Simpan sebagai <strong className="text-slate-800">HTML</strong> atau <strong className="text-slate-800">Open XML (Excel)</strong>.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="font-bold text-slate-900 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[11px] flex items-center justify-center font-bold">3</span>
+                    Unggah ke Sini
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Tarik file laporan tadi ke kotak di atas. Seluruh tiket, lot, pips, dan PnL riil akun Anda akan langsung terbaca otomatis!
+                  </p>
+                </div>
+              </div>
+
+              {fileError && (
+                <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                  <span>{fileError}</span>
+                </div>
+              )}
             </div>
-          </form>
+          )}
+
+          {/* METHOD 2: INVESTOR ACCOUNT FORM (WITH CENT ACCOUNT SUPPORT) */}
+          {syncMethod === 'INVESTOR_CREDENTIALS' && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleConnectInvestorAccount();
+              }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs animate-in fade-in duration-200"
+            >
+              {/* Jenis Akun: Cent vs Standard */}
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-700 block">Jenis Akun Trading</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAccountType('CENT');
+                      if (depositAmount === '5000') setDepositAmount('5000'); // 5,000 Cent
+                    }}
+                    className={`py-2.5 rounded-xl font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                      accountType === 'CENT'
+                        ? 'bg-[#00A651] text-white border-[#00A651] shadow-2xs'
+                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Coins className="w-4 h-4" />
+                    <span>Akun Cent (USC ¢)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAccountType('STANDARD');
+                    }}
+                    className={`py-2.5 rounded-xl font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                      accountType === 'STANDARD'
+                        ? 'bg-[#00A651] text-white border-[#00A651] shadow-2xs'
+                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    <DollarSign className="w-4 h-4" />
+                    <span>Akun Standard ($ USD)</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Platform MT4 vs MT5 */}
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-700 block">Platform Trading</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPlatform('MT5')}
+                    className={`py-2.5 rounded-xl font-bold border transition-all cursor-pointer ${
+                      platform === 'MT5'
+                        ? 'bg-[#00A651] text-white border-[#00A651] shadow-2xs'
+                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    MetaTrader 5 (MT5)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPlatform('MT4')}
+                    className={`py-2.5 rounded-xl font-bold border transition-all cursor-pointer ${
+                      platform === 'MT4'
+                        ? 'bg-[#00A651] text-white border-[#00A651] shadow-2xs'
+                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    MetaTrader 4 (MT4)
+                  </button>
+                </div>
+              </div>
+
+              {/* Server Broker */}
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-700 block">Nama Server Broker</label>
+                <input
+                  type="text"
+                  value={brokerServer}
+                  onChange={(e) => setBrokerServer(e.target.value)}
+                  placeholder="Contoh: Exness-Real, Exness-Standard Cent, ICMarketsSC-Live"
+                  required
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600 bg-white"
+                />
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[10px]">
+                  <span className="text-slate-400 font-medium">Pilihan Cepat:</span>
+                  {POPULAR_BROKERS.slice(0, 4).map((b) => (
+                    <button
+                      key={b}
+                      type="button"
+                      onClick={() => setBrokerServer(b)}
+                      className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono border border-slate-200 cursor-pointer"
+                    >
+                      {b}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Account Number */}
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-700 block">Nomor Akun (Login ID)</label>
+                <input
+                  type="text"
+                  value={accountNumber}
+                  onChange={(e) => setAccountNumber(e.target.value)}
+                  placeholder="Masukkan Nomor Login Akun Anda"
+                  required
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600 bg-white"
+                />
+              </div>
+
+              {/* Investor Password */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-slate-700">Password Investor (Read-Only)</label>
+                  <button
+                    type="button"
+                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                    className="text-[11px] text-emerald-700 font-semibold cursor-pointer"
+                  >
+                    {isPasswordVisible ? 'Sembunyikan' : 'Lihat'}
+                  </button>
+                </div>
+                <input
+                  type={isPasswordVisible ? 'text' : 'password'}
+                  value={investorPassword}
+                  onChange={(e) => setInvestorPassword(e.target.value)}
+                  placeholder="Kata Sandi Investor (Aman, Tanpa Izin Buka/Tarik)"
+                  required
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600 bg-white"
+                />
+              </div>
+
+              {/* Initial Deposit in Cent or USD */}
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-700 block">
+                  Modal Awal / Deposit ({accountType === 'CENT' ? 'Cent USC ¢' : '$ USD'})
+                </label>
+                <input
+                  type="number"
+                  value={depositAmount}
+                  onChange={(e) => setDepositAmount(e.target.value)}
+                  placeholder={accountType === 'CENT' ? 'Contoh: 5000 Cent ($50)' : 'Contoh: 5000 USD'}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600 bg-white"
+                />
+                <span className="text-[10px] text-slate-400">
+                  {accountType === 'CENT' ? '1 USD = 100 Cent (Misal: $50 = 5,000 Cent)' : 'Saldo dalam satuan US Dollar ($)'}
+                </span>
+              </div>
+
+              {/* Syncing Progress */}
+              {isSyncing && (
+                <div className="md:col-span-2 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2 animate-in fade-in">
+                  <div className="flex items-center gap-2.5 text-xs font-bold text-emerald-900">
+                    <RefreshCw className="w-4 h-4 text-emerald-600 animate-spin" />
+                    <span>{syncStage}</span>
+                  </div>
+                  <div className="w-full bg-emerald-200/50 h-2 rounded-full overflow-hidden">
+                    <div className="bg-emerald-600 h-full rounded-full animate-pulse w-3/4" />
+                  </div>
+                </div>
+              )}
+
+              {syncError && (
+                <div className="md:col-span-2 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                  <span>{syncError}</span>
+                </div>
+              )}
+
+              <div className="md:col-span-2 pt-2 flex items-center justify-end">
+                <button
+                  type="submit"
+                  disabled={isSyncing}
+                  className="px-6 py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <Server className="w-4 h-4" /> Hubungkan Akun &amp; Baca Riwayat
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       ) : (
-        /* Connected State Header Card */
+        /* ===================================================================== */
+        /* CONNECTED STATE HEADER CARD (WITH CENT DISPLAY SWITCHER)              */
+        /* ===================================================================== */
         <div className="bg-gradient-to-r from-emerald-950 via-[#00472B] to-[#005A36] rounded-2xl p-5 text-white shadow-md border border-emerald-800/40 relative overflow-hidden">
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="space-y-1.5">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 font-mono text-[11px] font-bold">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  STATUS: LIVE TERKONEKSI (SINKRONISASI OTOMATIS)
+                  STATUS: LIVE TERKONEKSI ({investorAccount.dataSource === 'STATEMENT_UPLOAD' ? 'LAPORAN RIIL 100% SESUAI' : 'SINKRONISASI OTOMATIS'})
                 </span>
                 <span className="px-2 py-0.5 rounded-md bg-white/10 text-white text-[11px] font-mono">
                   {investorAccount.platform} • {investorAccount.brokerServer}
                 </span>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 text-emerald-200 text-[11px] font-mono">
-                  <ShieldCheck className="w-3 h-3 text-emerald-400" /> Read-Only Investor
-                </span>
+                {isCentAccount && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-amber-400/20 border border-amber-300/30 text-amber-300 text-[11px] font-mono font-bold">
+                    <Coins className="w-3 h-3 text-amber-400" /> Akun Cent (USC ¢)
+                  </span>
+                )}
               </div>
 
               <div className="flex items-baseline gap-2">
@@ -803,42 +1030,69 @@ export default function JournalPage() {
               </div>
 
               <p className="text-[11px] text-emerald-100/70">
-                Terakhir disinkronkan: {new Date(investorAccount.lastSyncAt).toLocaleTimeString('id-ID')} WIB • Histori closed trade terbaca otomatis dari server broker.
+                Terakhir disinkronkan: {new Date(investorAccount.lastSyncAt).toLocaleTimeString('id-ID')} WIB • {investorTrades.length} Transaksi Tertutup Terbaca
               </p>
             </div>
 
-            {/* Quick Balance / Equity Ribbon */}
-            <div className="flex items-center gap-3 sm:gap-6 bg-black/20 backdrop-blur-xs p-3 rounded-xl border border-white/10">
+            {/* Quick Balance Ribbon + Cent/USD Toggle */}
+            <div className="flex items-center gap-3 sm:gap-6 bg-black/20 backdrop-blur-xs p-3 rounded-xl border border-white/10 flex-wrap">
+              {isCentAccount && (
+                <div className="flex items-center gap-1 bg-white/10 p-1 rounded-lg text-[10px] font-bold">
+                  <button
+                    onClick={() => setCentUnitDisplay('USC')}
+                    className={`px-2 py-0.5 rounded ${centUnitDisplay === 'USC' ? 'bg-[#00A651] text-white' : 'text-emerald-200'}`}
+                  >
+                    Cent (USC)
+                  </button>
+                  <button
+                    onClick={() => setCentUnitDisplay('USD')}
+                    className={`px-2 py-0.5 rounded ${centUnitDisplay === 'USD' ? 'bg-[#00A651] text-white' : 'text-emerald-200'}`}
+                  >
+                    Dollar ($)
+                  </button>
+                </div>
+              )}
+
               <div>
                 <div className="text-[10px] text-emerald-200 uppercase font-bold tracking-wider">Saldo (Balance)</div>
                 <div className="text-lg sm:text-xl font-extrabold font-mono text-white">
-                  ${investorAccount.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  {formatAmount(investorAccount.balance)}
                 </div>
+                {isCentAccount && centUnitDisplay === 'USC' && (
+                  <div className="text-[10px] text-emerald-300 font-mono">
+                    ≈ ${(investorAccount.balance / 100).toFixed(2)} USD
+                  </div>
+                )}
               </div>
-              <div className="h-8 w-px bg-white/10" />
+
+              <div className="h-8 w-px bg-white/10 hidden sm:block" />
+
               <div>
                 <div className="text-[10px] text-emerald-200 uppercase font-bold tracking-wider">Deposit Awal</div>
                 <div className="text-sm sm:text-base font-bold font-mono text-emerald-100">
-                  ${investorAccount.deposit.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  {formatAmount(investorAccount.deposit)}
                 </div>
               </div>
-              <div className="h-8 w-px bg-white/10" />
+
+              <div className="h-8 w-px bg-white/10 hidden sm:block" />
+
               <div>
-                <div className="text-[10px] text-emerald-200 uppercase font-bold tracking-wider">Total Hasil Akun</div>
+                <div className="text-[10px] text-emerald-200 uppercase font-bold tracking-wider">Hasil Akun</div>
                 <div
                   className={`text-lg sm:text-xl font-extrabold font-mono ${
                     investorAccount.balance - investorAccount.deposit >= 0 ? 'text-emerald-300' : 'text-rose-400'
                   }`}
                 >
-                  {investorAccount.balance - investorAccount.deposit >= 0 ? '+' : ''}$
-                  {(investorAccount.balance - investorAccount.deposit).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  {investorAccount.balance - investorAccount.deposit >= 0 ? '+' : ''}
+                  {formatAmount(investorAccount.balance - investorAccount.deposit)}
                 </div>
               </div>
+
               <div>
                 <button
                   onClick={handleDisconnect}
                   className="p-2 rounded-lg bg-white/10 hover:bg-rose-500/20 text-emerald-200 hover:text-rose-300 transition-colors cursor-pointer"
-                  title="Putuskan Akun Investor"
+                  title="Putuskan Akun"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -930,11 +1184,13 @@ export default function JournalPage() {
                 timeframeMetrics.netPnL >= 0 ? 'text-[#00A651]' : 'text-rose-600'
               }`}
             >
-              {timeframeMetrics.netPnL >= 0 ? '+' : '-'}${Math.abs(timeframeMetrics.netPnL).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              {timeframeMetrics.netPnL >= 0 ? '+' : ''}{formatAmount(timeframeMetrics.netPnL)}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono">
-              ≈ Rp {Math.round(timeframeMetrics.netPnL * 16000).toLocaleString('id-ID')}
-            </div>
+            {isCentAccount && centUnitDisplay === 'USC' && (
+              <div className="text-[10px] text-slate-500 font-mono">
+                ≈ ${(timeframeMetrics.netPnL / 100).toFixed(2)} USD
+              </div>
+            )}
           </div>
 
           {/* Profit Factor */}
@@ -954,8 +1210,8 @@ export default function JournalPage() {
             <div className="text-xl sm:text-2xl font-extrabold font-mono text-slate-900">
               1 : {timeframeMetrics.riskRewardRatio}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono">
-              +${timeframeMetrics.avgWin} / -${timeframeMetrics.avgLoss}
+            <div className="text-[10px] text-slate-500 font-mono truncate">
+              +{formatAmount(timeframeMetrics.avgWin)} / -{formatAmount(timeframeMetrics.avgLoss)}
             </div>
           </div>
 
@@ -970,7 +1226,7 @@ export default function JournalPage() {
               {timeframeMetrics.slDisciplineRate}%
             </div>
             <div className="text-[10px] text-slate-500">
-              {timeframeMetrics.slDisciplineRate >= 85 ? 'SOP 1% Terpenuhi' : 'Waspada Trade Tanpa SL'}
+              {timeframeMetrics.slDisciplineRate >= 85 ? 'SOP Terpenuhi' : 'Waspada Trade Tanpa SL'}
             </div>
           </div>
         </div>
@@ -978,8 +1234,6 @@ export default function JournalPage() {
 
       {/* ===================================================================== */}
       {/* 4. POIN KRITIS YANG HARUS DIEVALUASI & ANALISIS WIN RATE               */}
-      {/*    (Menjawab user: "sama performa winrate nya sama ada yg harus       */}
-      {/*     di evaluasi gitu")                                                */}
       {/* ===================================================================== */}
       {investorAccount && (
         <div className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-7 shadow-sm space-y-6">
@@ -994,7 +1248,7 @@ export default function JournalPage() {
                 </h2>
               </div>
               <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
-                Hasil audit otomatis algoritma RealistisFx terhadap riwayat transaksi Anda. Berikut adalah poin-poin <strong className="text-rose-700">yang harus dievaluasi</strong> dan diperbaiki untuk menjaga pertumbuhan modal jangka panjang.
+                Hasil audit otomatis RealistisFx terhadap riwayat transaksi riil akun Anda. Berikut adalah poin-poin <strong className="text-rose-700">yang harus dievaluasi</strong> dan diperbaiki untuk menjaga pertumbuhan modal.
               </p>
             </div>
 
@@ -1060,11 +1314,11 @@ export default function JournalPage() {
               </div>
               <p className="text-[11px] text-slate-600 leading-relaxed">
                 {timeframeMetrics.slDisciplineRate >= 85
-                  ? `Sangat baik! ${timeframeMetrics.slDisciplineRate}% transaksi dalam periode ${timeframe} ini dipasangi batasan Stop Loss baku. Tidak ada posisi floating minus liar.`
-                  : `PERHATIAN: Ada transaksi yang tidak memasang Stop Loss atau kerugian melebihi batas toleransi 1% modal. Jangan pernah menahan posisi minus dengan harapan harga akan balik arah (hoping).`}
+                  ? `Sangat baik! ${timeframeMetrics.slDisciplineRate}% transaksi dalam periode ${timeframe} ini dipasangi batasan Stop Loss. Kerugian per transaksi terkendali.`
+                  : `PERHATIAN: Ditemukan transaksi yang tidak memasang Stop Loss atau floating loss dibiarkan berlarut-larut. Jangan pernah menahan posisi minus dengan harapan harga akan balik arah (hoping).`}
               </p>
               <div className="text-[10px] text-slate-500 font-mono">
-                Catatan SOP: Pasang Stop Loss baku 30 pips seketika setelah menekan tombol Order.
+                Catatan SOP: Pasang Stop Loss baku 30 pips seketika saat order dibuka.
               </div>
             </div>
 
@@ -1093,11 +1347,11 @@ export default function JournalPage() {
               </div>
               <p className="text-[11px] text-slate-600 leading-relaxed">
                 {timeframeMetrics.riskRewardRatio >= 1.5
-                  ? `Rasio reward Anda 1 : ${timeframeMetrics.riskRewardRatio}. Rata-rata kemenangan ($${timeframeMetrics.avgWin}) jauh lebih besar dari rata-rata kerugian ($${timeframeMetrics.avgLoss}).`
-                  : `Rata-rata take profit ($${timeframeMetrics.avgWin}) hampir sebanding dengan rata-rata loss ($${timeframeMetrics.avgLoss}). Terdeteksi kebiasaan 'cut profit terlalu dini tapi nahan loss'. Tahan posisi hingga minimal 1:2 RR.`}
+                  ? `Rasio reward Anda 1 : ${timeframeMetrics.riskRewardRatio}. Rata-rata kemenangan (${formatAmount(timeframeMetrics.avgWin)}) melampaui rata-rata kerugian (${formatAmount(timeframeMetrics.avgLoss)}).`
+                  : `Rata-rata profit (${formatAmount(timeframeMetrics.avgWin)}) hampir sama dengan rata-rata loss (${formatAmount(timeframeMetrics.avgLoss)}). Waspada kebiasaan 'cut profit terlalu dini tapi nahan loss berhari-hari'.`}
               </p>
               <div className="text-[10px] text-slate-500 font-mono">
-                Rata-rata Menang: +${timeframeMetrics.avgWin} | Rata-rata Kalah: -${timeframeMetrics.avgLoss}
+                Rata-rata Menang: +{formatAmount(timeframeMetrics.avgWin)} | Rata-rata Kalah: -{formatAmount(timeframeMetrics.avgLoss)}
               </div>
             </div>
 
@@ -1114,7 +1368,7 @@ export default function JournalPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 font-bold text-xs text-slate-900">
                   <Activity className="w-4 h-4 text-blue-600" />
-                  <span>3. Evaluasi Over-Trading (Frekuensi Entry)</span>
+                  <span>3. Evaluasi Frekuensi Transaksi (Over-Trading)</span>
                 </div>
                 <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-slate-100 text-slate-800">
                   {timeframeMetrics.totalTrades} Transaksi
@@ -1144,7 +1398,7 @@ export default function JournalPage() {
                   <div key={p.pair} className="bg-white p-2 rounded-xl border border-slate-200 text-center">
                     <div className="font-bold text-slate-900 text-[11px]">{p.pair}</div>
                     <div className={`text-xs font-extrabold font-mono ${p.isProfit ? 'text-emerald-700' : 'text-rose-600'}`}>
-                      {p.isProfit ? '+' : ''}${p.pnl}
+                      {p.isProfit ? '+' : ''}{formatAmount(p.pnl)}
                     </div>
                     <div className="text-[9px] text-slate-400 font-mono">Win Rate: {p.winRate}%</div>
                   </div>
@@ -1156,7 +1410,7 @@ export default function JournalPage() {
             </div>
           </div>
 
-          {/* Action Plan / Rekomendasi Tindakan Koreksi */}
+          {/* Action Plan */}
           <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-white to-emerald-50/30 border border-emerald-200 space-y-2.5">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
               <Compass className="w-4 h-4 text-emerald-700" />
@@ -1169,11 +1423,15 @@ export default function JournalPage() {
               </div>
               <div className="bg-white p-3 rounded-xl border border-emerald-100 shadow-2xs space-y-1">
                 <div className="font-bold text-emerald-900">2. Target TP Minimal 1:2</div>
-                <p className="text-slate-500">Biarkan posisi menyentuh level TP yang sudah direncanakan. Jangan close profit terburu-buru.</p>
+                <p className="text-slate-500">Biarkan posisi menyentuh level TP yang sudah direncanakan. Jangan cut profit terburu-buru.</p>
               </div>
               <div className="bg-white p-3 rounded-xl border border-emerald-100 shadow-2xs space-y-1">
-                <div className="font-bold text-emerald-900">3. Istirahat Setelah 2 Loss</div>
-                <p className="text-slate-500">Jika mengalami 2 kali kena SL berturut-turut, matikan laptop untuk mencegah revenge trading.</p>
+                <div className="font-bold text-emerald-900">3. Disiplin Ukuran Lot ({isCentAccount ? 'Lot Cent' : 'Lot Standard'})</div>
+                <p className="text-slate-500">
+                  {isCentAccount
+                    ? 'Pada akun cent, gunakan 0.01 - 0.10 cent lot agar risiko per trade tetap di bawah 1% modal.'
+                    : 'Gunakan Kalkulator Lot Aman agar risiko per trade maksimal 1% modal.'}
+                </p>
               </div>
             </div>
           </div>
@@ -1185,10 +1443,10 @@ export default function JournalPage() {
       {/* ===================================================================== */}
       {investorAccount && (
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-          {/* Table Controls & Filter Ribbon */}
+          {/* Table Controls */}
           <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold text-slate-900">Histori Transaksi Periode: {timeframeLabels[timeframe]}</h2>
+              <h2 className="text-sm font-bold text-slate-900">Histori Transaksi Riil ({timeframeLabels[timeframe]})</h2>
               <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-mono border border-emerald-200 font-bold">
                 {filteredTrades.length} Posisi
               </span>
@@ -1213,7 +1471,7 @@ export default function JournalPage() {
                     { key: 'ALL', label: 'Semua' },
                     { key: 'WIN', label: 'Win (Menang)' },
                     { key: 'LOSS', label: 'Loss (Kena SL)' },
-                    { key: 'GOLD', label: 'XAUUSD' },
+                    { key: 'GOLD', label: 'Gold (XAU)' },
                     { key: 'FOREX', label: 'Forex' },
                   ] as const
                 ).map((tab) => (
@@ -1241,7 +1499,7 @@ export default function JournalPage() {
               </div>
               <h3 className="text-sm font-bold text-slate-900">Tidak Ada Transaksi pada Periode Ini</h3>
               <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                Tidak ada transaksi yang selesai dalam rentang waktu {timeframeLabels[timeframe]}. Coba pilih rentang waktu yang lebih luas seperti 1 Bulan atau 1 Tahun di atas.
+                Tidak ada transaksi yang selesai dalam rentang waktu {timeframeLabels[timeframe]}. Pilih periode 1 Bulan atau 1 Tahun di atas.
               </p>
             </div>
           ) : (
@@ -1256,7 +1514,7 @@ export default function JournalPage() {
                     <th className="p-3.5">Close Price</th>
                     <th className="p-3.5">Stop Loss (SL)</th>
                     <th className="p-3.5">Take Profit (TP)</th>
-                    <th className="p-3.5">Hasil PnL ($) / Pips</th>
+                    <th className="p-3.5">Hasil PnL / Pips</th>
                     <th className="p-3.5">Kepatuhan SOP</th>
                     <th className="p-3.5">Analisa Rekam Jejak</th>
                   </tr>
@@ -1293,10 +1551,10 @@ export default function JournalPage() {
                         <td className="p-3.5 font-mono font-semibold text-slate-700">{t.lot}</td>
 
                         {/* Open Price */}
-                        <td className="p-3.5 font-mono text-slate-900 font-medium">{t.openPrice}</td>
+                        <td className="p-3.5 font-mono text-slate-900 font-medium">{t.openPrice || '-'}</td>
 
                         {/* Close Price */}
-                        <td className="p-3.5 font-mono text-slate-900 font-medium">{t.closePrice}</td>
+                        <td className="p-3.5 font-mono text-slate-900 font-medium">{t.closePrice || '-'}</td>
 
                         {/* Stop Loss */}
                         <td className="p-3.5 font-mono">
@@ -1327,10 +1585,11 @@ export default function JournalPage() {
                               isWin ? 'text-[#00A651]' : 'text-rose-600'
                             }`}
                           >
-                            {isWin ? `+$${t.pnl.toFixed(2)}` : `-$${Math.abs(t.pnl).toFixed(2)}`}
+                            {isWin ? '+' : ''}{formatAmount(t.pnl)}
                           </div>
                           <div className={`text-[10px] ${isWin ? 'text-emerald-700' : 'text-rose-600'}`}>
-                            {t.pips >= 0 ? `+${t.pips}` : t.pips} pips (≈ Rp {Math.round(Math.abs(t.pnl) * 16000).toLocaleString('id-ID')})
+                            {t.pips >= 0 ? `+${t.pips}` : t.pips} pips
+                            {isCentAccount && centUnitDisplay === 'USC' && ` (≈ $${(t.pnl / 100).toFixed(2)})`}
                           </div>
                         </td>
 
@@ -1361,7 +1620,7 @@ export default function JournalPage() {
         </div>
       )}
 
-      {/* Change / Reconnect Investor Modal */}
+      {/* Change / Reconnect Modal */}
       {showChangeAccountModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
@@ -1371,8 +1630,8 @@ export default function JournalPage() {
                   <Server className="w-5 h-5" />
                 </span>
                 <div>
-                  <h3 className="text-base font-extrabold text-slate-900">Ganti Akun Investor (MT4 / MT5)</h3>
-                  <p className="text-[11px] text-slate-500">Masukkan kredensial akun investor Anda</p>
+                  <h3 className="text-base font-extrabold text-slate-900">Ganti / Impor Akun Baru</h3>
+                  <p className="text-[11px] text-slate-500">Mendukung Akun Cent &amp; Standard Semua Broker</p>
                 </div>
               </div>
               <button
@@ -1383,115 +1642,113 @@ export default function JournalPage() {
               </button>
             </div>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleConnectInvestorAccount();
-              }}
-              className="space-y-3.5 text-xs"
-            >
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Platform</label>
+            <div className="space-y-4">
+              {/* Option 1: File Statement Upload */}
+              <div
+                onClick={() => {
+                  fileInputRef.current?.click();
+                }}
+                className="p-4 rounded-xl border border-dashed border-emerald-300 hover:border-emerald-500 bg-emerald-50/40 text-center cursor-pointer transition-all space-y-1.5"
+              >
+                <Upload className="w-6 h-6 text-emerald-700 mx-auto" />
+                <div className="text-xs font-bold text-slate-900">Unggah File Laporan Riil (.html / .csv)</div>
+                <div className="text-[11px] text-slate-500">100% Cocok Dengan MT4/MT5 Anda Tanpa Selisih</div>
+              </div>
+
+              <div className="text-center text-xs text-slate-400 font-semibold">— ATAU MASUKKAN KREDENSIAL —</div>
+
+              {/* Option 2: Credentials Form */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleConnectInvestorAccount();
+                }}
+                className="space-y-3 text-xs"
+              >
                 <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPlatform('MT5')}
-                    className={`py-2 rounded-xl font-bold border ${platform === 'MT5' ? 'bg-[#00A651] text-white border-[#00A651]' : 'bg-slate-50 text-slate-700 border-slate-200'}`}
-                  >
-                    MT5
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPlatform('MT4')}
-                    className={`py-2 rounded-xl font-bold border ${platform === 'MT4' ? 'bg-[#00A651] text-white border-[#00A651]' : 'bg-slate-50 text-slate-700 border-slate-200'}`}
-                  >
-                    MT4
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Nama Server Broker</label>
-                <input
-                  type="text"
-                  value={brokerServer}
-                  onChange={(e) => setBrokerServer(e.target.value)}
-                  placeholder="Contoh: Exness-Real, ICMarketsSC-Live, MRGM-Real"
-                  required
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
-                />
-              </div>
-
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Nomor Akun (Login)</label>
-                <input
-                  type="text"
-                  value={accountNumber}
-                  onChange={(e) => setAccountNumber(e.target.value)}
-                  placeholder="Nomor Login Akun Anda"
-                  required
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="font-bold text-slate-700">Password Investor</label>
-                  <button
-                    type="button"
-                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                    className="text-[11px] text-emerald-700 font-semibold"
-                  >
-                    {isPasswordVisible ? 'Sembunyikan' : 'Perlihatkan'}
-                  </button>
-                </div>
-                <input
-                  type={isPasswordVisible ? 'text' : 'password'}
-                  value={investorPassword}
-                  onChange={(e) => setInvestorPassword(e.target.value)}
-                  placeholder="Password Investor (Read-Only)"
-                  required
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
-                />
-              </div>
-
-              {isSyncing && (
-                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1.5 text-xs text-emerald-900 font-bold">
-                  <div className="flex items-center gap-2">
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-600" />
-                    <span>{syncStage}</span>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Tipe Akun</label>
+                    <select
+                      value={accountType}
+                      onChange={(e) => setAccountType(e.target.value as 'STANDARD' | 'CENT')}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 font-bold focus:outline-emerald-600"
+                    >
+                      <option value="CENT">Akun Cent (USC ¢)</option>
+                      <option value="STANDARD">Akun Standard ($ USD)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Platform</label>
+                    <select
+                      value={platform}
+                      onChange={(e) => setPlatform(e.target.value as 'MT4' | 'MT5')}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 font-bold focus:outline-emerald-600"
+                    >
+                      <option value="MT5">MetaTrader 5 (MT5)</option>
+                      <option value="MT4">MetaTrader 4 (MT4)</option>
+                    </select>
                   </div>
                 </div>
-              )}
 
-              {syncError && (
-                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">
-                  {syncError}
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Server Broker</label>
+                  <input
+                    type="text"
+                    value={brokerServer}
+                    onChange={(e) => setBrokerServer(e.target.value)}
+                    placeholder="Contoh: Exness-Real, ICMarketsSC-Live, MRGM-Real"
+                    required
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
+                  />
                 </div>
-              )}
 
-              <div className="pt-2 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowChangeAccountModal(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-bold cursor-pointer"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSyncing}
-                  className="px-5 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold cursor-pointer disabled:opacity-50"
-                >
-                  Hubungkan Akun
-                </button>
-              </div>
-            </form>
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Nomor Akun (Login)</label>
+                  <input
+                    type="text"
+                    value={accountNumber}
+                    onChange={(e) => setAccountNumber(e.target.value)}
+                    placeholder="Nomor Akun Trading Anda"
+                    required
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Password Investor</label>
+                  <input
+                    type="password"
+                    value={investorPassword}
+                    onChange={(e) => setInvestorPassword(e.target.value)}
+                    placeholder="Password Investor (Read-Only)"
+                    required
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowChangeAccountModal(false)}
+                    className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 cursor-pointer"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSyncing}
+                    className="px-5 py-2 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold cursor-pointer disabled:opacity-50"
+                  >
+                    Hubungkan
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Fallback Manual Modal (Offline entry) */}
+      {/* Fallback Manual Modal */}
       {showManualModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
@@ -1563,7 +1820,9 @@ export default function JournalPage() {
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">PnL Hasil ($)</label>
+                  <label className="font-bold text-slate-700 block mb-1">
+                    PnL Hasil ({isCentAccount ? 'USC' : '$'})
+                  </label>
                   <input
                     type="number"
                     step="0.1"
