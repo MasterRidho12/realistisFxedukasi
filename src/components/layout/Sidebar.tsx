@@ -128,8 +128,8 @@ export default function Sidebar() {
       name: 'Smart Trading Journal',
       href: '/journal',
       icon: BookOpenCheck,
-      badge: 'Evaluasi',
-      badgeColor: 'amber',
+      badge: 'Auto Sync',
+      badgeColor: 'green',
     },
   ];
 

@@ -57,6 +57,7 @@ interface UserContextType {
   journals: JournalRecord[];
   addJournalEntry: (entry: Omit<JournalRecord, 'id' | 'date'>) => void;
   deleteJournalEntry: (id: string) => void;
+  setAllJournals: (records: JournalRecord[]) => void;
 
   // Subscription & Admin Operations
   subscriptionRequests: SubscriptionRequest[];
@@ -529,6 +530,26 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     const winRate = Number(((winning / total) * 100).toFixed(1));
     const disciplined = updated.filter((j) => j.adheredToPlan && j.emotion !== 'REVENGE_TRADING').length;
     const disciplineScore = Math.round((disciplined / total) * 100);
+
+    saveUser({
+      ...user,
+      totalTrades: total,
+      winRate,
+      disciplineScore,
+    });
+  };
+
+  const setAllJournals = (newRecords: JournalRecord[]) => {
+    setJournals(newRecords);
+    try {
+      localStorage.setItem('realistisfx_journals', JSON.stringify(newRecords));
+    } catch {}
+
+    const total = newRecords.length;
+    const winning = newRecords.filter((j) => j.pnl > 0).length;
+    const winRate = total > 0 ? Number(((winning / total) * 100).toFixed(1)) : 0;
+    const disciplined = newRecords.filter((j) => j.adheredToPlan && j.emotion !== 'REVENGE_TRADING').length;
+    const disciplineScore = total > 0 ? Math.round((disciplined / total) * 100) : 0;
 
     saveUser({
       ...user,
@@ -1172,6 +1193,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         journals,
         addJournalEntry,
         deleteJournalEntry,
+        setAllJournals,
         subscriptionRequests,
         submitPaymentRequest,
         approveSubscription,

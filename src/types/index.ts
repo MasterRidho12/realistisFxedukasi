@@ -82,3 +82,62 @@ export interface JournalRecord {
   notes: string;
 }
 
+export interface InvestorAccount {
+  platform: 'MT4' | 'MT5';
+  brokerServer: string;
+  accountNumber: string;
+  accountName: string;
+  balance: number;
+  equity: number;
+  deposit: number;
+  currency: string;
+  connectedAt: string;
+  lastSyncAt: string;
+  status: 'CONNECTED' | 'SYNCING' | 'DISCONNECTED';
+}
+
+export interface InvestorTrade {
+  ticket: number;
+  openTime: string;
+  closeTime: string;
+  pair: string;
+  type: 'BUY' | 'SELL';
+  lot: number;
+  openPrice: number;
+  closePrice: number;
+  stopLoss?: number;
+  takeProfit?: number;
+  pnl: number;
+  pips: number;
+  sopCompliant: boolean;
+  notes?: string;
+}
+
+export interface TrackRecordPerformance {
+  grade: 'A' | 'B' | 'C';
+  score: number;
+  verdict: string;
+  verdictSub: string;
+  totalTrades: number;
+  winningTrades: number;
+  losingTrades: number;
+  winRate: number;
+  profitFactor: number;
+  totalProfit: number;
+  totalLoss: number;
+  netPnL: number;
+  maxDrawdown: number;
+  avgWin: number;
+  avgLoss: number;
+  riskRewardRatio: number;
+  slDisciplineRate: number;
+  summary: string;
+  diagnostics: {
+    title: string;
+    status: 'BAGUS' | 'CUKUP' | 'PERLU_PERBAIKAN';
+    message: string;
+  }[];
+  recommendations: string[];
+}
+
+
