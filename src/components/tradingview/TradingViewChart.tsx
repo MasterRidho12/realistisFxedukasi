@@ -4,10 +4,15 @@ import React, { useEffect, useRef, memo } from 'react';
 
 interface TradingViewChartProps {
   symbol: string;
+  interval?: string;
   height?: number | string;
 }
 
-function TradingViewChartComponent({ symbol, height = 520 }: TradingViewChartProps) {
+function TradingViewChartComponent({
+  symbol,
+  interval = '60',
+  height = 540,
+}: TradingViewChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,7 +34,7 @@ function TradingViewChartComponent({ symbol, height = 520 }: TradingViewChartPro
     script.innerHTML = JSON.stringify({
       autosize: true,
       symbol: symbol,
-      interval: '60',
+      interval: interval,
       timezone: 'Asia/Jakarta',
       theme: 'light',
       style: '1',
@@ -49,6 +54,9 @@ function TradingViewChartComponent({ symbol, height = 520 }: TradingViewChartPro
         'mainSeriesProperties.candleStyle.borderDownColor': '#EF4444',
         'mainSeriesProperties.candleStyle.wickUpColor': '#00A651',
         'mainSeriesProperties.candleStyle.wickDownColor': '#EF4444',
+        'paneProperties.background': '#FFFFFF',
+        'paneProperties.vertGridProperties.color': '#F1F5F9',
+        'paneProperties.horzGridProperties.color': '#F1F5F9',
       },
     });
 
@@ -59,12 +67,12 @@ function TradingViewChartComponent({ symbol, height = 520 }: TradingViewChartPro
         currentContainer.innerHTML = '';
       }
     };
-  }, [symbol]);
+  }, [symbol, interval]);
 
   return (
     <div
       ref={containerRef}
-      className="tradingview-widget-container w-full rounded-2xl overflow-hidden border border-slate-200 shadow-xs bg-white"
+      className="tradingview-widget-container w-full rounded-2xl overflow-hidden border border-slate-200/90 shadow-xs bg-white"
       style={{ height }}
     />
   );
