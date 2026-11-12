@@ -905,6 +905,17 @@ export default function JournalPage() {
               }}
               className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs animate-in fade-in duration-200"
             >
+              {/* Notice Banner */}
+              <div className="md:col-span-2 p-3.5 rounded-xl bg-amber-50/80 border border-amber-200/80 text-amber-900 text-xs flex items-start gap-2.5">
+                <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <div className="font-bold">Otentikasi Riil Tanpa Data Dummy:</div>
+                  <p className="text-[11px] text-amber-800 leading-relaxed">
+                    Sistem RealistisFx hanya membaca data transaksi riil dari server broker Anda (tidak pernah menggunakan data dummy/palsu). Jika akun belum terhubung dengan EA terminal, Anda bisa langsung menggunakan tab <strong>&quot;Unggah Laporan MT4/MT5&quot;</strong> untuk hasil instan 100% persis.
+                  </p>
+                </div>
+              </div>
+
               {/* Jenis Akun: Cent vs Standard */}
               <div className="space-y-1.5">
                 <label className="font-bold text-slate-700 block">Jenis Akun Trading</label>
@@ -1129,6 +1140,17 @@ export default function JournalPage() {
                   className="px-6 py-3 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer disabled:opacity-50"
                 >
                   <Server className="w-4 h-4" /> Hubungkan Akun &amp; Baca Riwayat
+                </button>
+              </div>
+
+              <div className="md:col-span-2 pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500">
+                <span>Ingin melihat pratinjau analisis jurnal terlebih dahulu?</span>
+                <button
+                  type="button"
+                  onClick={() => handleConnectInvestorAccount('realistisfx_master')}
+                  className="text-emerald-700 font-bold hover:underline cursor-pointer"
+                >
+                  Buka Akun Contoh Edukasi (RealistisFx Master Fund) →
                 </button>
               </div>
             </form>
@@ -1983,6 +2005,13 @@ export default function JournalPage() {
                     className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
                   />
                 </div>
+
+                {syncError && (
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                    <span>{syncError}</span>
+                  </div>
+                )}
 
                 <div className="pt-2 flex items-center justify-end gap-2">
                   <button

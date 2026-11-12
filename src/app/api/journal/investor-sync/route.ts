@@ -353,25 +353,29 @@ export async function POST(req: Request) {
       );
     }
 
-    const generated = generateMultiTimeframeTrades(
-      accountNumber,
-      brokerServer,
-      platform,
-      'BALANCED',
-      accountType === 'CENT' ? 'CENT' : 'STANDARD',
-      deposit ? parseFloat(deposit) : undefined,
-      pairFocus === 'ALL_PAIRS' ? 'ALL_PAIRS' : 'GOLD_ONLY'
-    );
+    const cleanAcc = accountNumber.trim();
 
-    return NextResponse.json({
-      success: true,
-      account: {
-        ...generated.account,
-        accountName: accountType === 'CENT' ? `Akun Cent #${accountNumber} (${brokerServer})` : `Akun Investor #${accountNumber} (${brokerServer})`,
+    // 1. Check if real data has been synced from the user's terminal EA
+    if (globalThis.terminalSyncedAccounts && globalThis.terminalSyncedAccounts[cleanAcc]) {
+      const realData = globalThis.terminalSyncedAccounts[cleanAcc];
+      return NextResponse.json({
+        success: true,
+        account: realData.account,
+        trades: realData.trades,
+        performance: realData.performance,
+      });
+    }
+
+    // 2. Reject unverified / fake accounts! NEVER fabricate dummy data.
+    // MetaTrader broker servers use proprietary encrypted binary protocols.
+    // To ensure 100% real trade records without dummy simulation:
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Otentikasi Gagal: Akun #${cleanAcc} pada server "${brokerServer}" belum terhubung atau belum mengirimkan data transaksi riil dari terminal MT4/MT5. Sistem RealistisFx menolak data palsu/dummy. Untuk membaca data 100% riil akun Anda: (1) Unggah File Laporan (Statement Riil HTML/CSV) dari MT4/MT5 Anda, atau (2) Aktifkan Script RealistisFx_Sync_EA di terminal MT5 Anda.`,
       },
-      trades: generated.trades,
-      performance: generated.performance,
-    });
+      { status: 404 }
+    );
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Gagal menghubungkan ke server broker.';
     return NextResponse.json({ success: false, error: message }, { status: 500 });
