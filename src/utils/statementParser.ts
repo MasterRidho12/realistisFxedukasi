@@ -359,3 +359,4 @@ function buildPerformanceResult(
 
   return { account, trades, performance };
 }
+

@@ -45,6 +45,7 @@ import {
   FileText,
   FileSpreadsheet,
   Coins,
+  Download,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import {
@@ -119,7 +120,7 @@ const POPULAR_BROKERS = [
 ];
 
 type SummaryTimeframe = '1D' | '1W' | '1M' | '1Y';
-type SyncMethodTab = 'UPLOAD_STATEMENT' | 'INVESTOR_CREDENTIALS';
+type SyncMethodTab = 'UPLOAD_STATEMENT' | 'INVESTOR_CREDENTIALS' | 'TERMINAL_EA';
 
 export default function JournalPage() {
   const { user, journals, addJournalEntry, deleteJournalEntry, setAllJournals, marketPrice, openPaymentModal } = useUser();
@@ -153,6 +154,7 @@ export default function JournalPage() {
   // Connection Form State (User's own credentials)
   const [platform, setPlatform] = useState<'MT4' | 'MT5'>('MT5');
   const [accountType, setAccountType] = useState<'STANDARD' | 'CENT'>('CENT'); // default Cent based on user need
+  const [pairFocus, setPairFocus] = useState<'GOLD_ONLY' | 'ALL_PAIRS'>('GOLD_ONLY'); // default Gold Only to prevent unwanted forex pairs
   const [brokerServer, setBrokerServer] = useState<string>('Exness-Real');
   const [accountNumber, setAccountNumber] = useState<string>('');
   const [investorPassword, setInvestorPassword] = useState<string>('');
@@ -339,6 +341,7 @@ export default function JournalPage() {
           accountType,
           deposit: depositAmount,
           presetId: targetPresetId,
+          pairFocus,
         }),
       });
 
@@ -388,6 +391,71 @@ export default function JournalPage() {
       setShowChangeAccountModal(false);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Koneksi ke broker gagal. Periksa server dan password investor.';
+      setSyncError(msg);
+    } finally {
+      setIsSyncing(false);
+      setSyncStage('');
+    }
+  };
+
+  // 5. Connect / Check Real-Time MT5 EA Sync
+  const handleSyncFromTerminalEA = async () => {
+    if (!accountNumber.trim()) {
+      setSyncError('Harap masukkan nomor akun login MT5 Anda terlebih dahulu.');
+      return;
+    }
+    setIsSyncing(true);
+    setSyncError('');
+    setSyncStage('Memeriksa riwayat push dari terminal MT5...');
+
+    try {
+      const res = await fetch(`/api/journal/sync-terminal?accountNumber=${encodeURIComponent(accountNumber.trim())}`);
+      const data = await res.json();
+
+      if (!res.ok || !data.success || !data.account) {
+        throw new Error(
+          data.error ||
+            'Belum ada data transaksi yang diterima dari EA terminal MT5 untuk nomor akun ini. Pastikan file RealistisFx_Sync_EA.mq5 sudah terpasang di MT5 dan WebRequest diaktifkan.'
+        );
+      }
+
+      const acc: InvestorAccount = data.account;
+      const trs: InvestorTrade[] = data.trades || [];
+      const perf: TrackRecordPerformance = data.performance;
+
+      setInvestorAccount(acc);
+      setInvestorTrades(trs);
+      setPerformance(perf);
+
+      try {
+        localStorage.setItem('realistis_investor_account', JSON.stringify(acc));
+        localStorage.setItem('realistis_investor_trades', JSON.stringify(trs));
+        localStorage.setItem('realistis_investor_perf', JSON.stringify(perf));
+      } catch {}
+
+      const convertedJournals: JournalRecord[] = trs.map((t) => ({
+        id: `mt-${t.ticket}`,
+        date: t.closeTime.split(' ')[0] || t.closeTime,
+        pair: t.pair,
+        direction: t.type,
+        lot: t.lot,
+        entryPrice: t.openPrice,
+        stopLoss: t.stopLoss,
+        takeProfit: t.takeProfit,
+        exitPrice: t.closePrice,
+        exitStatus: t.pnl >= 0 ? 'HIT_TP' : 'HIT_SL',
+        pnl: t.pnl,
+        pips: Math.abs(t.pips),
+        accountType: acc.accountType || (accountType === 'CENT' ? 'CENT' : 'STANDARD'),
+        emotion: t.sopCompliant ? 'DISCIPLINED' : 'FOMO',
+        adheredToPlan: t.sopCompliant,
+        notes: `Tiket MT: #${t.ticket} | Live Push EA Terminal MT5`,
+      }));
+
+      setAllJournals(convertedJournals);
+      setShowChangeAccountModal(false);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Gagal mengambil data dari EA Terminal.';
       setSyncError(msg);
     } finally {
       setIsSyncing(false);
@@ -715,24 +783,24 @@ export default function JournalPage() {
               </p>
             </div>
 
-            {/* Method Segment: Upload vs Credentials */}
-            <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-bold">
+            {/* Method Segment: Upload vs Credentials vs Terminal EA */}
+            <div className="flex items-center flex-wrap gap-1 rounded-xl bg-slate-100 p-1 border border-slate-200 text-xs font-bold">
               <button
                 type="button"
                 onClick={() => setSyncMethod('UPLOAD_STATEMENT')}
-                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
                   syncMethod === 'UPLOAD_STATEMENT'
                     ? 'bg-[#00A651] text-white shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Upload className="w-3.5 h-3.5" />
-                <span>Unggah Laporan MT4/MT5 (Paling Akurat)</span>
+                <span>Unggah Laporan MT4/MT5 (100% Persis)</span>
               </button>
               <button
                 type="button"
                 onClick={() => setSyncMethod('INVESTOR_CREDENTIALS')}
-                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
                   syncMethod === 'INVESTOR_CREDENTIALS'
                     ? 'bg-[#00A651] text-white shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900'
@@ -740,6 +808,18 @@ export default function JournalPage() {
               >
                 <Server className="w-3.5 h-3.5" />
                 <span>Akun Investor MT4/MT5</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSyncMethod('TERMINAL_EA')}
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                  syncMethod === 'TERMINAL_EA'
+                    ? 'bg-[#00A651] text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Activity className="w-3.5 h-3.5" />
+                <span>Script Live EA MT5</span>
               </button>
             </div>
           </div>
@@ -890,6 +970,60 @@ export default function JournalPage() {
                 </div>
               </div>
 
+              {/* Fokus Pair Trading: Hanya Gold vs Semua Pair */}
+              <div className="space-y-1.5 md:col-span-2">
+                <label className="font-bold text-slate-700 block flex items-center justify-between">
+                  <span>Fokus Instrumen Trading (Pair yang Anda Tradingkan)</span>
+                  <span className="text-[11px] font-normal text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    Mencegah munculnya transaksi pair yang tidak Anda buka
+                  </span>
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPairFocus('GOLD_ONLY')}
+                    className={`p-3 rounded-xl font-bold border transition-all cursor-pointer text-left flex items-start gap-2.5 ${
+                      pairFocus === 'GOLD_ONLY'
+                        ? 'bg-emerald-50/80 border-emerald-500 text-emerald-950 ring-2 ring-emerald-500/20 shadow-2xs'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className={`p-1.5 rounded-lg mt-0.5 ${pairFocus === 'GOLD_ONLY' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'}`}>
+                      <Flame className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-xs">Hanya Gold (XAUUSD / XAUUSDc)</span>
+                        <span className="text-[10px] bg-emerald-600 text-white font-bold px-1.5 py-0.2 rounded">Rekomendasi</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-normal mt-0.5 leading-tight">
+                        Hanya membaca riwayat transaksi Gold. Tidak akan ada pair Forex lain (EUR, GBP, JPY) yang muncul.
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPairFocus('ALL_PAIRS')}
+                    className={`p-3 rounded-xl font-bold border transition-all cursor-pointer text-left flex items-start gap-2.5 ${
+                      pairFocus === 'ALL_PAIRS'
+                        ? 'bg-emerald-50/80 border-emerald-500 text-emerald-950 ring-2 ring-emerald-500/20 shadow-2xs'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className={`p-1.5 rounded-lg mt-0.5 ${pairFocus === 'ALL_PAIRS' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                      <Layers className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="font-bold text-xs block">Semua Pair (Gold &amp; Forex)</span>
+                      <p className="text-[11px] text-slate-500 font-normal mt-0.5 leading-tight">
+                        Membaca riwayat multi-pair (XAUUSD, EURUSD, GBPUSD, USDJPY, dll).
+                      </p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
               {/* Server Broker */}
               <div className="space-y-1.5">
                 <label className="font-bold text-slate-700 block">Nama Server Broker</label>
@@ -998,6 +1132,118 @@ export default function JournalPage() {
                 </button>
               </div>
             </form>
+          )}
+
+          {/* METHOD 3: LIVE TERMINAL MT5 PUSH EA */}
+          {syncMethod === 'TERMINAL_EA' && (
+            <div className="space-y-5 animate-in fade-in duration-200 text-xs">
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="p-1 rounded bg-emerald-600 text-white font-mono text-[10px] font-bold">EA MT5</span>
+                    <h3 className="font-bold text-slate-900 text-sm">RealistisFx Sync Connector EA (MQL5)</h3>
+                  </div>
+                  <p className="text-slate-600 text-[11px] max-w-xl">
+                    Kirim otomatis riwayat closed trades dari terminal MetaTrader 5 ke Smart Trading Journal secara real-time setiap kali Anda closing posisi!
+                  </p>
+                </div>
+                <a
+                  href="/mt5/RealistisFx_Sync_EA.mq5"
+                  download="RealistisFx_Sync_EA.mq5"
+                  className="px-4 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold flex items-center justify-center gap-2 shadow-xs transition-all shrink-0 cursor-pointer text-xs"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Unduh File EA (.mq5)</span>
+                </a>
+              </div>
+
+              {/* 4 Steps Tutorial */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[11px] flex items-center justify-center font-bold">1</span>
+                    Unduh File EA
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Klik tombol hijau di atas untuk mengunduh <code className="text-emerald-800 bg-emerald-100 px-1 rounded">RealistisFx_Sync_EA.mq5</code>.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[11px] flex items-center justify-center font-bold">2</span>
+                    Pasang di MT5
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Di MT5: Klik <strong>File &gt; Open Data Folder</strong>, buka folder <strong>MQL5 &gt; Experts</strong>, paste file tadi.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[11px] flex items-center justify-center font-bold">3</span>
+                    Aktifkan WebRequest
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Di MT5: <strong>Tools &gt; Options &gt; Expert Advisors</strong>, centang <em>Allow WebRequest</em> dan masukkan URL web ini.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[11px] flex items-center justify-center font-bold">4</span>
+                    Attach ke Chart
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Tarik EA ke sembarang chart (misal Gold H1). EA akan otomatis push closed trades ke database!
+                  </p>
+                </div>
+              </div>
+
+              {/* Form to pull synced data */}
+              <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-3">
+                <div className="font-bold text-slate-800">
+                  Ambil Data Transaksi dari Terminal MT5 Anda
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="sm:col-span-2 space-y-1">
+                    <label className="text-[11px] font-bold text-slate-600 block">Nomor Akun Login MT5</label>
+                    <input
+                      type="text"
+                      value={accountNumber}
+                      onChange={(e) => setAccountNumber(e.target.value)}
+                      placeholder="Masukkan Nomor Login MT5 Anda"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 font-mono text-xs focus:outline-emerald-600"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <button
+                      type="button"
+                      disabled={isSyncing}
+                      onClick={handleSyncFromTerminalEA}
+                      className="w-full py-2.5 px-4 rounded-xl bg-[#00A651] hover:bg-[#008F45] text-white font-bold flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                      <span>{isSyncing ? 'Memeriksa...' : 'Cek & Ambil Data Riil'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {isSyncing && (
+                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 text-emerald-600 animate-spin shrink-0" />
+                    <span>{syncStage}</span>
+                  </div>
+                )}
+
+                {syncError && (
+                  <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                    <span>{syncError}</span>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
         </div>
       ) : (
@@ -1688,6 +1934,18 @@ export default function JournalPage() {
                       <option value="MT4">MetaTrader 4 (MT4)</option>
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Fokus Pair Trading</label>
+                  <select
+                    value={pairFocus}
+                    onChange={(e) => setPairFocus(e.target.value as 'GOLD_ONLY' | 'ALL_PAIRS')}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 font-bold focus:outline-emerald-600"
+                  >
+                    <option value="GOLD_ONLY">⭐ Hanya Gold (XAUUSD / XAUUSDc) - Rekomendasi</option>
+                    <option value="ALL_PAIRS">Semua Pair (Forex &amp; Gold)</option>
+                  </select>
                 </div>
 
                 <div>

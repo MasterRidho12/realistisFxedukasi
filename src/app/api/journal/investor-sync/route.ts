@@ -20,7 +20,8 @@ function generateMultiTimeframeTrades(
   platform: 'MT4' | 'MT5',
   typeProfile: 'BALANCED' | 'SCALPER' | 'HIGH_RISK' = 'BALANCED',
   accountType: 'STANDARD' | 'CENT' = 'STANDARD',
-  customDeposit?: number
+  customDeposit?: number,
+  pairFocus: 'GOLD_ONLY' | 'ALL_PAIRS' = 'GOLD_ONLY'
 ): {
   account: InvestorAccount;
   trades: InvestorTrade[];
@@ -34,7 +35,7 @@ function generateMultiTimeframeTrades(
   if (seed === 0) seed = 48291;
 
   const now = Date.now();
-  const pairs = ['XAUUSD', 'EURUSD', 'GBPUSD', 'USDJPY'];
+  const pairs = pairFocus === 'GOLD_ONLY' ? ['XAUUSD'] : ['XAUUSD', 'EURUSD', 'GBPUSD', 'USDJPY'];
   const isCent = accountType === 'CENT';
 
   // Base configurations based on profile & account type
@@ -297,6 +298,7 @@ export async function POST(req: Request) {
       investorPassword = '',
       accountType = 'STANDARD',
       deposit,
+      pairFocus = 'GOLD_ONLY',
       presetId,
     } = body;
 
@@ -357,7 +359,8 @@ export async function POST(req: Request) {
       platform,
       'BALANCED',
       accountType === 'CENT' ? 'CENT' : 'STANDARD',
-      deposit ? parseFloat(deposit) : undefined
+      deposit ? parseFloat(deposit) : undefined,
+      pairFocus === 'ALL_PAIRS' ? 'ALL_PAIRS' : 'GOLD_ONLY'
     );
 
     return NextResponse.json({
