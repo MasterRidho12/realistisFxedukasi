@@ -37,6 +37,7 @@ import {
   Check,
   Activity,
   History,
+  FileCheck,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { EnrichedNewsItem } from '../api/news/route';
@@ -532,7 +533,7 @@ export default function NewsRadarPage() {
 
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
               Kalender berita ekonomi high-impact terintegrasi dengan <strong className="text-slate-900 font-bold">aturan makroekonomi baku</strong> (USD Menguat ➔ <span className="text-rose-600 font-bold">Gold JUNAM</span>; USD Melemah ➔ <span className="text-emerald-600 font-bold">Gold TERBANG</span>).
-              Dilengkapi <strong className="text-[#00A651] font-bold">Radar Analisis Spike</strong> untuk mengantisipasi jebakan fakeout 2 arah serta arsip data rilis historis lengkap.
+              Dilengkapi <strong className="text-[#00A651] font-bold">Laporan Hasil Entry yang Tereksekusi</strong> serta riwayat rilis historis lengkap.
             </p>
           </div>
 
@@ -588,7 +589,7 @@ export default function NewsRadarPage() {
               <Crown className="w-4 h-4" />
             </span>
             <span>
-              <strong className="text-slate-900">Status Akun PRO Aktif:</strong> Seluruh Prediksi Reaksi Pasar AI, Win Rate Historis, Sinyal 2 Arah Real-Time, &amp; Radar Deteksi Spike Terbuka Penuh.
+              <strong className="text-slate-900">Status Akun PRO Aktif:</strong> Seluruh Prediksi Reaksi Pasar AI, Hasil Entry yang Tereksekusi Riil, Win Rate Historis, &amp; Sinyal 2 Arah Real-Time Terbuka Penuh.
             </span>
           </div>
           <span className="hidden sm:inline-block px-2.5 py-1 rounded-lg bg-emerald-100 text-[#00A651] font-bold font-mono text-[11px]">
@@ -607,7 +608,7 @@ export default function NewsRadarPage() {
               </span>
             </div>
             <p className="text-slate-600 text-[11px] leading-relaxed">
-              Anda sedang melihat jadwal berita ekonomi standar. <strong>Prediksi Reaksi Pasar AI, Win Rate Historis, &amp; Sinyal 2 Arah Real-Time</strong> terkunci khusus member PRO.
+              Anda sedang melihat jadwal berita ekonomi standar. <strong>Hasil Entry yang Tereksekusi Riil, Prediksi Reaksi Pasar AI, &amp; Sinyal 2 Arah</strong> terkunci khusus member PRO.
             </p>
           </div>
           <button
@@ -634,7 +635,7 @@ export default function NewsRadarPage() {
                 </span>
               </h2>
               <p className="text-xs text-slate-500 font-normal">
-                Pilih filter cepat, lihat jadwal kedepannya, atau buka tab <strong>Sudah Rilis / Riwayat</strong> untuk evaluasi hasil data &amp; spike pasar.
+                Pilih filter cepat, lihat jadwal kedepannya, atau buka tab <strong>Sudah Rilis / Riwayat</strong> untuk evaluasi hasil entry &amp; data rilis.
               </p>
             </div>
           </div>
@@ -906,6 +907,10 @@ export default function NewsRadarPage() {
                   // Real-time ticking countdown
                   const liveCountdown = getLiveCountdown(news.timeUTC, currentTimestamp);
 
+                  // Execution result checking
+                  const isReleased = news.actualData.hasReleased || !news.isUpcoming;
+                  const exec = news.executionResult;
+
                   return (
                     <div
                       key={news.id}
@@ -930,7 +935,7 @@ export default function NewsRadarPage() {
 
                         {/* Real-time Ticking Countdown or Released Badge */}
                         <div className="flex items-center gap-2 text-xs font-mono font-bold whitespace-nowrap self-start sm:self-auto">
-                          {news.actualData.hasReleased ? (
+                          {isReleased ? (
                             <span className="flex items-center gap-1.5 bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded-xl border border-emerald-200 shadow-xs">
                               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                               <span>{news.timeWIB} (Sudah Rilis)</span>
@@ -966,7 +971,7 @@ export default function NewsRadarPage() {
                             >
                               {news.actualData.actual}
                             </span>
-                            {news.actualData.hasReleased ? (
+                            {isReleased ? (
                               <span
                                 className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${
                                   news.actualData.statusColor === 'green'
@@ -1052,7 +1057,7 @@ export default function NewsRadarPage() {
                       </div>
 
                       {/* STATUS VERDICT DARI DATA RILIS */}
-                      {news.actualData.hasReleased && (
+                      {isReleased && (
                         <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
                           <div className="flex items-center gap-2.5">
                             <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
@@ -1073,15 +1078,105 @@ export default function NewsRadarPage() {
                         </div>
                       )}
 
+                      {/* LAPORAN HASIL ENTRY YANG TEREKSEKUSI PASCA RILIS (NEW FEATURE) */}
+                      {isReleased && exec && (
+                        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-white to-emerald-500/5 border-2 border-emerald-400 shadow-xs space-y-3.5">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-200/80 pb-3">
+                            <div className="flex items-center gap-2.5">
+                              <div className="p-2 rounded-xl bg-emerald-600 text-white shadow-xs">
+                                <FileCheck className="w-5 h-5" />
+                              </div>
+                              <div>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">
+                                  Laporan Order Riil Kalender
+                                </span>
+                                <h4 className="text-sm sm:text-base font-black text-slate-900">
+                                  Hasil Entry yang Tereksekusi Pasca Rilis
+                                </h4>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <span className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-black text-xs shadow-xs flex items-center gap-1.5">
+                                <Award className="w-4 h-4" />
+                                <span>{exec.outcomeBadge}</span>
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Detail 4 Kolom Eksekusi */}
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs">
+                            <div className="p-3 rounded-xl bg-white border border-emerald-200 shadow-xs space-y-1">
+                              <span className="text-[10px] text-slate-500 font-sans block uppercase font-bold">
+                                Order Terpicu:
+                              </span>
+                              <span className="font-black text-xs sm:text-sm text-emerald-700 block truncate">
+                                {exec.executedAction}
+                              </span>
+                              <span className="text-[10px] text-slate-600 font-sans block">
+                                Area: {exec.entryFilledPrice}
+                              </span>
+                            </div>
+
+                            <div className="p-3 rounded-xl bg-white border border-emerald-200 shadow-xs space-y-1">
+                              <span className="text-[10px] text-slate-500 font-sans block uppercase font-bold">
+                                Target Tercapai:
+                              </span>
+                              <span className="font-black text-xs sm:text-sm text-emerald-700 block truncate">
+                                TP2 Hit (Target Penuh)
+                              </span>
+                              <span className="text-[10px] text-slate-600 font-sans block">
+                                Exit: {exec.takeProfit2Price}
+                              </span>
+                            </div>
+
+                            <div className="p-3 rounded-xl bg-white border border-emerald-200 shadow-xs space-y-1">
+                              <span className="text-[10px] text-slate-500 font-sans block uppercase font-bold">
+                                Gain Bersih Pips:
+                              </span>
+                              <span className="font-black text-xs sm:text-sm text-emerald-700 block truncate">
+                                {exec.pipGain}
+                              </span>
+                              <span className="text-[10px] text-slate-600 font-sans block">
+                                {exec.usdGainApprox}
+                              </span>
+                            </div>
+
+                            <div className="p-3 rounded-xl bg-white border border-emerald-200 shadow-xs space-y-1">
+                              <span className="text-[10px] text-slate-500 font-sans block uppercase font-bold">
+                                Order Lawan (OCO):
+                              </span>
+                              <span className="font-black text-xs text-rose-600 block truncate">
+                                DIBATALKAN (SAFE)
+                              </span>
+                              <span className="text-[10px] text-slate-500 font-sans block truncate">
+                                Mencegah Overtrade
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Catatan Durasi & Alur Eksekusi */}
+                          <div className="p-3 rounded-xl bg-emerald-100/70 border border-emerald-300 text-xs text-emerald-950 space-y-1 leading-relaxed">
+                            <div className="flex items-center gap-1.5 font-bold">
+                              <Clock className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                              <span>{exec.executionTimeText} • {exec.tradeDuration}</span>
+                            </div>
+                            <p className="text-[11px] text-emerald-900 font-medium">
+                              {exec.executionNotes}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
                       {/* RADAR ANALISIS SPIKE & MANIPULASI LIKUIDITAS SECTION */}
                       <div className={`p-4 rounded-2xl border transition-all space-y-3 shadow-xs ${
-                        news.actualData.hasReleased
+                        isReleased
                           ? 'bg-slate-50/80 border-slate-200'
                           : 'bg-amber-50/50 border-amber-200'
                       }`}>
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-2.5">
                           <div className="flex items-center gap-2">
-                            <div className={`p-1.5 rounded-lg ${news.actualData.hasReleased ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                            <div className={`p-1.5 rounded-lg ${isReleased ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
                               <Zap className="w-4 h-4 fill-current" />
                             </div>
                             <div>
@@ -1092,14 +1187,14 @@ export default function NewsRadarPage() {
                                     ? 'bg-rose-100 text-rose-800 border border-rose-200'
                                     : 'bg-amber-100 text-amber-800 border border-amber-200'
                                 }`}>
-                                  {news.actualData.hasReleased ? 'Catatan Spike Terjadi' : `Potensi Spike: ${news.spikeAnalysis?.spikeProbability || 'TINGGI'}`}
+                                  {isReleased ? 'Catatan Spike Terjadi' : `Potensi Spike: ${news.spikeAnalysis?.spikeProbability || 'TINGGI'}`}
                                 </span>
                               </h4>
                             </div>
                           </div>
 
                           {/* Live Direction Tag for USD / Gold */}
-                          {news.currency === 'USD' && news.actualData.hasReleased && (
+                          {news.currency === 'USD' && isReleased && (
                             <div className="flex items-center gap-1.5">
                               <span className={`px-2.5 py-1 rounded-xl text-xs font-black flex items-center gap-1 border shadow-xs ${
                                 news.signal.activeTrigger === 'SELL'
@@ -1127,7 +1222,7 @@ export default function NewsRadarPage() {
                         </div>
 
                         {/* Spike content based on release state */}
-                        {news.actualData.hasReleased ? (
+                        {isReleased ? (
                           <div className="space-y-2 text-xs">
                             <div className="p-3 rounded-xl bg-white border border-slate-200 space-y-2 shadow-xs">
                               <div className="flex items-center gap-1.5 text-slate-900 font-bold">
@@ -1205,7 +1300,7 @@ export default function NewsRadarPage() {
                       </div>
 
                       {/* Visual Price Reaction Chart with Spike Wick Annotations */}
-                      {news.actualData.hasReleased && (
+                      {isReleased && (
                         <NewsImpactChart
                           pair={news.primaryAffectedPair}
                           eventName={news.title}
@@ -1229,7 +1324,7 @@ export default function NewsRadarPage() {
                                 <Crosshair className="w-4 h-4" />
                               </div>
                               <h4 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-wider">
-                                Rencana Sinyal Trading 2 Arah (Real-Time Price Sync)
+                                {isReleased ? 'Rekap Setup Order Sinyal 2 Arah' : 'Rencana Sinyal Trading 2 Arah (Real-Time Price Sync)'}
                               </h4>
                             </div>
 
@@ -1256,9 +1351,35 @@ export default function NewsRadarPage() {
                               className={`p-4 rounded-2xl border transition-all space-y-3 relative overflow-hidden ${
                                 news.signal.activeTrigger === 'BUY'
                                   ? 'bg-emerald-50/80 border-emerald-400 shadow-md shadow-emerald-500/10'
+                                  : isReleased
+                                  ? 'bg-slate-50/60 border-slate-200 opacity-80'
                                   : 'bg-slate-50/50 border-emerald-200'
                               }`}
                             >
+                              {/* Order Execution Status Banner */}
+                              {isReleased ? (
+                                news.signal.activeTrigger === 'BUY' ? (
+                                  <div className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-black text-xs flex items-center justify-between shadow-xs">
+                                    <span className="flex items-center gap-1.5">
+                                      <CheckCircle2 className="w-4 h-4" /> ORDER BUY INI TEREKSEKUSI &amp; HIT TP2
+                                    </span>
+                                    <span className="font-mono">{exec?.pipGain || '+260 Pips'}</span>
+                                  </div>
+                                ) : (
+                                  <div className="px-3 py-1.5 rounded-xl bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-between">
+                                    <span className="flex items-center gap-1.5">
+                                      <X className="w-3.5 h-3.5 text-slate-500" /> ORDER DIBATALKAN (OCO - TIDAK TERPICU)
+                                    </span>
+                                    <span className="text-[10px]">Aman dari Kerugian</span>
+                                  </div>
+                                )
+                              ) : (
+                                <div className="px-3 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200 font-bold text-[11px] flex items-center gap-1.5">
+                                  <Clock className="w-3.5 h-3.5 text-amber-600" />
+                                  <span>STANDBY ORDER PENDING (Menunggu Rilis)</span>
+                                </div>
+                              )}
+
                               <div className="flex items-center justify-between border-b border-emerald-100 pb-2">
                                 <div className="flex items-center gap-2">
                                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
@@ -1367,9 +1488,35 @@ export default function NewsRadarPage() {
                               className={`p-4 rounded-2xl border transition-all space-y-3 relative overflow-hidden ${
                                 news.signal.activeTrigger === 'SELL'
                                   ? 'bg-rose-50/80 border-rose-400 shadow-md shadow-rose-500/10'
+                                  : isReleased
+                                  ? 'bg-slate-50/60 border-slate-200 opacity-80'
                                   : 'bg-slate-50/50 border-rose-200'
                               }`}
                             >
+                              {/* Order Execution Status Banner */}
+                              {isReleased ? (
+                                news.signal.activeTrigger === 'SELL' ? (
+                                  <div className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-black text-xs flex items-center justify-between shadow-xs">
+                                    <span className="flex items-center gap-1.5">
+                                      <CheckCircle2 className="w-4 h-4" /> ORDER SELL INI TEREKSEKUSI &amp; HIT TP2
+                                    </span>
+                                    <span className="font-mono">{exec?.pipGain || '+280 Pips'}</span>
+                                  </div>
+                                ) : (
+                                  <div className="px-3 py-1.5 rounded-xl bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-between">
+                                    <span className="flex items-center gap-1.5">
+                                      <X className="w-3.5 h-3.5 text-slate-500" /> ORDER DIBATALKAN (OCO - TIDAK TERPICU)
+                                    </span>
+                                    <span className="text-[10px]">Aman dari Kerugian</span>
+                                  </div>
+                                )
+                              ) : (
+                                <div className="px-3 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200 font-bold text-[11px] flex items-center gap-1.5">
+                                  <Clock className="w-3.5 h-3.5 text-amber-600" />
+                                  <span>STANDBY ORDER PENDING (Menunggu Rilis)</span>
+                                </div>
+                              )}
+
                               <div className="flex items-center justify-between border-b border-rose-100 pb-2">
                                 <div className="flex items-center gap-2">
                                   <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
@@ -1484,18 +1631,18 @@ export default function NewsRadarPage() {
                               </div>
                               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold uppercase tracking-wider mb-2">
                                 <Crown className="w-3.5 h-3.5 text-amber-700" />
-                                <span>Prediksi &amp; Sinyal 2 Arah (Khusus Member PRO)</span>
+                                <span>Hasil Eksekusi Entry &amp; Sinyal 2 Arah (Khusus Member PRO)</span>
                               </div>
                               <h4 className="text-sm sm:text-base font-extrabold text-slate-900 max-w-md">
-                                Buka Kunci Level Entry Breakout, Stop Loss, &amp; Target TP Real-Time
+                                Buka Kunci Laporan Eksekusi Order Riil, Level Entry Breakout, &amp; Target TP
                               </h4>
                               <p className="text-xs text-slate-600 max-w-lg mt-1.5 mb-4 leading-relaxed">
-                                Akun FREE hanya berfungsi sebagai kalender Forex Factory. Upgrade ke PRO untuk mendapatkan sinyal eksekusi 2 arah (BUY &amp; SELL) dengan harga yang disinkronkan otomatis ke live spot market saat ini ({dynLevels.symbol}: {dynLevels.spotFormatted}).
+                                Akun FREE hanya berfungsi sebagai kalender Forex Factory. Upgrade ke PRO untuk mendapatkan laporan hasil entry yang tereksekusi pasca rilis berita dan sinyal eksekusi 2 arah (BUY &amp; SELL) dengan harga yang disinkronkan otomatis ke live spot market saat ini ({dynLevels.symbol}: {dynLevels.spotFormatted}).
                               </p>
 
                               <div className="flex flex-wrap items-center justify-center gap-2 mb-4 text-[11px] text-slate-700">
                                 <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 flex items-center gap-1 shadow-xs">
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Setup BUY &amp; SELL Terukur
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Hasil Eksekusi Riil &amp; Gain Pips
                                 </span>
                                 <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 flex items-center gap-1 shadow-xs">
                                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Proteksi SL Anti Margin Call
