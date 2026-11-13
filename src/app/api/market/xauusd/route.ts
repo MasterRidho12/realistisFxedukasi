@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 
 // In-memory cache for live TradingView Gold Spot (XAUUSD)
-let cachedGoldPrice = 4176.50;
-let cachedBid = 4176.35;
-let cachedAsk = 4176.65;
+let cachedGoldPrice = 3881.00;
+let cachedBid = 3880.85;
+let cachedAsk = 3881.15;
 let cachedChange = 0.15;
-let cachedHigh = 4192.50;
-let cachedLow = 4147.20;
+let cachedHigh = 3923.09;
+let cachedLow = 3867.67;
 let lastFetchTime = 0;
 
 export async function GET() {

@@ -231,13 +231,13 @@ const initialRequests: SubscriptionRequest[] = [
 
 const defaultMarket: MarketPrice = {
   symbol: 'XAUUSD',
-  price: 4176.50,
-  bid: 4176.35,
-  ask: 4176.65,
+  price: 3881.00,
+  bid: 3880.85,
+  ask: 3881.15,
   spread: 0.30,
   change24h: 0.15,
-  high24h: 4192.50,
-  low24h: 4147.20,
+  high24h: 3923.09,
+  low24h: 3867.67,
   updatedAt: new Date().toISOString(),
   isLive: true,
 };
@@ -254,7 +254,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [pendingCheckoutPlan, setPendingCheckoutPlan] = useState<PaymentPlanKey | null>(null);
   const [marketPrice, setMarketPrice] = useState<MarketPrice>(defaultMarket);
   const [priceTickDirection, setPriceTickDirection] = useState<'up' | 'down' | 'neutral'>('neutral');
-  const prevPriceRef = useRef<number>(4176.50);
+  const prevPriceRef = useRef<number>(3881.00);
 
   const [journals, setJournals] = useState<JournalRecord[]>([]);
   const [siteSettings, setSiteSettings] = useState<AdminSiteSettings>(defaultSiteSettings);
