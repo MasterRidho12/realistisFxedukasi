@@ -13,6 +13,7 @@ interface NewsImpactChartProps {
   pipsGain?: string;
   direction?: 'BUY' | 'SELL' | 'BULLISH' | 'BEARISH';
   dateStr?: string;
+  spikeText?: string;
 }
 
 export default function NewsImpactChart({
@@ -25,6 +26,7 @@ export default function NewsImpactChart({
   pipsGain = '+185 Pips',
   direction = 'SELL',
   dateStr = 'Rilis Resmi',
+  spikeText,
 }: NewsImpactChartProps) {
   const [chartView, setChartView] = useState<'candle' | 'deviation'>('candle');
 
@@ -42,7 +44,7 @@ export default function NewsImpactChart({
           </span>
           <div>
             <span className="font-mono font-bold text-slate-300">{pair}</span>
-            <span className="text-[10px] text-slate-500 ml-1.5 hidden sm:inline">Grafik Reaksi Berita</span>
+            <span className="text-[10px] text-slate-500 ml-1.5 hidden sm:inline">Grafik Reaksi Berita &amp; Spike Wick</span>
           </div>
         </div>
 
@@ -55,7 +57,7 @@ export default function NewsImpactChart({
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            Grafik Reaksi M5
+            Grafik Reaksi M5 &amp; Spike
           </button>
           <button
             onClick={() => setChartView('deviation')}
@@ -87,15 +89,15 @@ export default function NewsImpactChart({
 
             {/* Pre-News Consolidation Area */}
             <rect x="20" y="80" width="100" height="30" fill="#334155" fillOpacity="0.2" rx="4" />
-            <text x="30" y="72" fill="#94A3B8" fontSize="8" fontFamily="monospace">Pre-News Consolidation</text>
+            <text x="30" y="72" fill="#94A3B8" fontSize="8" fontFamily="monospace">Pre-News Range</text>
 
             {/* Entry Level Dashed Line */}
             <line x1="20" y1="95" x2="400" y2="95" stroke="#4ADE80" strokeWidth="1" strokeDasharray="3 3" />
             <text x="320" y="90" fill="#4ADE80" fontSize="8" fontFamily="monospace">ENTRY LEVEL</text>
 
             {/* Stop Loss Line */}
-            <line x1="20" y1={isSell ? "60" : "130"} x2="400" y2={isSell ? "60" : "130"} stroke="#EF4444" strokeWidth="1" strokeDasharray="2 2" />
-            <text x="330" y={isSell ? "55" : "140"} fill="#EF4444" fontSize="8" fontFamily="monospace">SL FIXED 30 PIPS</text>
+            <line x1="20" y1={isSell ? "55" : "135"} x2="400" y2={isSell ? "55" : "135"} stroke="#EF4444" strokeWidth="1" strokeDasharray="2 2" />
+            <text x="330" y={isSell ? "50" : "145"} fill="#EF4444" fontSize="8" fontFamily="monospace">SL FIXED BUFFER</text>
 
             {/* Price Movement Wave Path */}
             {isSell ? (
@@ -107,9 +109,23 @@ export default function NewsImpactChart({
                   stroke={strokeColor}
                   strokeWidth="2.5"
                 />
-                {/* News Spike Candle */}
-                <line x1="150" y1="65" x2="150" y2="160" stroke="#EF4444" strokeWidth="1.5" />
+                {/* News Spike Candle with UPWARD Wick (Stop Hunt first before dump) */}
+                <line x1="150" y1="60" x2="150" y2="160" stroke="#EF4444" strokeWidth="1.5" />
                 <rect x="146" y="85" width="8" height="65" fill="#EF4444" rx="1" />
+
+                {/* Upper Wick Annotation (Spike Naik Dulu) */}
+                <circle cx="150" cy="60" r="3" fill="#F87171" />
+                <line x1="150" y1="60" x2="165" y2="40" stroke="#F87171" strokeWidth="1" strokeDasharray="2 2" />
+                <text x="170" y="42" fill="#FCA5A5" fontSize="8" fontFamily="sans-serif" fontWeight="bold">
+                  ↑ 1. Spike Naik Dulu (+35 Pips Stop Hunt)
+                </text>
+
+                {/* Main Plunge Annotation (Junam Turun) */}
+                <circle cx="150" cy="150" r="3" fill="#DC2626" />
+                <line x1="150" y1="150" x2="165" y2="168" stroke="#DC2626" strokeWidth="1" strokeDasharray="2 2" />
+                <text x="170" y="172" fill="#EF4444" fontSize="8.5" fontFamily="sans-serif" fontWeight="black">
+                  ↓ 2. LALU JUNAM TURUN ({pipsGain})
+                </text>
               </>
             ) : (
               <>
@@ -120,31 +136,44 @@ export default function NewsImpactChart({
                   stroke={strokeColor}
                   strokeWidth="2.5"
                 />
-                {/* News Spike Candle */}
-                <line x1="150" y1="20" x2="150" y2="115" stroke="#00A651" strokeWidth="1.5" />
+                {/* News Spike Candle with DOWNWARD Wick (Fakeout drop first before surge) */}
+                <line x1="150" y1="20" x2="150" y2="125" stroke="#00A651" strokeWidth="1.5" />
                 <rect x="146" y="35" width="8" height="65" fill="#00A651" rx="1" />
+
+                {/* Lower Wick Annotation (Spike Turun Dulu) */}
+                <circle cx="150" cy="125" r="3" fill="#34D399" />
+                <line x1="150" y1="125" x2="165" y2="145" stroke="#34D399" strokeWidth="1" strokeDasharray="2 2" />
+                <text x="170" y="148" fill="#6EE7B7" fontSize="8" fontFamily="sans-serif" fontWeight="bold">
+                  ↓ 1. Spike Turun Dulu (-25 Pips Fakeout Hunt)
+                </text>
+
+                {/* Main Surge Annotation (Terbang Reli) */}
+                <circle cx="150" cy="35" r="3" fill="#059669" />
+                <line x1="150" y1="35" x2="165" y2="22" stroke="#059669" strokeWidth="1" strokeDasharray="2 2" />
+                <text x="170" y="24" fill="#10B981" fontSize="8.5" fontFamily="sans-serif" fontWeight="black">
+                  ↑ 2. LALU TERBANG RELI ({pipsGain})
+                </text>
               </>
             )}
 
             {/* Release Trigger Point Tag */}
-            <circle cx="150" cy={isSell ? "85" : "105"} r="4" fill="#F59E0B" />
-            <text x="160" y="45" fill="#F59E0B" fontSize="9" fontWeight="bold">
-              Rilis Berita ⚡
+            <circle cx="150" cy={isSell ? "85" : "100"} r="4" fill="#F59E0B" />
+            <text x="125" y={isSell ? "105" : "90"} fill="#F59E0B" fontSize="9" fontWeight="bold">
+              ⚡ Rilis
             </text>
 
             {/* TP Hit Target Marker */}
             <circle cx="340" cy={isSell ? "165" : "20"} r="4" fill="#00A651" />
-            <text x="270" y={isSell ? "150" : "15"} fill="#4ADE80" fontSize="9" fontWeight="bold">
+            <text x="270" y={isSell ? "145" : "35"} fill="#4ADE80" fontSize="9" fontWeight="bold">
               TP HIT ({pipsGain}) ✓
             </text>
           </svg>
 
           {/* Bottom Indicators in Chart */}
           <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between text-[9px] font-mono text-slate-400">
-            <span>H-15 Mins</span>
-            <span className="text-amber-400 font-bold">Detik Rilis (Spike)</span>
-            <span>+30 Mins Retest</span>
-            <span className="text-[#4ADE80] font-bold">Target Profit</span>
+            <span>Pre-News Range</span>
+            <span className="text-amber-400 font-bold">Spike Fakeout ➔ Reversal</span>
+            <span className="text-[#4ADE80] font-bold">Target TP Penuh</span>
           </div>
         </div>
       ) : (
@@ -191,14 +220,22 @@ export default function NewsImpactChart({
         </div>
       )}
 
+      {/* Spike explanation note if provided */}
+      {spikeText && (
+        <div className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+          <Zap className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <span><strong className="text-white">Analisis Spike:</strong> {spikeText}</span>
+        </div>
+      )}
+
       {/* Footer Pill of Chart */}
       <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono pt-1 border-t border-slate-800/80">
         <span className="flex items-center gap-1">
-          <ShieldAlert className="w-3 h-3 text-amber-400" />
-          <span>Aturan SOP: Hindari entry 5 detik pertama</span>
+          <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
+          <span>SOP Anti-Spike: Hindari Instant Order di detik 0-15</span>
         </span>
         <span className="text-[#4ADE80] font-bold">
-          Gain: {pipsGain}
+          Gain Bersih: {pipsGain}
         </span>
       </div>
     </div>
