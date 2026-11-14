@@ -1565,7 +1565,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               SIMULASI MANAJEMEN RISIKO &amp; PROTEKSI MODAL
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya
+              Trading Realistis: Fokus Menjaga Money Manajemen, Trading Bukan Berdasarkan Spekulasi
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto">
               RealistisFx tidak pernah menjanjikan keuntungan pasti atau melipatgandakan saldo secara instan. Keberhasilan trading jangka panjang dibangun dari disiplin membatasi risiko maksimal 1% - 2% per transaksi dengan rasio Risk to Reward yang sehat.
@@ -1769,7 +1769,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   {/* Copywriting Baru (Point 3) */}
                   <div className="mt-3 p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/90 text-left space-y-2">
                     <div className="text-xs font-black text-[#005A36] tracking-tight uppercase">
-                      Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya
+                      Trading Realistis: Fokus Menjaga Money Manajemen, Trading Bukan Berdasarkan Spekulasi
                     </div>
                     <div className="text-[11px] font-extrabold text-slate-800">
                       Edukasi Bisnis Trading Forex Bertahap &amp; Terarah.

@@ -296,7 +296,7 @@ export default function DashboardOverviewPage() {
               SOP REALISTISFX • ANTI MARGIN CALL
             </div>
             <h2 className="text-sm sm:text-base font-black text-white tracking-tight">
-              Trading Realistis: Fokus Menjaga Modal, Bukan Skema Cepat Kaya
+              Trading Realistis: Fokus Menjaga Money Manajemen, Trading Bukan Berdasarkan Spekulasi
             </h2>
             <div className="text-xs sm:text-sm font-extrabold text-emerald-200">
               Edukasi Bisnis Trading Forex Bertahap &amp; Terarah.
