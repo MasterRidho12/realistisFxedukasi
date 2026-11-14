@@ -2029,11 +2029,11 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               },
               {
                 q: 'Bagaimana cara sinyal & materi dikirimkan ke saya?',
-                a: 'Materi dan sinyal langsung dikirimkan melalui 2 saluran instan: (1) Push Notification di Kanal Edukasi Telegram Real-Time, dan (2) Live Feed di Web Member Area RealistisFx. Anda akan menerima titik Entry, Stop Loss, TP1, dan TP2.',
+                a: 'Seluruh sinyal trading, News Radar real-time, kalkulator lot, dan modul edukasi masterclass diakses 100% langsung di Web Member Area RealistisFx. Anda akan melihat rencana eksekusi lengkap dengan skenario Pending Order, Stop Loss fixed terukur, Take Profit bertahap, dan kalkulasi Risk Management tanpa perlu instalasi bot atau aplikasi pihak ketiga.',
               },
               {
                 q: 'Apakah ada strategi Martingale atau Averaging tanpa batas?',
-                a: 'TIDAK ADA. Kami sangat menentang Martingale. Seluruh sistem kami memiliki Stop Loss fixed yang terukur (30-50 pips di XAUUSD) dengan Risk-to-Reward minimum 1:2 hingga 1:3. Prioritas nomor 1 kami adalah proteksi modal.',
+                a: 'TIDAK ADA. Kami sangat menentang teknik spekulatif seperti Martingale atau Averaging tanpa batas yang berisiko Margin Call (MC). Strategi kami 100% disiplin menggunakan Pending Order (Buy Stop, Sell Stop, Buy Limit, Sell Limit) yang terencana secara teknikal sebelum market bergerak. Setiap transaksi wajib dilengkapi Stop Loss (SL) fixed terukur untuk membatasi risiko, target Take Profit (TP) yang jelas, serta rasio Risk-to-Reward (RR) teruji minimum 1:2 hingga 1:3. Prioritas nomor 1 kami adalah proteksi modal (Capital Preservation) dan konsistensi profit jangka panjang.',
               },
               {
                 q: 'Apakah RealistisFx menjamin profit pasti atau melipatgandakan modal?',

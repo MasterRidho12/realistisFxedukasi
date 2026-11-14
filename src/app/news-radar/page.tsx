@@ -43,7 +43,7 @@ import {
   ArrowDownRight,
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
-import { EnrichedNewsItem, LiveMarketQuote, DEFAULT_MARKET_QUOTES } from '../api/news/route';
+import { EnrichedNewsItem, LiveMarketQuote, DEFAULT_MARKET_QUOTES } from '@/types/news';
 import NewsImpactChart from '@/components/common/NewsImpactChart';
 
 const CURRENCIES = ['ALL', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'NZD', 'CHF'];
