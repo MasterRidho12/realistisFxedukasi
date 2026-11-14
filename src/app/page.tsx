@@ -307,18 +307,15 @@ export default function DashboardOverviewPage() {
           </div>
         </div>
 
-        {/* Banner 2: Secondary Announcement / Promo Edukasi (Persis TF) */}
+        {/* Banner 2: Fokus Menjaga Money Management */}
         <div className="rounded-2xl bg-[#005A36] text-white p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-[#00472B]">
-          <div className="flex items-start gap-3">
-            <div className="p-1 rounded-full bg-emerald-300/20 text-emerald-200 shrink-0 mt-0.5">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="p-1 rounded-full bg-emerald-300/20 text-emerald-200 shrink-0 mt-0.5 sm:mt-0">
               <Info className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-xs sm:text-sm font-bold text-white">
-                Kurikulum Edukasi Bisnis Forex Level 0 - 5
-              </h3>
-              <p className="text-xs text-emerald-100 mt-0.5">
-                Buka seluruh modul masterclass video, analisis teknikal, &amp; SOP Money Management 1% Anti-MC.
+              <p className="text-xs sm:text-sm font-bold text-white leading-relaxed">
+                Fokus menjaga money manajemen, trading bukan berdasarkan spekulasi Signal news dan setup SnR
               </p>
             </div>
           </div>
