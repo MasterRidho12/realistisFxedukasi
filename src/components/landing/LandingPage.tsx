@@ -1085,22 +1085,20 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           <div className="flex items-center justify-center gap-2 border-b border-slate-200 pb-4">
             <button
               onClick={() => setTrackRecordTab('HISTORICAL')}
-              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer flex items-center gap-2 ${
-                trackRecordTab === 'HISTORICAL'
-                  ? 'bg-[#00A651] text-white shadow-md shadow-[#00A651]/20'
-                  : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-              }`}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer flex items-center gap-2 ${trackRecordTab === 'HISTORICAL'
+                ? 'bg-[#00A651] text-white shadow-md shadow-[#00A651]/20'
+                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                }`}
             >
               <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
               <span>Sinyal Berita yang Baru Keluar &amp; Terverifikasi ({historicalSignals.length} Event)</span>
             </button>
             <button
               onClick={() => setTrackRecordTab('LIVE_NEWS')}
-              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer flex items-center gap-2 ${
-                trackRecordTab === 'LIVE_NEWS'
-                  ? 'bg-[#00A651] text-white shadow-md shadow-[#00A651]/20'
-                  : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-              }`}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer flex items-center gap-2 ${trackRecordTab === 'LIVE_NEWS'
+                ? 'bg-[#00A651] text-white shadow-md shadow-[#00A651]/20'
+                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                }`}
             >
               <Clock className="w-4 h-4" />
               <span>Kalender Rilis Berita Terkini ({filteredNewsEvents.length})</span>
@@ -1118,11 +1116,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                     <button
                       key={curr}
                       onClick={() => setSelectedCurrency(curr)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        selectedCurrency === curr
-                          ? 'bg-slate-900 text-white'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                      }`}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${selectedCurrency === curr
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
                     >
                       {curr === 'USD' ? 'USD (XAUUSD / Emas)' : curr}
                     </button>
@@ -1173,11 +1170,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                                   {item.title}
                                 </span>
                                 <span
-                                  className={`text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider ${
-                                    item.impact === 'High'
-                                      ? 'bg-rose-50 text-rose-600 border border-rose-200'
-                                      : 'bg-amber-50 text-amber-700 border border-amber-200'
-                                  }`}
+                                  className={`text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider ${item.impact === 'High'
+                                    ? 'bg-rose-50 text-rose-600 border border-rose-200'
+                                    : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                    }`}
                                 >
                                   {item.impact} Impact
                                 </span>
@@ -1194,11 +1190,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                             {/* Status Release Tag */}
                             <div className="text-right shrink-0">
                               <span
-                                className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-extrabold px-2.5 py-1 rounded-xl ${
-                                  item.actualData?.hasReleased
-                                    ? 'bg-emerald-50 text-[#00A651] border border-emerald-200'
-                                    : 'bg-amber-50 text-amber-800 border border-amber-200 animate-pulse'
-                                }`}
+                                className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-extrabold px-2.5 py-1 rounded-xl ${item.actualData?.hasReleased
+                                  ? 'bg-emerald-50 text-[#00A651] border border-emerald-200'
+                                  : 'bg-amber-50 text-amber-800 border border-amber-200 animate-pulse'
+                                  }`}
                               >
                                 {item.actualData?.hasReleased ? (
                                   <>
@@ -1330,11 +1325,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   <button
                     key={cat}
                     onClick={() => setSignalCategory(cat)}
-                    className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                      signalCategory === cat
-                        ? 'bg-[#00A651] text-white shadow-md shadow-[#00A651]/20'
-                        : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-                    }`}
+                    className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${signalCategory === cat
+                      ? 'bg-[#00A651] text-white shadow-md shadow-[#00A651]/20'
+                      : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                      }`}
                   >
                     {cat === 'RECENT' ? (
                       <>
@@ -1679,7 +1673,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                   KOMITMEN TRADING REALISTIS
                 </span>
               </div>
-              
+
               <ul className="space-y-2.5 text-xs text-slate-700">
                 <li className="flex items-start gap-2">
                   <span className="text-[#00A651] font-bold">✓</span>
@@ -2023,21 +2017,18 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 q: 'Apakah saya wajib pindah atau daftar broker tertentu?',
                 a: 'Sama sekali TIDAK. Anda bebas menggunakan broker lokal (Bappebti) maupun internasional mana pun yang sudah Anda percayai. Sinyal kami berbasis harga spot pasar global yang dapat diaplikasikan di MetaTrader 4, MetaTrader 5, maupun TradingView.',
               },
-              {
-                q: 'Berapa modal minimum yang dibutuhkan untuk mengikuti materi edukasi?',
-                a: 'Anda bisa memulai dari modal terjangkau mulai dari $100 s/d $500 untuk Akun Standard atau Akun Cent dengan lot aman 0.01. Panduan pemilihan ukuran lot dan kalkulator risiko sudah terintegrasi di sistem.',
-              },
+
               {
                 q: 'Bagaimana cara sinyal & materi dikirimkan ke saya?',
                 a: 'Seluruh sinyal trading, News Radar real-time, kalkulator lot, dan modul edukasi masterclass diakses 100% langsung di Web Member Area RealistisFx. Anda akan melihat rencana eksekusi lengkap dengan skenario Pending Order, Stop Loss fixed terukur, Take Profit bertahap, dan kalkulasi Risk Management tanpa perlu instalasi bot atau aplikasi pihak ketiga.',
               },
               {
                 q: 'Apakah ada strategi Martingale atau Averaging tanpa batas?',
-                a: 'TIDAK ADA. Kami sangat menentang teknik spekulatif seperti Martingale atau Averaging tanpa batas yang berisiko Margin Call (MC). Strategi kami 100% disiplin menggunakan Pending Order (Buy Stop, Sell Stop, Buy Limit, Sell Limit) yang terencana secara teknikal sebelum market bergerak. Setiap transaksi wajib dilengkapi Stop Loss (SL) fixed terukur untuk membatasi risiko, target Take Profit (TP) yang jelas, serta rasio Risk-to-Reward (RR) teruji minimum 1:2 hingga 1:3. Prioritas nomor 1 kami adalah proteksi modal (Capital Preservation) dan konsistensi profit jangka panjang.',
+                a: 'Realistisfx edukasi tidak menggunakan metode seperti itu, metode yang dipakai selalu menggunakan pending order, Stop Loss, take profit dan Risk and Reward 1:2 atau menyesuaikan kenyamanan Traders.',
               },
               {
                 q: 'Apakah RealistisFx menjamin profit pasti?',
-                a: 'Sama sekali TIDAK ADA jaminan profit pasti. RealistisFx selalu mengedukasikan manajemen risiko yang terukur, perencanaan Stop Loss (SL) yang disiplin, serta evaluasi trading yang konsisten. Pasar finansial memiliki dinamika fluktuasi harga, sehingga prioritas utama kami adalah mengedukasi trader untuk melindungi modal (Capital Preservation) dan menghindari risiko Margin Call (MC).',
+                a: 'Sama sekali tidak menjamin profit besar, berbisnis secara realistis adalah hal yang sangat prioritas yang harus diedukasikan, Realistisfx edukasi selalu fokus pada seberapa besar resiko ketika masuk market atau mengukur berapa persen resiko setiap transaksi ketika masuk market.',
               },
               {
                 q: 'Bagaimana cara pembayaran Paket Edukasi Rp 250.000 / bulan?',
@@ -2166,19 +2157,19 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 {authMode === 'forgot-password'
                   ? 'Reset Kata Sandi Akun'
                   : pendingCheckoutPlan
-                  ? 'Masuk / Daftar untuk Melanjutkan Pembelian'
-                  : authMode === 'login'
-                  ? 'Masuk ke Member Area'
-                  : 'Daftar Akun RealistisFx'}
+                    ? 'Masuk / Daftar untuk Melanjutkan Pembelian'
+                    : authMode === 'login'
+                      ? 'Masuk ke Member Area'
+                      : 'Daftar Akun RealistisFx'}
               </h3>
               <p className="text-xs text-slate-500">
                 {authMode === 'forgot-password'
                   ? 'Verifikasi 6-digit kode OTP ke email untuk membuat kata sandi baru'
                   : pendingCheckoutPlan
-                  ? 'Akun trader diperlukan agar modul & fasilitas aktif ke akun Anda'
-                  : authMode === 'login'
-                  ? 'Akses dashboard akademi & panduan trading Anda'
-                  : 'Mulai dengan Akun Edukasi Dasar Gratis atau Akses Modul Penuh'}
+                    ? 'Akun trader diperlukan agar modul & fasilitas aktif ke akun Anda'
+                    : authMode === 'login'
+                      ? 'Akses dashboard akademi & panduan trading Anda'
+                      : 'Mulai dengan Akun Edukasi Dasar Gratis atau Akses Modul Penuh'}
               </p>
             </div>
 
@@ -2216,11 +2207,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                     setAuthMode('register');
                     setAuthError('');
                   }}
-                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                    authMode === 'register'
-                      ? 'bg-[#00A651] text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${authMode === 'register'
+                    ? 'bg-[#00A651] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                    }`}
                 >
                   Daftar Baru
                 </button>
@@ -2230,11 +2220,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                     setAuthMode('login');
                     setAuthError('');
                   }}
-                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                    authMode === 'login'
-                      ? 'bg-[#00A651] text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${authMode === 'login'
+                    ? 'bg-[#00A651] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                    }`}
                 >
                   Sudah Ada Akun
                 </button>
@@ -2637,8 +2626,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                         ? 'Masuk & Lanjut ke Pembayaran QRIS →'
                         : 'Daftar & Lanjut ke Pembayaran QRIS →'
                       : authMode === 'login'
-                      ? 'Masuk ke Dashboard'
-                      : 'Daftar Akun Sekarang'}
+                        ? 'Masuk ke Dashboard'
+                        : 'Daftar Akun Sekarang'}
                   </span>
                 </button>
 
