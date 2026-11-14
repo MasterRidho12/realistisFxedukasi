@@ -423,7 +423,7 @@ export default function DashboardOverviewPage() {
               </h2>
             </div>
             <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
-              Materi disusun berseri seperti petualangan per season (ala One Piece) yang terarah &amp; membuka mindset bisnis forex dari nol. Mulai dari sejarah uang purba hingga kemandirian merakit sistem trading bebas Margin Call.
+              Materi ini disusun rapih sedemikian mungkin untuk memahami bisnis trading forex, terdapat 20 season video RealistisFx edukasi dari sejarah hingga bisnis trading forex saat ini.
             </p>
           </div>
 
