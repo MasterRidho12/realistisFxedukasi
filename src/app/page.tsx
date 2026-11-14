@@ -194,24 +194,24 @@ export default function DashboardOverviewPage() {
       icon: Zap,
     },
     {
-      title: 'Analisa Market',
-      href: '/watchlist',
-      icon: LineChart,
-    },
-    {
-      title: 'Kalkulator Lot',
-      href: '/calculator',
-      icon: Calculator,
-    },
-    {
       title: 'News & Event',
       href: '/news-radar',
       icon: Radar,
     },
     {
+      title: 'Analisa Market',
+      href: '/watchlist',
+      icon: LineChart,
+    },
+    {
       title: 'Jurnal Trading',
       href: '/journal',
       icon: BookOpenCheck,
+    },
+    {
+      title: 'Kalkulator Lot',
+      href: '/calculator',
+      icon: Calculator,
     },
     {
       title: 'Bantuan CS',

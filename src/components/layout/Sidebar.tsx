@@ -105,11 +105,11 @@ export default function Sidebar() {
     proOnly?: boolean;
   }> = [
     {
-      name: 'Kalkulator Lot Aman Anti-MC Meminimalisir Risiko',
-      href: '/calculator',
-      icon: Calculator,
-      badge: 'Core SOP',
-      badgeColor: 'green',
+      name: 'News Sentiment Radar',
+      href: '/news-radar',
+      icon: Radar,
+      badge: 'NFP & CPI',
+      badgeColor: 'blue',
     },
     {
       name: 'Analisa Market (S&R)',
@@ -118,17 +118,17 @@ export default function Sidebar() {
       badge: 'XAU & Forex',
     },
     {
-      name: 'News Sentiment Radar',
-      href: '/news-radar',
-      icon: Radar,
-      badge: 'NFP & CPI',
-      badgeColor: 'blue',
-    },
-    {
       name: 'Smart Trading Journal',
       href: '/journal',
       icon: BookOpenCheck,
       badge: 'Auto Sync',
+      badgeColor: 'green',
+    },
+    {
+      name: 'Kalkulator Lot Aman Anti-MC Meminimalisir Risiko',
+      href: '/calculator',
+      icon: Calculator,
+      badge: 'Core SOP',
       badgeColor: 'green',
     },
   ];

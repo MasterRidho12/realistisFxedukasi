@@ -268,7 +268,7 @@ let lastQuotesFetch = 0;
 /**
  * Fetch real-time live quotes and classic technical SNR for Gold & Forex from TradingView Scanner
  */
-export async function getLiveTradingViewQuotes(): Promise<Record<string, LiveMarketQuote>> {
+async function getLiveTradingViewQuotes(): Promise<Record<string, LiveMarketQuote>> {
   const now = Date.now();
   if (now - lastQuotesFetch < 8000) {
     return cachedQuotes;
