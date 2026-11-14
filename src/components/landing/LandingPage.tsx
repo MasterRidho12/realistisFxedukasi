@@ -2036,8 +2036,8 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                 a: 'TIDAK ADA. Kami sangat menentang teknik spekulatif seperti Martingale atau Averaging tanpa batas yang berisiko Margin Call (MC). Strategi kami 100% disiplin menggunakan Pending Order (Buy Stop, Sell Stop, Buy Limit, Sell Limit) yang terencana secara teknikal sebelum market bergerak. Setiap transaksi wajib dilengkapi Stop Loss (SL) fixed terukur untuk membatasi risiko, target Take Profit (TP) yang jelas, serta rasio Risk-to-Reward (RR) teruji minimum 1:2 hingga 1:3. Prioritas nomor 1 kami adalah proteksi modal (Capital Preservation) dan konsistensi profit jangka panjang.',
               },
               {
-                q: 'Apakah RealistisFx menjamin profit pasti atau melipatgandakan modal?',
-                a: 'Sama sekali TIDAK ADA jaminan profit pasti atau penggandaan modal. Nama kami "RealistisFx" karena kami menjunjung tinggi kejujuran dan edukasi realistis: pasar finansial selalu memiliki risiko fluktuasi harga. Layanan kami adalah edukasi bisnis, analisis probabilitas statistik, money management ketat (risk 1-2% per trade), dan tools dengan Stop Loss terukur demi melindungi modal Anda dari kehancuran Margin Call.',
+                q: 'Apakah RealistisFx menjamin profit pasti?',
+                a: 'Sama sekali TIDAK ADA jaminan profit pasti. RealistisFx selalu mengedukasikan manajemen risiko yang terukur, perencanaan Stop Loss (SL) yang disiplin, serta evaluasi trading yang konsisten. Pasar finansial memiliki dinamika fluktuasi harga, sehingga prioritas utama kami adalah mengedukasi trader untuk melindungi modal (Capital Preservation) dan menghindari risiko Margin Call (MC).',
               },
               {
                 q: 'Bagaimana cara pembayaran Paket Edukasi Rp 250.000 / bulan?',
@@ -2080,7 +2080,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
           </div>
 
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
-            Tinggalkan Tebak-tebakan. Bangun Mindset Bisnis Trading Forex Bersama RealistisFx.
+            Bangun Mindset Bisnis Trading Forex Bersama RealistisFx.
           </h2>
 
           <p className="text-xs sm:text-base text-emerald-100 max-w-2xl mx-auto font-normal">
