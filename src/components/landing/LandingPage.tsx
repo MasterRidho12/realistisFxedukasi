@@ -2015,7 +2015,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               },
               {
                 q: 'Apakah saya wajib pindah atau daftar broker tertentu?',
-                a: 'Sama sekali TIDAK. Anda bebas menggunakan broker lokal (Bappebti) maupun internasional mana pun yang sudah Anda percayai. Sinyal kami berbasis harga spot pasar global yang dapat diaplikasikan di MetaTrader 4, MetaTrader 5, maupun TradingView.',
+                a: 'Sama sekali tidak, akan tetapi di sarankan untuk memakai broker lokal karena tujuannya untuk keamanan dana nasabah/client, selain itu nasabah bisa mempermudah komunikasi ketika ada kendala apapun dan nasabah bisa mengunjungi kantor Broker tersebut.',
               },
 
               {
