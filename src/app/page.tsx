@@ -302,7 +302,7 @@ export default function DashboardOverviewPage() {
               Edukasi Bisnis Trading Forex Bertahap &amp; Terarah.
             </div>
             <p className="text-xs text-emerald-100/95 leading-relaxed pt-0.5">
-              Trading adalah bisnis probabilitas dan pengelolaan risiko, bukan spekulasi tanpa arah. Bangun fondasi kokoh dari nol dengan SOP Money Management 1%, metode baku Fixed SL 30 Pips, pemetaan zona supply-demand valid, dan psikologi eksekusi tenang untuk mencetak trader mandiri bebas Margin Call. Kami hadir bukan untuk menjanjikan keuntungan instan, melainkan memberikan peta jalan terstruktur bagi Anda yang serius ingin menjadikan trading sebagai bisnis jangka panjang yang terukur dan berkelanjutan. Belajar merencanakan setiap eksekusi secara objektif, membatasi risiko dengan penuh disiplin, dan membangun mentalitas trader profesional.
+              Bangun pemahaman bisnis trading forex dengan cara memahami resiko di setiap transaksi ketika masuk market, tujuannya untuk disiplin setiap resiko yang akan dikeluarkan. Edukasi ini bukan untuk mendapatkan profit besar secara instan dan cepat kaya, akan tetapi membiasakan mengukur berapa persen resiko setiap transaksinya, menggunakan pending order berdasarkan metode masing-masing trader karena hal tersebut ketika dilakukan dengan konsisten akan terhindar dari Margin Call.
             </p>
           </div>
         </div>

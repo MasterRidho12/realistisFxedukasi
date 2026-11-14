@@ -914,7 +914,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               Edukasi Bisnis Trading Forex Bertahap &amp; Terarah.
             </p>
             <p className="text-xs sm:text-base md:text-base text-slate-600 max-w-3xl mx-auto font-normal leading-relaxed">
-              Trading adalah bisnis probabilitas dan pengelolaan risiko, bukan spekulasi tanpa arah. Bangun fondasi kokoh dari nol dengan SOP Money Management 1%, metode baku Fixed SL 30 Pips, pemetaan zona supply-demand valid, dan psikologi eksekusi tenang untuk mencetak trader mandiri bebas Margin Call. Kami hadir bukan untuk menjanjikan keuntungan instan, melainkan memberikan peta jalan terstruktur bagi Anda yang serius ingin menjadikan trading sebagai bisnis jangka panjang yang terukur dan berkelanjutan. Belajar merencanakan setiap eksekusi secara objektif, membatasi risiko dengan penuh disiplin, dan membangun mentalitas trader profesional.
+              Bangun pemahaman bisnis trading forex dengan cara memahami resiko di setiap transaksi ketika masuk market, tujuannya untuk disiplin setiap resiko yang akan dikeluarkan. Edukasi ini bukan untuk mendapatkan profit besar secara instan dan cepat kaya, akan tetapi membiasakan mengukur berapa persen resiko setiap transaksinya, menggunakan pending order berdasarkan metode masing-masing trader karena hal tersebut ketika dilakukan dengan konsisten akan terhindar dari Margin Call.
             </p>
           </div>
 
@@ -1013,10 +1013,10 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               RIWAYAT SINYAL BERITA RESMI • TANGGAL LENGKAP
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              Riwayat Sinyal Berita Ekonomi Sebelum-Sebelumnya (Ada Tanggal Lengkap)
+              Riwayat Sinyal News Beserta Tanggal Rilis
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto">
-              Bukan data fiktif atau simulasi dummy. Setiap sinyal rilis berita kami cantumkan lengkap dengan <strong>hari, tanggal, jam WIB</strong>, data resmi rilis pemerintah AS (BLS, The Fed, US Census), pergerakan nyata harga Emas (XAUUSD) saat itu, dan perolehan pips.
+              Bukan data fiktif atau simulasi dummy. Setiap sinyal rilis berita kami cantumkan lengkap dengan <strong>hari, tanggal, jam WIB</strong>, data resmi rilis pemerintah AS (BLS, The Fed, US Census).
             </p>
           </div>
 
@@ -1787,7 +1787,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                       Edukasi Bisnis Trading Forex Bertahap &amp; Terarah.
                     </div>
                     <p className="text-[11px] text-slate-600 leading-relaxed">
-                      Trading adalah bisnis probabilitas dan pengelolaan risiko, bukan spekulasi tanpa arah. Bangun fondasi kokoh dari nol dengan SOP Money Management 1%, metode baku Fixed SL 30 Pips, pemetaan zona supply-demand valid, dan psikologi eksekusi tenang untuk mencetak trader mandiri bebas Margin Call. Kami hadir bukan untuk menjanjikan keuntungan instan, melainkan memberikan peta jalan terstruktur bagi Anda yang serius ingin menjadikan trading sebagai bisnis jangka panjang yang terukur dan berkelanjutan. Belajar merencanakan setiap eksekusi secara objektif, membatasi risiko dengan penuh disiplin, dan membangun mentalitas trader profesional.
+                      Bangun pemahaman bisnis trading forex dengan cara memahami resiko di setiap transaksi ketika masuk market, tujuannya untuk disiplin setiap resiko yang akan dikeluarkan. Edukasi ini bukan untuk mendapatkan profit besar secara instan dan cepat kaya, akan tetapi membiasakan mengukur berapa persen resiko setiap transaksinya, menggunakan pending order berdasarkan metode masing-masing trader karena hal tersebut ketika dilakukan dengan konsisten akan terhindar dari Margin Call.
                     </p>
                   </div>
                 </div>
