@@ -914,7 +914,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
               Edukasi Bisnis Trading Forex Bertahap &amp; Terarah.
             </p>
             <p className="text-xs sm:text-base md:text-base text-slate-600 max-w-3xl mx-auto font-normal leading-relaxed">
-              Bangun pemahaman bisnis trading forex dengan cara memahami resiko di setiap transaksi ketika masuk market, tujuannya untuk disiplin setiap resiko yang akan dikeluarkan. Edukasi ini bukan untuk mendapatkan profit besar secara instan dan cepat kaya, akan tetapi membiasakan mengukur berapa persen resiko setiap transaksinya, menggunakan pending order berdasarkan metode masing-masing trader karena hal tersebut ketika dilakukan dengan konsisten akan terhindar dari Margin Call.
+              Trading adalah bisnis probabilitas dan pengelolaan risiko, bukan spekulasi tanpa arah. Bangun fondasi kokoh dari nol dengan memahami bisnis, money management, mempunyai portofolio konsisten dengan metode dan trading plan.
             </p>
           </div>
 
@@ -1284,7 +1284,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             <div className="space-y-6">
               {/* Filter Tabs */}
               <div className="flex items-center justify-center gap-2 flex-wrap">
-                {(['RECENT', 'ALL', 'XAUUSD', 'NEWS', 'FOREX'] as const).map((cat) => (
+                {(['RECENT', 'ALL', 'NEWS', 'FOREX'] as const).map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSignalCategory(cat)}
@@ -1300,8 +1300,6 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
                       </>
                     ) : cat === 'ALL' ? (
                       'Semua Riwayat Selesai'
-                    ) : cat === 'XAUUSD' ? (
-                      'Khusus Emas (XAUUSD)'
                     ) : cat === 'NEWS' ? (
                       'Event Berita NFP & CPI'
                     ) : (
