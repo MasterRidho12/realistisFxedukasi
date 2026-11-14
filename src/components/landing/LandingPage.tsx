@@ -947,44 +947,7 @@ export default function LandingPage({ onOpenAuth }: LandingPageProps) {
             </a>
           </div>
 
-          {/* Social Proof Key Metrics Strip (Responsive 2x2 on Mobile, 4 on Desktop) */}
-          <div className="pt-6 sm:pt-8 max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-left">
-            <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">KURIKULUM SERIAL</span>
-                <Award className="w-3.5 h-3.5 text-emerald-600" />
-              </div>
-              <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">20 Season</p>
-              <p className="text-[10px] sm:text-[11px] text-[#00A651] font-semibold mt-0.5">211 Episode Petualangan</p>
-            </div>
 
-            <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">SOP MONEY MANAGEMENT</span>
-                <TrendingUp className="w-3.5 h-3.5 text-[#00A651]" />
-              </div>
-              <p className="text-xl sm:text-3xl font-black text-[#00A651] tracking-tight">Maks 1%</p>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5">Aturan Ketat Proteksi Modal</p>
-            </div>
-
-            <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">RISK TO REWARD</span>
-                <Target className="w-3.5 h-3.5 text-amber-500" />
-              </div>
-              <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">1 : 2.0+</p>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5">Fixed SL 30-40 Pips Emas</p>
-            </div>
-
-            <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-1">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider">TRADER BELAJAR AKTIF</span>
-                <Users className="w-3.5 h-3.5 text-indigo-500" />
-              </div>
-              <p className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">1,480+</p>
-              <p className="text-[10px] sm:text-[11px] text-[#00A651] font-semibold mt-0.5">Member Edukasi Terdaftar</p>
-            </div>
-          </div>
 
           {/* Live XAUUSD Spot & AI Sentiment Bar (Ultra Clean Mobile Stack) */}
           <div className="max-w-3xl mx-auto p-4 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
