@@ -315,7 +315,7 @@ export default function DashboardOverviewPage() {
             </div>
             <div>
               <p className="text-xs sm:text-sm font-bold text-white leading-relaxed">
-                Fokus menjaga money manajemen, trading bukan berdasarkan spekulasi Signal news dan setup SnR
+                Buka seluruh modul masterclass video, Signal news dan analisa SnR
               </p>
             </div>
           </div>
