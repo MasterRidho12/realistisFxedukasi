@@ -91,18 +91,7 @@ export default function Navbar() {
           <ExternalLink className="w-3 h-3 text-slate-500" />
         </a>
 
-        {/* Copy-Trade WhatsApp Button */}
-        <a
-          href={`https://wa.me/${siteSettings?.adminWhatsAppNumber || '6287774229255'}?text=${encodeURIComponent(
-            siteSettings?.copyTradeWaMessage || 'Halo Admin RealistisFx, saya tertarik untuk bergabung Copy Trade REALISTIS FX (Gold Breakout XAUUSD). Mohon panduan pendaftaran dan setup akunnya. Terima kasih.'
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#00A651] hover:bg-[#008F45] text-white font-bold text-xs shadow-md shadow-[#00A651]/20 hover:scale-[1.02] active:scale-95 transition-all"
-        >
-          <MessageCircle className="w-3.5 h-3.5 fill-white text-white" />
-          <span>Mulai Copy-Trade</span>
-        </a>
+
 
         {/* Upgrade / Active Badge */}
         {!isPro ? (
