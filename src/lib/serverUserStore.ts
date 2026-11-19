@@ -71,6 +71,27 @@ export const initialServerUsers: UserState[] = [
     hasAcademyAccess: true,
     subscriptionStatus: 'ACTIVE',
   },
+  {
+    id: 'usr-896565',
+    name: 'Rizky Juhri',
+    email: 'rizkirafel09@gmail.com',
+    password: 'admin123',
+    whatsapp: '087774229255',
+    accountType: 'STANDARD',
+    tier: 'PRO',
+    role: 'ADMIN',
+    isAuthenticated: false,
+    telegramLinked: true,
+    dailyCalculatorCount: 0,
+    disciplineScore: 100,
+    winRate: 85,
+    totalTrades: 12,
+    strictModeEnabled: true,
+    isChecklistPassed: true,
+    hasAcademyAccess: true,
+    subscriptionStatus: 'ACTIVE',
+    proExpiryDate: '16 Nov 2026',
+  },
 ];
 
 export const initialServerRequests: SubscriptionRequest[] = [

@@ -633,7 +633,7 @@ export default function AdminDashboardPage() {
                                 type="button"
                                 onClick={() => {
                                   setResetModalUser({ id: u.id, name: u.name, email: u.email });
-                                  setCustomNewPassword('trader123');
+                                  setCustomNewPassword('admin123');
                                 }}
                                 className="p-1.5 text-slate-400 hover:text-amber-700 rounded-lg hover:bg-amber-50 border border-slate-200 cursor-pointer"
                                 title="Reset Kata Sandi Trader Ini"

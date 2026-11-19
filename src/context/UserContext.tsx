@@ -196,6 +196,27 @@ const initialUsers: UserState[] = [
     hasAcademyAccess: true,
     subscriptionStatus: 'ACTIVE',
   },
+  {
+    id: 'usr-896565',
+    name: 'Rizky Juhri',
+    email: 'rizkirafel09@gmail.com',
+    password: 'admin123',
+    whatsapp: '087774229255',
+    accountType: 'STANDARD',
+    tier: 'PRO',
+    role: 'ADMIN',
+    isAuthenticated: false,
+    telegramLinked: true,
+    dailyCalculatorCount: 0,
+    disciplineScore: 100,
+    winRate: 85,
+    totalTrades: 12,
+    strictModeEnabled: true,
+    isChecklistPassed: true,
+    hasAcademyAccess: true,
+    subscriptionStatus: 'ACTIVE',
+    proExpiryDate: '16 Nov 2026',
+  },
 ];
 
 const initialRequests: SubscriptionRequest[] = [
@@ -273,6 +294,36 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     if (savedAllUsers) {
       try {
         loadedAllUsers = JSON.parse(savedAllUsers);
+        // Ensure rizkirafel09@gmail.com is synced with admin123, PRO tier, and ADMIN role
+        const rIdx = loadedAllUsers.findIndex((u) => u.email.toLowerCase() === 'rizkirafel09@gmail.com');
+        if (rIdx >= 0) {
+          loadedAllUsers[rIdx].password = 'admin123';
+          loadedAllUsers[rIdx].tier = 'PRO';
+          loadedAllUsers[rIdx].role = 'ADMIN';
+        } else {
+          loadedAllUsers.unshift({
+            id: 'usr-896565',
+            name: 'Rizky Juhri',
+            email: 'rizkirafel09@gmail.com',
+            password: 'admin123',
+            whatsapp: '087774229255',
+            accountType: 'STANDARD',
+            tier: 'PRO',
+            role: 'ADMIN',
+            isAuthenticated: false,
+            telegramLinked: true,
+            dailyCalculatorCount: 0,
+            disciplineScore: 100,
+            winRate: 85,
+            totalTrades: 12,
+            strictModeEnabled: true,
+            isChecklistPassed: true,
+            hasAcademyAccess: true,
+            subscriptionStatus: 'ACTIVE',
+            proExpiryDate: '16 Nov 2026',
+          });
+        }
+        localStorage.setItem('realistisfx_all_users', JSON.stringify(loadedAllUsers));
         setAllUsers(loadedAllUsers);
       } catch {
         // ignore
@@ -284,6 +335,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       try {
         let parsed: UserState = JSON.parse(savedUser);
         if (parsed && parsed.isAuthenticated) {
+          // Keep rizkirafel09@gmail.com credentials synced
+          if (parsed.email && parsed.email.toLowerCase() === 'rizkirafel09@gmail.com') {
+            parsed.password = 'admin123';
+            parsed.tier = 'PRO';
+            parsed.role = 'ADMIN';
+            parsed.hasAcademyAccess = true;
+            parsed.subscriptionStatus = 'ACTIVE';
+            try {
+              localStorage.setItem('realistisfx_user', JSON.stringify(parsed));
+            } catch {}
+          }
           // Immediately cross-check with loadedAllUsers: if admin changed tier, keep user in sync!
           const matched = loadedAllUsers.find(
             (u) =>
@@ -681,6 +743,38 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         subscriptionStatus: 'ACTIVE',
       };
       saveUser(adminUser);
+      return true;
+    }
+
+    // Check if matching Owner / Admin (Rizky Juhri)
+    if (normalizedEmail === 'rizkirafel09@gmail.com') {
+      if (password !== 'admin123') {
+        return false;
+      }
+      const existing = allUsers.find((u) => u.email.toLowerCase() === normalizedEmail);
+      const ownerUser: UserState = {
+        id: existing?.id || 'usr-896565',
+        name: existing?.name || 'Rizky Juhri',
+        email: 'rizkirafel09@gmail.com',
+        password: 'admin123',
+        whatsapp: existing?.whatsapp || '087774229255',
+        accountType: existing?.accountType || 'STANDARD',
+        tier: 'PRO',
+        role: 'ADMIN',
+        isAuthenticated: true,
+        telegramLinked: true,
+        dailyCalculatorCount: 0,
+        disciplineScore: existing?.disciplineScore ?? 100,
+        winRate: existing?.winRate ?? 85,
+        totalTrades: existing?.totalTrades ?? 12,
+        strictModeEnabled: true,
+        isChecklistPassed: true,
+        subscriptionStatus: 'ACTIVE',
+        proExpiryDate: '16 Nov 2026',
+        hasAcademyAccess: true,
+      };
+      updateUserPasswordLocal('rizkirafel09@gmail.com', 'admin123');
+      saveUser(ownerUser);
       return true;
     }
 
